@@ -126,6 +126,23 @@
             padding-top: calc(115px + env(safe-area-inset-top, 0px));
             min-height: 100vh;
         }
+        .dueno-content-wrapper > * > .flex-col > .flex-shrink-0 {
+            /* toolbar stretches full width */
+            width: 100%;
+        }
+                .dueno-content-wrapper {
+            min-height: calc(100vh - 64px);
+        }
+        .dueno-content-wrapper .dueno-normal-content {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 1.25rem 1rem;
+        }
+        @media (min-width: 1024px) {
+            .dueno-content-wrapper .dueno-normal-content {
+                padding: 1.25rem 1.5rem;
+            }
+        }
         .app-content-dueno {
             padding-top: calc(115px + env(safe-area-inset-top, 0px));
             min-height: 100vh;
@@ -133,6 +150,8 @@
         @media (min-width: 1024px) {
             .app-content-dueno {
                 padding-top: calc(70px + env(safe-area-inset-top, 0px));
+                overflow-y: auto;
+                height: 100vh;
             }
         }
         /* Visor de PDF compacto para móviles */
@@ -1404,6 +1423,8 @@
             const [resultadosFilterMonth, setResultadosFilterMonth] = useState('');
             const [resultadosFilterYear, setResultadosFilterYear] = useState('');
             const [facturacionSearch, setFacturacionSearch] = useState('');
+            const [facturacionInvoice, setFacturacionInvoice] = useState(null);
+            const [medicoFacInvoice, setMedicoFacInvoice] = useState(null);
             const [facturacionFilterDay, setFacturacionFilterDay] = useState('');
             const [facturacionFilterMonth, setFacturacionFilterMonth] = useState('');
             const [facturacionFilterYear, setFacturacionFilterYear] = useState('');
@@ -1991,7 +2012,7 @@
             const freshUser = database.users.find(u => u.id === currentUser.id) || currentUser;
 
             // Vista PDF (solo móvil o usuarios no médicos)
-            if (selectedExam && freshUser.type !== 'medico') {
+            if (selectedExam && freshUser.type !== 'medico' && window.innerWidth < 768) {
                 const downloadPdf = () => {
                     if (selectedExam.pdfData) {
                         const link = document.createElement('a');
@@ -2021,7 +2042,7 @@
                         <div style={{flex:1, overflow:'hidden', display:'flex', flexDirection:'column', padding:'12px', gap:'10px'}}>
                             <div style={{flex:1, overflow:'hidden', background:'white', borderRadius:'16px', boxShadow:'0 2px 12px rgba(0,0,0,0.10)', border:'1px solid #e5e7eb'}}>
                                 {selectedExam.pdfData ? (
-                                    <iframe src={selectedExam.pdfData} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px'}} title="PDF" />
+                                    <iframe src={selectedExam.pdfData} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px', margin:'8px 0'}} title="PDF" />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
                                         <i className="fas fa-file-pdf text-5xl mb-3 text-gray-300"></i>
@@ -2042,7 +2063,7 @@
             }
 
             // Visor de Comprobante (solo móvil o usuarios no médicos)
-            if (viewingInvoice && freshUser.type !== 'medico') {
+            if (viewingInvoice && freshUser.type !== 'medico' && window.innerWidth < 768) {
                 const docType = viewingInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura';
                 const downloadInvoice = () => {
                     if (viewingInvoice.invoicePdf) {
@@ -2094,7 +2115,7 @@
             }
 
             // Vista PDF médico — early return para evitar el transform de mob-content
-            if (selectedExam && freshUser.type === 'medico') {
+            if (selectedExam && freshUser.type === 'medico' && window.innerWidth < 768) {
                 return (
                     <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:10000, display:'flex', flexDirection:'column'}}>
                         <div style={{flexShrink:0, background:'white', borderBottom:'1px solid #e5e7eb', paddingTop:'env(safe-area-inset-top, 0px)'}}>
@@ -2133,7 +2154,7 @@
             }
 
             // Vista Comprobante médico — early return
-            if (viewingInvoice && freshUser.type === 'medico') {
+            if (viewingInvoice && freshUser.type === 'medico' && window.innerWidth < 768) {
                 return (
                     <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:10000, display:'flex', flexDirection:'column'}}>
                         <div style={{flexShrink:0, background:'white', borderBottom:'1px solid #e5e7eb', paddingTop:'env(safe-area-inset-top, 0px)'}}>
@@ -2175,7 +2196,7 @@
             const petsOrPatients = freshUser.type === 'medico' ? (freshUser.patients || []) : (freshUser.pets || []);
             const entityName = freshUser.type === 'medico' ? 'paciente' : 'mascota';
             const filteredPets = petSearchTerm.trim() === '' ? petsOrPatients : petsOrPatients.filter(p => p.name.toLowerCase().includes(petSearchTerm.toLowerCase()));
-            const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); };
+            const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); };
             
             const renderDuenoHeader = () => (
                 <>
@@ -2275,6 +2296,14 @@
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${activeTab === 'pedidos' && duenoView !== 'config' ? 'bg-white/20' : 'bg-cyan-100'}`}><i className={`fas fa-clipboard-list ${activeTab === 'pedidos' && duenoView !== 'config' ? 'text-white' : 'text-cyan-600'}`}></i></div>
                             <span className="font-medium">Pedidos</span>
                         </button>
+                        <button onClick={() => { resetDuenoState(); setActiveTab('facturacion'); }}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'facturacion' ? 'bg-amber-500 text-white shadow-md' : 'text-gray-600 hover:bg-gray-50'}`}
+                        >
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${activeTab === 'facturacion' ? 'bg-amber-400' : 'bg-amber-100'}`}>
+                                <i className={`fas fa-file-invoice-dollar text-sm ${activeTab === 'facturacion' ? 'text-white' : 'text-amber-600'}`}></i>
+                            </div>
+                            <span className="font-medium">Facturación</span>
+                        </button>
                         <button onClick={() => { resetDuenoState(); setActiveTab('resultados'); }}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'resultados' && duenoView !== 'config' ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg' : 'bg-gray-50 hover:bg-gray-100 text-gray-700'}`}>
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${activeTab === 'resultados' && duenoView !== 'config' ? 'bg-white/20' : 'bg-purple-100'}`}><i className={`fas fa-file-medical ${activeTab === 'resultados' && duenoView !== 'config' ? 'text-white' : 'text-purple-600'}`}></i></div>
@@ -2294,7 +2323,7 @@
 
             // Vista de Tracking de Pedido (para clientes)
             // Vista de Tracking de Pedido (solo mobile - para clientes y médicos)
-            if (viewingOrderTracking) {
+            if (viewingOrderTracking && window.innerWidth < 768) {
                 // Obtener datos frescos del pedido desde la base de datos
                 const order = (database.orders || []).find(o => o.id === viewingOrderTracking.id) || viewingOrderTracking;
                 const orderDate = new Date(order.date);
@@ -2777,7 +2806,7 @@
                             {/* ── Header fijo: Logo | Nombre | Hamburger ── */}
                             <div className="mob-header">
                                 <div className="mob-header-inner">
-                                    <div className="mob-header-logo cursor-pointer" onClick={() => { setMedicoView('inicio'); setSelectedMascota(null); setMenuOpen(false); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); }}>
+                                    <div className="mob-header-logo cursor-pointer" onClick={() => { setMedicoView('inicio'); setShowAllPending(false); setSelectedMascota(null); setMenuOpen(false); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); }}>
                                         <img src="logo_inulaboratorios.jpg" alt="INULAB" className="h-8" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }} />
                                         <div className="hidden w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg items-center justify-center text-white font-bold text-sm">I</div>
                                     </div>
@@ -4279,7 +4308,7 @@
                             <div className="bg-white border-b border-gray-200 px-6 py-3 fixed top-0 left-0 right-0 z-50">
                                 <div className="flex items-center justify-between">
                                     {/* Logo a la izquierda */}
-                                    <div className="flex items-center gap-2 cursor-pointer ml-[-10px]" onClick={() => { setMedicoView('inicio'); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); }}>
+                                    <div className="flex items-center gap-2 cursor-pointer ml-[-10px]" onClick={() => { setMedicoView('inicio'); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setMedicoFacInvoice(null); }}>
                                         <img src="logo_inulaboratorios.jpg" alt="Logo" className="h-8" onError={(e) => { e.target.style.display = 'none'; }} />
                                         <span className="text-base font-light text-gray-700 tracking-wide">INULABORATORIOS</span>
                                     </div>
@@ -4317,7 +4346,7 @@
                                         </button>
                                         
                                         <button 
-                                            onClick={() => { setMedicoView('pedidos'); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); }}
+                                            onClick={() => { setMedicoView('pedidos'); setShowAllPending(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setMedicoFacInvoice(null); }}
                                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${medicoView === 'pedidos' && !selectedExam && !viewingInvoice && !currentExamForPet ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' : 'bg-gray-50 hover:bg-gray-100 text-gray-700'}`}
                                         >
                                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${medicoView === 'pedidos' && !selectedExam && !viewingInvoice && !currentExamForPet ? 'bg-white/20' : 'bg-blue-100'}`}>
@@ -4327,7 +4356,7 @@
                                         </button>
                                         
                                         <button 
-                                            onClick={() => { setMedicoView('mascotas'); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); }}
+                                            onClick={() => { setMedicoView('mascotas'); setShowAllPending(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setMedicoFacInvoice(null); }}
                                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${medicoView === 'mascotas' && !selectedExam && !viewingInvoice && !currentExamForPet ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg' : 'bg-gray-50 hover:bg-gray-100 text-gray-700'}`}
                                         >
                                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${medicoView === 'mascotas' && !selectedExam && !viewingInvoice && !currentExamForPet ? 'bg-white/20' : 'bg-emerald-100'}`}>
@@ -4338,7 +4367,7 @@
                                         </button>
                                         
                                         <button 
-                                            onClick={() => { setMedicoView('resultados'); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); }}
+                                            onClick={() => { setMedicoView('resultados'); setShowAllPending(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setMedicoFacInvoice(null); }}
                                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${medicoView === 'resultados' && !selectedExam && !viewingInvoice && !currentExamForPet ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg' : 'bg-gray-50 hover:bg-gray-100 text-gray-700'}`}
                                         >
                                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${medicoView === 'resultados' && !selectedExam && !viewingInvoice && !currentExamForPet ? 'bg-white/20' : 'bg-purple-100'}`}>
@@ -4349,7 +4378,7 @@
                                         </button>
                                         
                                         <button 
-                                            onClick={() => { setMedicoView('facturacion'); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); }}
+                                            onClick={() => { setMedicoView('facturacion'); setShowAllPending(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setMedicoFacInvoice(null); }}
                                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${medicoView === 'facturacion' && !selectedExam && !viewingInvoice && !currentExamForPet ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg' : 'bg-gray-50 hover:bg-gray-100 text-gray-700'}`}
                                         >
                                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${medicoView === 'facturacion' && !selectedExam && !viewingInvoice && !currentExamForPet ? 'bg-white/20' : 'bg-amber-100'}`}>
@@ -4979,135 +5008,130 @@
                                     )}
                                     
                                     {/* Inicio Desktop - Resumen */}
-                                    {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'inicio' && (
-                                        <div className="h-full overflow-y-auto -mx-6 -mt-6 px-6 pt-6">
-                                            <h1 className="text-2xl font-bold text-gray-800 mb-1">¡Hola, {freshUser.name}!</h1>
-                                            <p className="text-gray-500 mb-6">Resumen de tu actividad</p>
-                                            
-                                            {/* Pendientes */}
-                                            <div className="mb-6">
-                                                <div className="flex items-center justify-between mb-3">
-                                                    <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                                        <i className="fas fa-clock text-amber-500"></i> Pendientes
-                                                    </h2>
-                                                    <button onClick={() => setMedicoView('pedidos')} className="text-cyan-600 text-sm font-medium hover:underline">Ver todos →</button>
+                                    {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'inicio' && showAllPending && (
+                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                            <div className="flex-shrink-0 bg-white shadow-md border-b border-gray-200 p-4">
+                                                <div className="flex items-center gap-3">
+                                                    <button onClick={() => setShowAllPending(false)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
+                                                        <i className="fas fa-arrow-left"></i>
+                                                    </button>
+                                                    <h2 className="font-bold text-gray-800 text-lg">Pendientes</h2>
                                                 </div>
-                                                {pendingOrders.length === 0 ? (
-                                                    <div className="bg-white rounded-xl p-6 text-center shadow">
-                                                        <i className="fas fa-check-circle text-3xl text-emerald-400 mb-2"></i>
-                                                        <p className="text-gray-500">No existen pendientes</p>
-                                                    </div>
-                                                ) : (
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        {pendingOrders.slice(0, 4).map(order => (
-                                                            <div 
-                                                                key={order.id} 
-                                                                onClick={() => setViewingOrderTracking(order)}
-                                                                className="bg-white rounded-xl p-4 shadow hover:shadow-lg transition-all cursor-pointer group"
-                                                            >
-                                                                {order.items.map((item, idx) => (
-                                                                    <div key={idx} className="flex items-center gap-3">
-                                                                        <span className="text-3xl">{item.pet.photo}</span>
-                                                                        <div className="flex-1">
-                                                                            <p className="font-semibold text-gray-800">{getPetFullName(item.pet)}</p>
-                                                                            <p className="text-sm text-gray-500">{item.exam.name}</p>
-                                                                        </div>
-                                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all group-hover:scale-110 ${order.status === 'moto_arrived' || order.status === 'results_uploaded' ? 'bg-red-500' : 'bg-cyan-500'}`}>
-                                                                            <i className="fas fa-route text-white"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                                {order.status === 'moto_arrived' && (
-                                                                    <div className="mt-3 bg-red-50 border border-red-300 rounded-lg p-2 flex items-center gap-2 animate-pulse">
-                                                                        <i className="fas fa-map-marker-alt text-red-600"></i>
-                                                                        <p className="text-red-800 font-medium text-xs">¡El motorizado llegó! Entrega la muestra</p>
-                                                                    </div>
-                                                                )}
-                                                                {order.status === 'results_uploaded' && (
-                                                                    <div className="mt-3 bg-red-50 border border-red-300 rounded-lg p-2 flex items-center gap-2 animate-pulse">
-                                                                        <i className="fas fa-credit-card text-red-600"></i>
-                                                                        <p className="text-red-800 font-medium text-xs">¡Resultados listos! Pendiente de pago</p>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
                                             </div>
-                                            
-                                            {/* Último resultado */}
-                                            <div className="mb-6">
-                                                <div className="flex items-center justify-between mb-3">
-                                                    <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                                        <i className="fas fa-file-medical text-purple-500"></i> Último resultado
-                                                        {newResultHighlight && <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full animate-pulse">¡NUEVO!</span>}
-                                                    </h2>
-                                                    <button onClick={() => setMedicoView('resultados')} className="text-cyan-600 text-sm font-medium hover:underline">Ver todos →</button>
-                                                </div>
-                                                {completedOrders.length === 0 ? (
-                                                    <div className="bg-white rounded-xl p-6 text-center shadow">
-                                                        <i className="fas fa-folder-open text-3xl text-gray-300 mb-2"></i>
-                                                        <p className="text-gray-500">No hay resultados aún</p>
-                                                    </div>
-                                                ) : (() => {
-                                                    const lastOrder = completedOrders[0];
-                                                    const pet = petsOrPatients.find(p => p.id === lastOrder.items[0]?.pet.id);
-                                                    const exam = pet?.exams?.find(e => e.orderId === lastOrder.id);
+                                            <div className="flex-1 overflow-y-auto p-6">
+                                                <div className="max-w-4xl mx-auto">
+                                                {(() => {
+                                                    const pendingInvoiceOrders = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoiceRequested && o.invoiceStatus === 'pending');
+                                                    if (pendingOrders.length === 0) return (<div className="text-center py-16 bg-white rounded-xl shadow"><i className="fas fa-check-circle text-4xl text-emerald-400 mb-3 block"></i><p className="text-gray-500">No hay pendientes</p></div>);
                                                     return (
-                                                        <div className={`bg-white rounded-xl p-4 shadow hover:shadow-lg transition-all cursor-pointer ${newResultHighlight ? 'highlight-green-pulse' : ''}`} onClick={() => exam?.pdfData && setSelectedExam(exam)}>
-                                                            <div className="flex items-center gap-4">
-                                                                <span className="text-3xl">{lastOrder.items[0].pet.photo}</span>
-                                                                <div className="flex-1">
-                                                                    <p className="font-medium text-gray-800">{getPetFullName(lastOrder.items[0].pet)}</p>
-                                                                    <p className="text-sm text-gray-500">{lastOrder.items[0].exam.name}</p>
-                                                                    <p className="text-xs text-gray-400">{new Date(lastOrder.completedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                                                                </div>
-                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${newResultHighlight ? 'bg-emerald-100' : 'bg-purple-100'}`}>
-                                                                    <i className={`fas fa-eye ${newResultHighlight ? 'text-emerald-600' : 'text-purple-600'}`}></i>
-                                                                </div>
+                                                        <div>
+                                                            <div className="grid grid-cols-2 gap-4 mb-3">
+                                                                <div className="flex items-center gap-2 px-1"><i className="fas fa-route text-cyan-500 text-sm"></i><span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Pedidos</span></div>
+                                                                <div className="flex items-center gap-2 px-1"><i className="fas fa-file-invoice-dollar text-amber-500 text-sm"></i><span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Comprobantes</span></div>
+                                                            </div>
+                                                            <div className="space-y-3">
+                                                            {pendingOrders.map((order, idx) => {
+                                                                const invoice = pendingInvoiceOrders[idx];
+                                                                return (
+                                                                    <div key={order.id} className="grid grid-cols-2 gap-4">
+                                                                        <div onClick={() => { setViewingOrderTracking(order); setShowAllPending(false); }} className="bg-white rounded-xl p-4 shadow hover:shadow-lg cursor-pointer transition-all">
+                                                                            <div className="flex items-center gap-3">
+                                                                                <div className="text-3xl leading-none flex-shrink-0">{order.items[0]?.pet.photo}</div>
+                                                                                <div className="flex-1 min-w-0"><p className="font-semibold text-gray-800 truncate">{order.items.map(i => getPetFullName(i.pet)).join(', ')}</p><p className="text-sm text-gray-500 truncate">{order.items[0]?.exam.name}</p></div>
+                                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${order.status === 'moto_arrived' || order.status === 'results_uploaded' ? 'bg-red-500' : 'bg-cyan-500'}`}><i className="fas fa-route text-white"></i></div>
+                                                                            </div>
+                                                                            {order.status === 'moto_arrived' && <div className="mt-2 bg-red-50 border border-red-300 rounded-lg p-1.5 flex items-center gap-2 animate-pulse"><i className="fas fa-map-marker-alt text-red-600 text-xs"></i><p className="text-red-800 font-medium text-xs">¡El motorizado llegó! Entrega la muestra</p></div>}
+                                                                            {order.status === 'results_uploaded' && <div className="mt-2 bg-red-50 border border-red-300 rounded-lg p-1.5 flex items-center gap-2 animate-pulse"><i className="fas fa-credit-card text-red-600 text-xs"></i><p className="text-red-800 font-medium text-xs">¡Resultados listos! Pendiente de pago</p></div>}
+                                                                        </div>
+                                                                        {invoice && (
+                                                                            <div className="bg-white rounded-xl p-4 shadow flex items-center justify-between">
+                                                                                <div className="flex items-center gap-3"><div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0"><i className={`fas ${invoice.documentType === 'boleta' ? 'fa-receipt' : 'fa-file-invoice-dollar'} text-amber-600`}></i></div><div><p className="font-semibold text-gray-800">{invoice.documentType === 'boleta' ? 'Boleta' : 'Factura'} solicitada</p><p className="text-sm text-gray-500">{invoice.items.map(i => getPetFullName(i.pet)).join(', ')}</p></div></div>
+                                                                                <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-medium flex-shrink-0">Pendiente</span>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                );
+                                                            })}
                                                             </div>
                                                         </div>
                                                     );
                                                 })()}
                                             </div>
+                                        </div>
+                                        </div>
+                                    )}
+
+
+                                    {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'inicio' && !showAllPending && (
+                                        <div className="h-full overflow-y-auto -mx-6 -mt-6 px-6 pt-6">
+                                            <h1 className="text-2xl font-bold text-gray-800 mb-1">¡Hola, {freshUser.name}!</h1>
+                                            <p className="text-gray-500 mb-6">Resumen de tu actividad</p>
+                                            
+                                            {/* Pendientes — interleaved */}
+                                            <div className="mb-6">{(() => {
+                                                const pendingInvoiceMap = {};
+                                                (database.orders || []).filter(o => o.userId === freshUser.id && o.invoiceRequested && o.invoiceStatus === 'pending').forEach(o => { pendingInvoiceMap[o.id] = o; });
+                                                const items = []; const usedIds = new Set();
+                                                pendingOrders.forEach(order => { items.push({ type: 'tracking', order }); if (pendingInvoiceMap[order.id]) { items.push({ type: 'invoice', order: pendingInvoiceMap[order.id] }); usedIds.add(order.id); } });
+                                                Object.values(pendingInvoiceMap).forEach(o => { if (!usedIds.has(o.id)) items.push({ type: 'invoice', order: o }); });
+                                                const totalPending = items.length;
+                                                return (
+                                                    <div>
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2"><i className="fas fa-clock text-amber-500"></i> Pendientes{totalPending > 0 && <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-sm font-bold">{totalPending}</span>}</h2>
+                                                            {totalPending > 2 && <button onClick={() => setShowAllPending(true)} className="text-cyan-600 text-sm font-medium hover:underline">Ver todos →</button>}
+                                                        </div>
+                                                        {totalPending === 0 ? (
+                                                            <div className="bg-white rounded-xl p-6 text-center shadow"><i className="fas fa-check-circle text-3xl text-emerald-400 mb-2"></i><p className="text-gray-500">No existen pendientes</p></div>
+                                                        ) : (
+                                                            <div className="grid grid-cols-2 gap-3">
+                                                            {items.slice(0, 4).map((item, idx) => {
+                                                                const order = item.order;
+                                                                if (item.type === 'invoice') return (
+                                                                    <div key={`inv-${order.id}-${idx}`} className="bg-white rounded-xl p-4 shadow flex flex-col gap-2">
+                                                                        <div className="flex items-center gap-2.5"><div className="w-9 h-9 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0"><i className={`fas ${order.documentType === 'boleta' ? 'fa-receipt' : 'fa-file-invoice-dollar'} text-amber-600`}></i></div><div><p className="font-semibold text-gray-800 text-sm leading-tight">{order.documentType === 'boleta' ? 'Boleta' : 'Factura'} solicitada</p><p className="text-xs text-gray-500">{order.items.map(i => getPetFullName(i.pet)).join(', ')}</p></div></div>
+                                                                        <span className="self-start bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-xs font-medium">Pendiente</span>
+                                                                    </div>
+                                                                );
+                                                                return (
+                                                                    <div key={`tr-${order.id}`} onClick={() => setViewingOrderTracking(order)} className="bg-white rounded-xl p-4 shadow hover:shadow-lg cursor-pointer transition-all group">
+                                                                        <div className="flex items-center gap-3"><span className="text-3xl">{order.items[0]?.pet.photo}</span><div className="flex-1 min-w-0"><p className="font-semibold text-gray-800 truncate">{order.items.map(i => getPetFullName(i.pet)).join(', ')}</p><p className="text-sm text-gray-500 truncate">{order.items[0]?.exam.name}</p></div><div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${order.status === 'moto_arrived' || order.status === 'results_uploaded' ? 'bg-red-500' : 'bg-cyan-500'}`}><i className="fas fa-route text-white"></i></div></div>
+                                                                        {order.status === 'moto_arrived' && <div className="mt-2 bg-red-50 border border-red-300 rounded-lg p-1.5 flex items-center gap-1.5 animate-pulse"><i className="fas fa-map-marker-alt text-red-600 text-xs"></i><p className="text-red-800 font-medium text-xs">¡El motorizado llegó! Entrega la muestra</p></div>}
+                                                                        {order.status === 'results_uploaded' && <div className="mt-2 bg-red-50 border border-red-300 rounded-lg p-1.5 flex items-center gap-1.5 animate-pulse"><i className="fas fa-credit-card text-red-600 text-xs"></i><p className="text-red-800 font-medium text-xs">¡Resultados listos! Pendiente de pago</p></div>}
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })()}</div>
+                                            
+                                            {/* Último resultado */}
+                                            <div className="mb-6">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2"><i className="fas fa-file-medical text-purple-500"></i> Último resultado{newResultHighlight && <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full animate-pulse">¡NUEVO!</span>}</h2>
+                                                    <button onClick={() => setMedicoView('resultados')} className="text-cyan-600 text-sm font-medium hover:underline">Ver todos →</button>
+                                                </div>
+                                                {completedOrders.length === 0 ? (<div className="bg-white rounded-xl p-6 text-center shadow"><i className="fas fa-folder-open text-3xl text-gray-300 mb-2"></i><p className="text-gray-500">No hay resultados aún</p></div>) : (() => {
+                                                    const lastOrder = completedOrders[0];
+                                                    const pet = petsOrPatients.find(p => p.id === lastOrder.items[0]?.pet.id);
+                                                    const exam = pet?.exams?.find(e => e.orderId === lastOrder.id);
+                                                    return (<div className={`bg-white rounded-xl p-4 shadow hover:shadow-lg transition-all cursor-pointer ${newResultHighlight ? 'highlight-green-pulse' : ''}`} onClick={() => exam?.pdfData && setSelectedExam(exam)}><div className="flex items-center gap-4"><span className="text-3xl">{lastOrder.items[0].pet.photo}</span><div className="flex-1"><p className="font-medium text-gray-800">{getPetFullName(lastOrder.items[0].pet)}</p><p className="text-sm text-gray-500">{lastOrder.items[0].exam.name}</p><p className="text-xs text-gray-400">{new Date(lastOrder.completedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</p></div><div className={`w-10 h-10 rounded-xl flex items-center justify-center ${newResultHighlight ? 'bg-emerald-100' : 'bg-purple-100'}`}><i className={`fas fa-eye ${newResultHighlight ? 'text-emerald-600' : 'text-purple-600'}`}></i></div></div></div>);
+                                                })()}
+                                            </div>
                                             
                                             {/* Último comprobante */}
-                                            <div>
+                                            <div className="mb-8">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                                        <i className="fas fa-file-invoice-dollar text-amber-500"></i> Último comprobante
-                                                        {newInvoiceHighlight && <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full animate-pulse">¡NUEVO!</span>}
-                                                    </h2>
+                                                    <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2"><i className="fas fa-file-invoice-dollar text-amber-500"></i> Último comprobante{newInvoiceHighlight && <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full animate-pulse">¡NUEVO!</span>}</h2>
                                                     <button onClick={() => setMedicoView('facturacion')} className="text-cyan-600 text-sm font-medium hover:underline">Ver todos →</button>
                                                 </div>
                                                 {(() => {
-                                                    const invoicesWithPdf = completedOrders.filter(o => o.invoicePdf);
-                                                    if (invoicesWithPdf.length === 0) {
-                                                        return (
-                                                            <div className="bg-white rounded-xl p-6 text-center shadow">
-                                                                <i className="fas fa-receipt text-3xl text-gray-300 mb-2"></i>
-                                                                <p className="text-gray-500">No hay comprobantes aún</p>
-                                                            </div>
-                                                        );
-                                                    }
-                                                    const lastInvoice = invoicesWithPdf[0];
-                                                    return (
-                                                        <div className={`bg-white rounded-xl p-4 shadow hover:shadow-lg transition-all cursor-pointer ${newInvoiceHighlight ? 'highlight-green-pulse' : ''}`} onClick={() => setViewingInvoice(lastInvoice)}>
-                                                            <div className="flex items-center gap-4">
-                                                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${newInvoiceHighlight ? 'bg-emerald-100' : lastInvoice.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
-                                                                    <i className={`fas ${lastInvoice.documentType === 'boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-xl ${newInvoiceHighlight ? 'text-emerald-600' : lastInvoice.documentType === 'boleta' ? 'text-cyan-600' : 'text-amber-600'}`}></i>
-                                                                </div>
-                                                                <div className="flex-1">
-                                                                    <p className="font-medium text-gray-800">{lastInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                                    <p className="text-sm text-gray-500">{getPetFullName(lastInvoice.items[0].pet)} - {lastInvoice.items[0].exam.name}</p>
-                                                                    <p className="text-xs text-gray-400">{new Date(lastInvoice.completedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                                                                </div>
-                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${newInvoiceHighlight ? 'bg-emerald-100' : 'bg-amber-100'}`}>
-                                                                    <i className={`fas fa-eye ${newInvoiceHighlight ? 'text-emerald-600' : 'text-amber-600'}`}></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    );
+                                                    const comprobantesEmitidos = completedOrders.filter(o => o.invoiceStatus === 'uploaded' && o.invoicePdf);
+                                                    if (comprobantesEmitidos.length === 0) return (<div className="bg-white rounded-xl p-6 text-center shadow"><i className="fas fa-receipt text-3xl text-gray-300 mb-2"></i><p className="text-gray-500">No hay comprobantes aún</p></div>);
+                                                    const lastInvoice = comprobantesEmitidos[0];
+                                                    return (<div className={`bg-white rounded-xl p-4 shadow hover:shadow-lg transition-all cursor-pointer ${newInvoiceHighlight ? 'highlight-green-pulse' : ''}`} onClick={() => setViewingInvoice(lastInvoice)}><div className="flex items-center gap-4"><div className={`w-12 h-12 rounded-xl flex items-center justify-center ${newInvoiceHighlight ? 'bg-emerald-100' : lastInvoice.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}><i className={`fas ${lastInvoice.documentType === 'boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-xl ${newInvoiceHighlight ? 'text-emerald-600' : lastInvoice.documentType === 'boleta' ? 'text-cyan-600' : 'text-amber-600'}`}></i></div><div className="flex-1"><p className="font-medium text-gray-800">{lastInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p><p className="text-sm text-gray-500">{getPetFullName(lastInvoice.items[0].pet)} - {lastInvoice.items[0].exam.name}</p><p className="text-xs text-gray-400">{new Date(lastInvoice.completedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</p></div><div className={`w-10 h-10 rounded-xl flex items-center justify-center ${newInvoiceHighlight ? 'bg-emerald-100' : 'bg-amber-100'}`}><i className={`fas fa-eye ${newInvoiceHighlight ? 'text-emerald-600' : 'text-amber-600'}`}></i></div></div></div>);
                                                 })()}
                                             </div>
                                         </div>
@@ -5771,9 +5795,94 @@
                             </div>
                         </div>
                     ) : (
-                    <div className="app-content-dueno lg:ml-56">
-                        <div className="max-w-5xl mx-auto px-4 py-5 lg:px-6">
+                    <div className="app-content-dueno lg:ml-56" style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice) ? 'hidden' : 'auto'}}>
+                        <div className="dueno-content-wrapper">
                         
+                        {/* === Vista PDF Resultado (inline desktop) === */}
+                        {selectedExam && !viewingOrderTracking && (
+                            <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
+                                <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
+                                    <div className="flex items-center gap-3">
+                                        <button onClick={() => setSelectedExam(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
+                                            <i className="fas fa-arrow-left"></i>
+                                        </button>
+                                        <div className="flex items-center gap-2 px-2">
+                                            <i className="fas fa-file-medical text-purple-500 text-lg"></i>
+                                            <span className="text-purple-600 font-semibold">Resultado</span>
+                                        </div>
+                                        <span className="text-gray-600 font-medium">{selectedExam.type}</span>
+                                    </div>
+                                </div>
+                                <div className="flex-1 overflow-hidden py-8 px-5 flex flex-col min-h-0">
+                                    <div className="max-w-4xl mx-auto w-full h-full flex flex-col">
+                                        <div className="bg-white rounded-2xl shadow-lg p-4 flex-1 flex flex-col min-h-0">
+                                            <div className="mb-3 flex-shrink-0">
+                                                <h1 className="text-xl font-bold text-gray-800 mb-1">{selectedExam.type}</h1>
+                                                <p className="text-gray-500 text-sm"><i className="fas fa-calendar mr-1"></i>{new Date(selectedExam.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                            </div>
+                                            {selectedExam.pdfData ? (
+                                                <div className="flex-1 flex flex-col min-h-0">
+                                                    <iframe src={selectedExam.pdfData} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" title="PDF" />
+                                                    <div className="mt-3 flex justify-center flex-shrink-0">
+                                                        <button onClick={() => { const a=document.createElement('a'); a.href=selectedExam.pdfData; a.download=`${selectedExam.type.replace(/[^a-zA-Z0-9]/g,'_')}_${selectedExam.date}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-xl font-semibold text-sm shadow-lg">
+                                                            <i className="fas fa-download"></i> Descargar PDF
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex-1 bg-gray-100 rounded-xl flex flex-col items-center justify-center">
+                                                    <i className="fas fa-file-pdf text-4xl text-gray-400 mb-2"></i>
+                                                    <p className="text-gray-500">PDF no disponible</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* === Vista PDF Comprobante (inline desktop) === */}
+                        {viewingInvoice && !selectedExam && !viewingOrderTracking && (() => {
+                            const docType = viewingInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura';
+                            return (
+                                <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
+                                    <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
+                                        <div className="flex items-center gap-3">
+                                            <button onClick={() => setViewingInvoice(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
+                                                <i className="fas fa-arrow-left"></i>
+                                            </button>
+                                            <div className="flex items-center gap-2 px-2">
+                                                <i className={`fas ${viewingInvoice.documentType === 'boleta' ? 'fa-receipt text-cyan-500' : 'fa-file-invoice text-amber-500'} text-lg`}></i>
+                                                <span className={`font-semibold ${viewingInvoice.documentType === 'boleta' ? 'text-cyan-600' : 'text-amber-600'}`}>{docType}</span>
+                                            </div>
+                                            <span className="text-gray-500 text-sm">{new Date(viewingInvoice.completedAt || viewingInvoice.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 overflow-hidden p-6 flex flex-col min-h-0">
+                                        <div className="max-w-4xl mx-auto w-full h-full flex flex-col">
+                                            <div className="bg-white rounded-2xl shadow-lg p-5 flex-1 flex flex-col min-h-0">
+                                                {viewingInvoice.invoicePdf ? (
+                                                    <div className="flex-1 flex flex-col min-h-0">
+                                                        <iframe src={viewingInvoice.invoicePdf} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" title={`${docType} PDF`} />
+                                                        <div className="mt-3 flex justify-center flex-shrink-0">
+                                                            <button onClick={() => { const a=document.createElement('a'); a.href=viewingInvoice.invoicePdf; a.download=`${docType}_${viewingInvoice.id}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className={`flex items-center gap-2 px-6 py-2.5 ${viewingInvoice.documentType === 'boleta' ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold text-sm shadow-lg`}>
+                                                                <i className="fas fa-download"></i> Descargar {docType}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex-1 bg-gray-100 rounded-xl flex flex-col items-center justify-center">
+                                                        <i className={`fas ${viewingInvoice.documentType === 'boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-4xl text-gray-400 mb-2`}></i>
+                                                        <p className="text-gray-500">{docType} no disponible</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })()}
+
                         {/* === Vista de Tracking (inline, como médico) === */}
                         {viewingOrderTracking && (() => {
                             const order = (database.orders || []).find(o => o.id === viewingOrderTracking.id) || viewingOrderTracking;
@@ -5801,10 +5910,49 @@
                             </div>);
                         })()}
                         
+                        {/* === Vista Comprobante Facturación (inline desktop) === */}
+                        {facturacionInvoice && !viewingOrderTracking && (
+                            <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
+                                <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 py-3 px-4">
+                                    <div className="flex items-center gap-3">
+                                        <button onClick={() => setFacturacionInvoice(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
+                                            <i className="fas fa-arrow-left"></i>
+                                        </button>
+                                        <div className="flex items-center gap-2 px-2">
+                                            <i className={`fas ${facturacionInvoice.documentType === 'boleta' ? 'fa-receipt text-cyan-500' : 'fa-file-invoice-dollar text-amber-500'} text-lg`}></i>
+                                            <span className={`font-semibold ${facturacionInvoice.documentType === 'boleta' ? 'text-cyan-600' : 'text-amber-600'}`}>{facturacionInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}</span>
+                                        </div>
+                                        <span className="text-gray-500 text-sm">{new Date(facturacionInvoice.createdAt || facturacionInvoice.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</span>
+                                    </div>
+                                </div>
+                                <div className="flex-1 overflow-hidden py-8 px-5 flex flex-col min-h-0">
+                                    <div className="max-w-4xl mx-auto w-full h-full flex flex-col">
+                                        <div className="bg-white rounded-2xl shadow-lg p-4 flex-1 flex flex-col min-h-0">
+                                            {facturacionInvoice.invoicePdf ? (
+                                                <div className="flex-1 flex flex-col min-h-0">
+                                                    <iframe src={facturacionInvoice.invoicePdf} className="flex-1 w-full rounded-xl border border-gray-200 my-2" style={{minHeight:'100px'}}></iframe>
+                                                    <div className="mt-3 flex justify-center flex-shrink-0">
+                                                        <button onClick={() => { const a=document.createElement('a');a.href=facturacionInvoice.invoicePdf;a.download='comprobante.pdf';document.body.appendChild(a);a.click();document.body.removeChild(a); }} className={`flex items-center gap-2 px-6 py-2.5 ${facturacionInvoice.documentType==='boleta'?'bg-gradient-to-r from-cyan-500 to-blue-600':'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold shadow-lg text-sm`}>
+                                                            <i className="fas fa-download"></i> Descargar PDF
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex-1 bg-gray-100 rounded-xl flex flex-col items-center justify-center">
+                                                    <i className="fas fa-file-invoice text-4xl text-gray-400 mb-3"></i>
+                                                    <p className="text-gray-500">Comprobante no disponible</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* === Vista Perfil de Mascota (inline) === */}
-                        {!viewingOrderTracking && selectedPet && activeTab === 'resultados' && (() => {
+                        {!viewingOrderTracking && !selectedExam && !viewingInvoice && selectedPet && activeTab === 'resultados' && (() => {
                             const currentPet = petsOrPatients.find(p => p.id === selectedPet.id) || selectedPet;
-                            return (<div>
+                            return (<div className="dueno-normal-content">
                                 <button onClick={() => setSelectedPet(null)} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-4"><i className="fas fa-arrow-left"></i><span className="text-sm font-medium">Volver a mascotas</span></button>
                                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6"><div className="flex items-center gap-4"><div className="text-5xl">{currentPet.photo}</div><div><h1 className="text-2xl font-bold text-gray-800">{currentPet.name}</h1>{currentPet.owner && <p className="text-gray-500 text-sm">Dueño: {currentPet.owner}</p>}<div className="flex flex-wrap gap-2 mt-2"><span className="bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full text-xs">{currentPet.breed}</span><span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs">{formatAge(currentPet)}</span><span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs">{currentPet.sex}</span></div></div></div></div>
                                 <h2 className="text-lg font-bold text-gray-800 mb-4">Resultados</h2>
@@ -5822,7 +5970,7 @@
                                 else if (showNewPetForm) { setShowNewPetForm(false); }
                                 else { setCurrentExamForPet(null); removeFromPending(currentExamForPet.id); }
                             };
-                            return (<div>
+                            return (<div className="dueno-normal-content">
                                 <button onClick={backHandler} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-4"><i className="fas fa-arrow-left"></i><span className="text-sm font-medium">Volver</span></button>
                                 <div className="bg-white rounded-2xl shadow p-4 mb-4 flex items-center gap-4">
                                     <div className={`w-12 h-12 ${currentExamForPet.bg} rounded-xl flex items-center justify-center`}><i className={`fas ${currentExamForPet.icon} ${currentExamForPet.color} text-xl`}></i></div>
@@ -5906,8 +6054,8 @@
                         })()}
                         
                         {/* === Vistas normales: Pedidos y Resultados === */}
-                        {!viewingOrderTracking && !(selectedPet && activeTab === 'resultados') && !currentExamForPet && (<>
-                        {activeTab === 'pedidos' && (<div>
+                        {!viewingOrderTracking && !selectedExam && !viewingInvoice && !(selectedPet && activeTab === 'resultados') && !currentExamForPet && !facturacionInvoice && (<><div className="dueno-normal-content">
+                        {activeTab === 'pedidos' && (<div className="pb-6">
                             {/* Vista para DUEÑOS - Paquetes amigables */}
                             <div className="mb-6">
                                 <h2 className="text-xl font-bold text-gray-800 mb-1">¿Qué necesita tu mascota?</h2>
@@ -6186,6 +6334,140 @@
                             <h2 className="text-lg font-bold text-gray-800 mb-4">Selecciona tu mascota</h2>
                             {petsOrPatients.length === 0 ? <div className="bg-white rounded-2xl p-10 text-center shadow"><i className="fas fa-paw text-4xl text-gray-300 mb-2"></i><p className="text-gray-500">No tienes mascotas registradas</p></div> : <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{petsOrPatients.map(pet => (<div key={pet.id} onClick={() => setSelectedPet(pet)} className="bg-white rounded-2xl p-5 shadow cursor-pointer hover:shadow-lg hover:border-cyan-500 border-2 border-transparent transition-all relative"><div className="flex items-center gap-4"><div className="text-4xl">{pet.photo}</div><div className="flex-1"><h3 className="text-lg font-bold text-gray-800">{getPetFullName(pet)}</h3><p className="text-gray-500 text-sm">{pet.breed}</p></div><div className="flex items-center gap-2">{countUnseenExamsForPet(pet) > 0 && <div className="w-6 h-6 bg-red-500 rounded-full text-xs flex items-center justify-center text-white font-bold">{countUnseenExamsForPet(pet)}</div>}<div className="bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-sm font-semibold">{pet.exams.length}</div></div></div></div>))}</div>}
                         </div>)}
+
+                        {medicoView === 'facturacion' && (() => {
+                            const userInvoices = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoicePdf);
+                            const facInvoice = medicoFacInvoice;
+                            const setFacInvoice = setMedicoFacInvoice;
+                            if (facInvoice) {
+                                return (
+                                    <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
+                                        <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
+                                            <div className="flex items-center gap-3">
+                                                <button onClick={() => setFacInvoice(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
+                                                    <i className="fas fa-arrow-left"></i>
+                                                </button>
+                                                <div className="flex items-center gap-2 px-2">
+                                                    <i className={`fas ${facInvoice.documentType === 'boleta' ? 'fa-receipt text-cyan-500' : 'fa-file-invoice-dollar text-amber-500'} text-lg`}></i>
+                                                    <span className={`font-semibold ${facInvoice.documentType === 'boleta' ? 'text-cyan-600' : 'text-amber-600'}`}>{facInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}</span>
+                                                </div>
+                                                <span className="text-gray-500 text-sm">{new Date(facInvoice.createdAt || facInvoice.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 overflow-hidden p-6 flex flex-col min-h-0">
+                                            <div className="max-w-4xl mx-auto w-full h-full flex flex-col">
+                                                <div className="bg-white rounded-2xl shadow-lg p-5 flex-1 flex flex-col min-h-0">
+                                                    {facInvoice.invoicePdf ? (
+                                                        <div className="flex-1 flex flex-col min-h-0">
+                                                            <iframe src={facInvoice.invoicePdf} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" style={{minHeight:'400px'}}></iframe>
+                                                            <div className="mt-3 flex justify-center flex-shrink-0">
+                                                                <button onClick={() => { const a=document.createElement('a'); a.href=facInvoice.invoicePdf; a.download=`comprobante-${facInvoice.id}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className={`flex items-center gap-2 px-6 py-2.5 ${facInvoice.documentType === 'boleta' ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold transition-colors shadow-lg text-sm`}>
+                                                                    <i className="fas fa-download"></i> Descargar PDF
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex-1 bg-gray-100 rounded-xl flex flex-col items-center justify-center">
+                                                            <i className="fas fa-file-invoice text-4xl text-gray-400 mb-3"></i>
+                                                            <p className="text-gray-500">Comprobante no disponible</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            return (
+                                <div className="pt-2">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                                            <i className="fas fa-file-invoice-dollar text-amber-600"></i>
+                                        </div>
+                                        <div>
+                                            <h1 className="text-xl font-bold text-gray-800">Facturación</h1>
+                                            <p className="text-gray-500 text-sm">Tus boletas y facturas</p>
+                                        </div>
+                                    </div>
+                                    {userInvoices.length === 0 ? (
+                                        <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
+                                            <i className="fas fa-file-invoice text-5xl text-gray-300 mb-4 block"></i>
+                                            <p className="text-gray-500 font-medium">No tienes comprobantes aún</p>
+                                            <p className="text-gray-400 text-sm mt-1">Tus boletas y facturas aparecerán aquí</p>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                            {userInvoices.map(inv => (
+                                                <div key={inv.id} onClick={() => setFacInvoice(inv)} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
+                                                            <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-xl`}></i>
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                                            <p className="text-sm text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
+                                                            <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt || inv.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${inv.documentType === 'boleta' ? 'bg-cyan-100 text-cyan-700' : 'bg-amber-100 text-amber-700'}`}>{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</span>
+                                                            <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })()}
+
+                        </div>
+
+                        {activeTab === 'facturacion' && !facturacionInvoice && (() => {
+                            const userInvoices = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoicePdf);
+                            return (
+                                <div className="dueno-normal-content pb-6">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                                            <i className="fas fa-file-invoice-dollar text-amber-600"></i>
+                                        </div>
+                                        <div>
+                                            <h1 className="text-xl font-bold text-gray-800">Facturación</h1>
+                                            <p className="text-gray-500 text-sm">Tus boletas y facturas</p>
+                                        </div>
+                                    </div>
+                                    {userInvoices.length === 0 ? (
+                                        <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
+                                            <i className="fas fa-file-invoice text-5xl text-gray-300 mb-4 block"></i>
+                                            <p className="text-gray-500 font-medium">No tienes comprobantes aún</p>
+                                            <p className="text-gray-400 text-sm mt-1">Tus boletas y facturas aparecerán aquí</p>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                            {userInvoices.map(inv => (
+                                                <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
+                                                            <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-xl`}></i>
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                                            <p className="text-sm text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
+                                                            <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 flex-shrink-0">
+                                                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${inv.documentType === 'boleta' ? 'bg-cyan-100 text-cyan-700' : 'bg-amber-100 text-amber-700'}`}>{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</span>
+                                                            <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })()}
+
                         </>)}
                         </div>
                     </div>
