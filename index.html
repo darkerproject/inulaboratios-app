@@ -46,7 +46,7 @@
             height: 100%;
             position: fixed;
             width: 100%;
-            background: white; /* Fix 1: safe area = white */
+            background: #f3f4f6; /* match app background (gray-100) */
         }
         #root {
             height: 100%;
@@ -6505,23 +6505,27 @@
         if (!window.visualViewport) return;
 
         var root = document.getElementById('root');
+        var html = document.documentElement;
+
+        // Match html/body background to app so no white flash peeks through
+        html.style.background = '#f3f4f6';
+        document.body.style.background = '#f3f4f6';
 
         function onViewportChange() {
             var vv = window.visualViewport;
             var windowHeight = window.innerHeight;
             var viewportHeight = vv.height;
 
-            // On iOS, when the keyboard opens the visualViewport shrinks.
-            // We pin #root to the visual viewport height so it doesn't scroll/reflow.
-            // The content inside stays put; only the keyboard overlays on top.
             if (viewportHeight < windowHeight - 50) {
-                // Keyboard is open — lock root height to visual viewport
+                // Keyboard open — pin root to visual viewport, no transition
+                root.style.transition = 'none';
                 root.style.height = viewportHeight + 'px';
                 root.style.position = 'fixed';
                 root.style.top = vv.offsetTop + 'px';
                 root.style.width = vv.width + 'px';
             } else {
-                // Keyboard closed — restore normal flow
+                // Keyboard closed — restore instantly to avoid flash
+                root.style.transition = 'none';
                 root.style.height = '';
                 root.style.position = '';
                 root.style.top = '';
