@@ -146,6 +146,9 @@
         .app-content-dueno {
             padding-top: calc(115px + env(safe-area-inset-top, 0px));
             min-height: 100vh;
+            overflow-y: auto;
+            height: 100vh;
+            padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
         }
         @media (min-width: 1024px) {
             .app-content-dueno {
@@ -2262,11 +2265,6 @@
                                     <span className="font-medium">Editar Perfil</span>
                                     <i className="fas fa-chevron-right text-gray-300 ml-auto text-xs"></i>
                                 </button>
-                                <button onClick={() => { setDuenoMenuOpen(false); resetDuenoState(); setDuenoView('config'); }} className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors">
-                                    <div className="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center"><i className="fas fa-cog text-gray-600"></i></div>
-                                    <span className="font-medium">Configuración</span>
-                                    <i className="fas fa-chevron-right text-gray-300 ml-auto text-xs"></i>
-                                </button>
                             </div>
                             <div className="mx-4 border-t border-gray-100 my-1"></div>
                             <div className="px-4 py-2 space-y-1">
@@ -2563,22 +2561,22 @@
                                         </button>
                                     </>
                                 ) : (
-                                    <div className="bg-white rounded-2xl shadow p-6">
-                                        <h3 className="text-lg font-bold text-gray-800 mb-4">
+                                    <div className="bg-white rounded-2xl shadow p-4">
+                                        <h3 className="text-base font-bold text-gray-800 mb-2">
                                             <i className="fas fa-plus-circle mr-2 text-cyan-500"></i>
                                             {freshUser.type === 'medico' ? 'Nuevo Paciente' : 'Nueva Mascota'}
                                         </h3>
-                                        <div className="space-y-4">
+                                        <div className="space-y-2">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre</label>
                                                 <input type="text" value={newPet.name} onChange={(e) => setNewPet({...newPet, name: e.target.value})} 
-                                                    className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre del animal" />
+                                                    className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre del animal" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Especie</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Especie</label>
                                                 <div className="relative">
                                                     <select value={newPet.animalType} onChange={(e) => setNewPet({...newPet, animalType: e.target.value})} 
-                                                        className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none">
+                                                        className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none">
                                                         <option value="">Seleccionar</option>
                                                         <option value="perro">🐕 Perro</option>
                                                         <option value="gato">🐈 Gato</option>
@@ -2590,21 +2588,21 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Raza</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Raza</label>
                                                 <input type="text" value={newPet.breed} onChange={(e) => setNewPet({...newPet, breed: e.target.value})} 
-                                                    className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Labrador, Persa..." />
+                                                    className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Labrador, Persa..." />
                                             </div>
                                             <div className="grid grid-cols-2 gap-3">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Edad</label>
+                                                    <label className="block text-xs font-medium text-gray-600 mb-0.5">Edad</label>
                                                     <input type="text" value={newPet.ageValue} onChange={(e) => setNewPet({...newPet, ageValue: e.target.value.replace(/[^0-9]/g, "")})} 
-                                                        className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: 3" />
+                                                        className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: 3" />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Unidad</label>
+                                                    <label className="block text-xs font-medium text-gray-600 mb-0.5">Unidad</label>
                                                     <div className="relative">
                                                         <select value={newPet.ageUnit} onChange={(e) => setNewPet({...newPet, ageUnit: e.target.value})} 
-                                                            className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none">
+                                                            className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none">
                                                             <option value="años">Años</option>
                                                             <option value="meses">Meses</option>
                                                         </select>
@@ -2613,10 +2611,10 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Sexo</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Sexo</label>
                                                 <div className="relative">
                                                     <select value={newPet.sex} onChange={(e) => setNewPet({...newPet, sex: e.target.value})} 
-                                                        className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none">
+                                                        className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none">
                                                         <option value="">Seleccionar</option>
                                                         <option value="Macho">Macho</option>
                                                         <option value="Hembra">Hembra</option>
@@ -2625,9 +2623,9 @@
                                                 </div>
                                             </div>
                                             {freshUser.type === 'medico' && <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre del Dueño</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre del Dueño</label>
                                                 <input type="text" value={newPet.owner} onChange={(e) => setNewPet({...newPet, owner: e.target.value})} 
-                                                    className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre del propietario" />
+                                                    className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre del propietario" />
                                             </div>}
                                             <button onClick={addNewPet} className="w-full h-12 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold">
                                                 <i className="fas fa-check mr-2"></i>Guardar y Seleccionar
@@ -2685,8 +2683,8 @@
                                         </button>
                                     </>
                                 ) : (
-                                    <div className="bg-white rounded-2xl shadow p-6">
-                                        <h3 className="text-lg font-bold text-gray-800 mb-4">
+                                    <div className="bg-white rounded-2xl shadow p-4">
+                                        <h3 className="text-base font-bold text-gray-800 mb-2">
                                             <i className="fas fa-map-marker-alt mr-2 text-cyan-500"></i>Nueva Dirección
                                         </h3>
                                         
@@ -2711,22 +2709,22 @@
                                         
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la dirección *</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre de la dirección *</label>
                                                 <input type="text" value={newAddress.name} onChange={(e) => setNewAddress({...newAddress, name: e.target.value})} 
                                                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Casa, Oficina, Clínica" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Dirección *</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Dirección *</label>
                                                 <input type="text" value={newAddress.address} onChange={(e) => setNewAddress({...newAddress, address: e.target.value})} 
                                                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Av. / Calle / Jr. y número" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Distrito *</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Distrito *</label>
                                                 <input type="text" value={newAddress.district} onChange={(e) => setNewAddress({...newAddress, district: e.target.value})} 
                                                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: San Isidro" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Referencia (opcional)</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Referencia (opcional)</label>
                                                 <input type="text" value={newAddress.reference} onChange={(e) => setNewAddress({...newAddress, reference: e.target.value})} 
                                                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Frente al parque, edificio azul" />
                                             </div>
@@ -3283,9 +3281,9 @@
                             {/* ==================== EDITAR PERFIL (Mobile) ==================== */}
                             {!selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'configuracion' && showEditProfile && (
                                 <div className="max-w-md mx-auto">
-                                    <div className="bg-white rounded-2xl shadow-lg p-6">
-                                        <div className="flex items-center gap-3 mb-6">
-                                            <button onClick={() => setShowEditProfile(false)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center">
+                                    <div className="bg-white rounded-2xl shadow-lg p-4">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <button onClick={() => setShowEditProfile(false)} className="w-9 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center">
                                                 <i className="fas fa-arrow-left text-gray-600"></i>
                                             </button>
                                             <h1 className="text-xl font-bold text-gray-800">Mi Perfil</h1>
@@ -3302,7 +3300,7 @@
                                         <div className="space-y-4">
                                             {/* Nombre de la Clínica */}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">
                                                     Nombre de la Clínica
                                                     <span className="text-xs text-amber-600 ml-2">{getNameChangeText()}</span>
                                                 </label>
@@ -3317,7 +3315,7 @@
                                             
                                             {/* Razón Social */}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Razón Social (opcional)</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Razón Social (opcional)</label>
                                                 <input 
                                                     type="text" 
                                                     value={editProfile.clinic}
@@ -3329,7 +3327,7 @@
                                             
                                             {/* RUC */}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">RUC (opcional)</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">RUC (opcional)</label>
                                                 <input 
                                                     type="text" 
                                                     value={editProfile.ruc}
@@ -3342,7 +3340,7 @@
                                             
                                             {/* Teléfono */}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono de contacto</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Teléfono de contacto</label>
                                                 <input 
                                                     type="tel" 
                                                     value={editProfile.phone}
@@ -3354,7 +3352,7 @@
                                             
                                             {/* Email */}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Correo electrónico</label>
                                                 <input 
                                                     type="email" 
                                                     value={editProfile.email}
@@ -3366,7 +3364,7 @@
                                             
                                             {/* Dirección */}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Dirección</label>
                                                 <input 
                                                     type="text" 
                                                     value={editProfile.address}
@@ -3378,7 +3376,7 @@
                                             
                                             {/* Distrito */}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Distrito</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Distrito</label>
                                                 <input 
                                                     type="text" 
                                                     value={editProfile.district}
@@ -4750,13 +4748,13 @@
                                                                     {freshUser.type === 'medico' ? 'Nuevo Paciente' : 'Nueva Mascota'}
                                                                 </h3>
                                                                 <div className="grid grid-cols-2 gap-4">
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label><input type="text" value={newPet.name} onChange={(e) => setNewPet({...newPet, name: e.target.value})} className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre" /></div>
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Especie</label><div className="relative"><select value={newPet.animalType} onChange={(e) => setNewPet({...newPet, animalType: e.target.value})} className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="">Seleccionar</option><option value="perro">🐕 Perro</option><option value="gato">🐈 Gato</option><option value="ave">🦜 Ave</option><option value="conejo">🐰 Conejo</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Raza</label><input type="text" value={newPet.breed} onChange={(e) => setNewPet({...newPet, breed: e.target.value})} className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Labrador" /></div>
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Sexo</label><div className="relative"><select value={newPet.sex} onChange={(e) => setNewPet({...newPet, sex: e.target.value})} className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="">Seleccionar</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Edad</label><input type="text" value={newPet.ageValue} onChange={(e) => setNewPet({...newPet, ageValue: e.target.value.replace(/[^0-9]/g, '')})} className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: 3" /></div>
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Unidad</label><div className="relative"><select value={newPet.ageUnit} onChange={(e) => setNewPet({...newPet, ageUnit: e.target.value})} className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="años">Años</option><option value="meses">Meses</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
-                                                                    {freshUser.type === 'medico' && <div className="col-span-2"><label className="block text-sm font-medium text-gray-700 mb-1">Nombre del Dueño</label><input type="text" value={newPet.owner} onChange={(e) => setNewPet({...newPet, owner: e.target.value})} className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre del propietario" /></div>}
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre</label><input type="text" value={newPet.name} onChange={(e) => setNewPet({...newPet, name: e.target.value})} className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre" /></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Especie</label><div className="relative"><select value={newPet.animalType} onChange={(e) => setNewPet({...newPet, animalType: e.target.value})} className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="">Seleccionar</option><option value="perro">🐕 Perro</option><option value="gato">🐈 Gato</option><option value="ave">🦜 Ave</option><option value="conejo">🐰 Conejo</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Raza</label><input type="text" value={newPet.breed} onChange={(e) => setNewPet({...newPet, breed: e.target.value})} className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Labrador" /></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Sexo</label><div className="relative"><select value={newPet.sex} onChange={(e) => setNewPet({...newPet, sex: e.target.value})} className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="">Seleccionar</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Edad</label><input type="text" value={newPet.ageValue} onChange={(e) => setNewPet({...newPet, ageValue: e.target.value.replace(/[^0-9]/g, '')})} className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: 3" /></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Unidad</label><div className="relative"><select value={newPet.ageUnit} onChange={(e) => setNewPet({...newPet, ageUnit: e.target.value})} className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="años">Años</option><option value="meses">Meses</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
+                                                                    {freshUser.type === 'medico' && <div className="col-span-2"><label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre del Dueño</label><input type="text" value={newPet.owner} onChange={(e) => setNewPet({...newPet, owner: e.target.value})} className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre del propietario" /></div>}
                                                                     <button onClick={addNewPet} className="col-span-2 h-12 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-semibold hover:from-cyan-600 hover:to-blue-700"><i className="fas fa-check mr-2"></i>Guardar y Seleccionar</button>
                                                                 </div>
                                                             </div>
@@ -4829,10 +4827,10 @@
                                                                 </button>
                                                                 
                                                                 <div className="space-y-4">
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre/Etiqueta *</label><input type="text" value={newAddress.name} onChange={(e) => setNewAddress({...newAddress, name: e.target.value})} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Casa, Oficina, Clínica..." /></div>
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Dirección *</label><input type="text" value={newAddress.address} onChange={(e) => setNewAddress({...newAddress, address: e.target.value})} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Av. / Calle / Jr. y número" /></div>
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Distrito *</label><input type="text" value={newAddress.district} onChange={(e) => setNewAddress({...newAddress, district: e.target.value})} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: San Isidro" /></div>
-                                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Referencia (opcional)</label><input type="text" value={newAddress.reference} onChange={(e) => setNewAddress({...newAddress, reference: e.target.value})} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Frente al parque, portón verde..." /></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre/Etiqueta *</label><input type="text" value={newAddress.name} onChange={(e) => setNewAddress({...newAddress, name: e.target.value})} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Casa, Oficina, Clínica..." /></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Dirección *</label><input type="text" value={newAddress.address} onChange={(e) => setNewAddress({...newAddress, address: e.target.value})} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Av. / Calle / Jr. y número" /></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Distrito *</label><input type="text" value={newAddress.district} onChange={(e) => setNewAddress({...newAddress, district: e.target.value})} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: San Isidro" /></div>
+                                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Referencia (opcional)</label><input type="text" value={newAddress.reference} onChange={(e) => setNewAddress({...newAddress, reference: e.target.value})} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Frente al parque, portón verde..." /></div>
                                                                     <button onClick={addNewAddress} className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-semibold hover:from-cyan-600 hover:to-blue-700"><i className="fas fa-check mr-2"></i>Guardar y Seleccionar</button>
                                                                 </div>
                                                             </div>
@@ -4900,7 +4898,7 @@
                                                 <div className="grid grid-cols-2 gap-4">
                                                     {/* Nombre de la Clínica */}
                                                     <div className="col-span-2">
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        <label className="block text-xs font-medium text-gray-600 mb-0.5">
                                                             Nombre de la Clínica
                                                             <span className="text-xs text-amber-600 ml-2">{getNameChangeText()}</span>
                                                         </label>
@@ -4915,7 +4913,7 @@
                                                     
                                                     {/* Razón Social */}
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Razón Social</label>
+                                                        <label className="block text-xs font-medium text-gray-600 mb-0.5">Razón Social</label>
                                                         <input 
                                                             type="text" 
                                                             value={editProfile.clinic}
@@ -4927,7 +4925,7 @@
                                                     
                                                     {/* RUC */}
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">RUC</label>
+                                                        <label className="block text-xs font-medium text-gray-600 mb-0.5">RUC</label>
                                                         <input 
                                                             type="text" 
                                                             value={editProfile.ruc}
@@ -4940,7 +4938,7 @@
                                                     
                                                     {/* Teléfono */}
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                                        <label className="block text-xs font-medium text-gray-600 mb-0.5">Teléfono</label>
                                                         <input 
                                                             type="tel" 
                                                             value={editProfile.phone}
@@ -4952,7 +4950,7 @@
                                                     
                                                     {/* Email */}
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                                                        <label className="block text-xs font-medium text-gray-600 mb-0.5">Correo electrónico</label>
                                                         <input 
                                                             type="email" 
                                                             value={editProfile.email}
@@ -4964,7 +4962,7 @@
                                                     
                                                     {/* Dirección */}
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                                                        <label className="block text-xs font-medium text-gray-600 mb-0.5">Dirección</label>
                                                         <input 
                                                             type="text" 
                                                             value={editProfile.address}
@@ -4976,7 +4974,7 @@
                                                     
                                                     {/* Distrito */}
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Distrito</label>
+                                                        <label className="block text-xs font-medium text-gray-600 mb-0.5">Distrito</label>
                                                         <input 
                                                             type="text" 
                                                             value={editProfile.district}
@@ -5764,26 +5762,26 @@
                                         </div>
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">
                                                     Nombre
                                                     <span className="text-xs text-amber-600 ml-2">{getNameChangeText()}</span>
                                                 </label>
                                                 <input type="text" value={editProfile.name} onChange={(e) => setEditProfile({...editProfile, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Tu nombre" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono de contacto</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Teléfono de contacto</label>
                                                 <input type="tel" value={editProfile.phone} onChange={(e) => setEditProfile({...editProfile, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="999 888 777" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Email</label>
                                                 <input type="email" value={editProfile.email} onChange={(e) => setEditProfile({...editProfile, email: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="tu@email.com" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Dirección</label>
                                                 <input type="text" value={editProfile.address} onChange={(e) => setEditProfile({...editProfile, address: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Tu dirección" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Distrito</label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Distrito</label>
                                                 <input type="text" value={editProfile.district} onChange={(e) => setEditProfile({...editProfile, district: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="San Isidro" />
                                             </div>
                                             <button onClick={() => saveProfile(editProfile.name !== freshUser.name)} className="w-full py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 transition-all shadow-lg mt-4">
@@ -5988,11 +5986,11 @@
                                             <div className="bg-white rounded-2xl shadow p-6">
                                                 <h3 className="text-lg font-bold text-gray-800 mb-4"><i className="fas fa-plus-circle mr-2 text-cyan-500"></i>Nueva Mascota</h3>
                                                 <div className="space-y-4">
-                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label><input type="text" value={newPet.name} onChange={(e) => setNewPet({...newPet, name: e.target.value})} className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre del animal" /></div>
-                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Especie</label><div className="relative"><select value={newPet.animalType} onChange={(e) => setNewPet({...newPet, animalType: e.target.value})} className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="">Seleccionar</option><option value="perro">🐕 Perro</option><option value="gato">🐈 Gato</option><option value="ave">🦜 Ave</option><option value="conejo">🐰 Conejo</option><option value="otro">🐾 Otro</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
-                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Raza</label><input type="text" value={newPet.breed} onChange={(e) => setNewPet({...newPet, breed: e.target.value})} className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Labrador, Persa..." /></div>
-                                                    <div className="grid grid-cols-2 gap-3"><div><label className="block text-sm font-medium text-gray-700 mb-1">Edad</label><input type="text" value={newPet.ageValue} onChange={(e) => setNewPet({...newPet, ageValue: e.target.value.replace(/[^0-9]/g, "")})} className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: 3" /></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Unidad</label><div className="relative"><select value={newPet.ageUnit} onChange={(e) => setNewPet({...newPet, ageUnit: e.target.value})} className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="años">Años</option><option value="meses">Meses</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div></div>
-                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Sexo</label><div className="relative"><select value={newPet.sex} onChange={(e) => setNewPet({...newPet, sex: e.target.value})} className="w-full h-12 px-4 pr-10 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="">Seleccionar</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
+                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre</label><input type="text" value={newPet.name} onChange={(e) => setNewPet({...newPet, name: e.target.value})} className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Nombre del animal" /></div>
+                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Especie</label><div className="relative"><select value={newPet.animalType} onChange={(e) => setNewPet({...newPet, animalType: e.target.value})} className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="">Seleccionar</option><option value="perro">🐕 Perro</option><option value="gato">🐈 Gato</option><option value="ave">🦜 Ave</option><option value="conejo">🐰 Conejo</option><option value="otro">🐾 Otro</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
+                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Raza</label><input type="text" value={newPet.breed} onChange={(e) => setNewPet({...newPet, breed: e.target.value})} className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Labrador, Persa..." /></div>
+                                                    <div className="grid grid-cols-2 gap-3"><div><label className="block text-xs font-medium text-gray-600 mb-0.5">Edad</label><input type="text" value={newPet.ageValue} onChange={(e) => setNewPet({...newPet, ageValue: e.target.value.replace(/[^0-9]/g, "")})} className="w-full h-9 px-3 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none" placeholder="Ej: 3" /></div><div><label className="block text-xs font-medium text-gray-600 mb-0.5">Unidad</label><div className="relative"><select value={newPet.ageUnit} onChange={(e) => setNewPet({...newPet, ageUnit: e.target.value})} className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="años">Años</option><option value="meses">Meses</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div></div>
+                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Sexo</label><div className="relative"><select value={newPet.sex} onChange={(e) => setNewPet({...newPet, sex: e.target.value})} className="w-full h-9 px-3 pr-10 text-sm rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white appearance-none"><option value="">Seleccionar</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select><div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><i className="fas fa-chevron-down text-xs"></i></div></div></div>
                                                     <div className="flex gap-3 pt-2"><button onClick={() => setShowNewPetForm(false)} className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold hover:bg-gray-50">Cancelar</button><button onClick={addNewPet} className="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold"><i className="fas fa-check mr-2"></i>Guardar</button></div>
                                                 </div>
                                             </div>
@@ -6040,10 +6038,10 @@
                                                 <h3 className="text-lg font-bold text-gray-800 mb-4"><i className="fas fa-map-marker-alt mr-2 text-cyan-500"></i>Nueva Dirección</h3>
                                                 <button onClick={getMyLocation} disabled={gettingLocation} className="w-full mb-4 py-3 rounded-xl border-2 border-dashed border-cyan-300 bg-cyan-50 text-cyan-700 font-medium hover:bg-cyan-100 transition-colors flex items-center justify-center gap-2">{gettingLocation ? <><i className="fas fa-spinner fa-spin"></i>Obteniendo ubicación...</> : <><i className="fas fa-location-crosshairs"></i>Utilizar mi ubicación</>}</button>
                                                 <div className="space-y-4">
-                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la dirección *</label><input type="text" value={newAddress.name} onChange={(e) => setNewAddress({...newAddress, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Casa, Oficina" /></div>
-                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Dirección *</label><input type="text" value={newAddress.address} onChange={(e) => setNewAddress({...newAddress, address: e.target.value})} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Av. / Calle / Jr. y número" /></div>
-                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Distrito *</label><input type="text" value={newAddress.district} onChange={(e) => setNewAddress({...newAddress, district: e.target.value})} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: San Isidro" /></div>
-                                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Referencia (opcional)</label><input type="text" value={newAddress.reference} onChange={(e) => setNewAddress({...newAddress, reference: e.target.value})} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Frente al parque" /></div>
+                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre de la dirección *</label><input type="text" value={newAddress.name} onChange={(e) => setNewAddress({...newAddress, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Casa, Oficina" /></div>
+                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Dirección *</label><input type="text" value={newAddress.address} onChange={(e) => setNewAddress({...newAddress, address: e.target.value})} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Av. / Calle / Jr. y número" /></div>
+                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Distrito *</label><input type="text" value={newAddress.district} onChange={(e) => setNewAddress({...newAddress, district: e.target.value})} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: San Isidro" /></div>
+                                                    <div><label className="block text-xs font-medium text-gray-600 mb-0.5">Referencia (opcional)</label><input type="text" value={newAddress.reference} onChange={(e) => setNewAddress({...newAddress, reference: e.target.value})} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:outline-none" placeholder="Ej: Frente al parque" /></div>
                                                     <div className="flex gap-3 pt-2"><button onClick={() => { setShowNewAddressForm(false); setNewAddress({ name: '', address: '', district: '', reference: '' }); }} className="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold hover:bg-gray-50">Cancelar</button><button onClick={addNewAddress} className="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold">Guardar y usar</button></div>
                                                 </div>
                                             </div>
@@ -6480,6 +6478,11 @@
                                 onClick={() => { resetDuenoState(); setActiveTab('pedidos'); }}>
                                 <i className="fas fa-clipboard-list"></i>
                                 <span>Pedidos</span>
+                            </button>
+                            <button className={`mob-nav-btn ${activeTab === 'facturacion' ? 'active' : ''}`}
+                                onClick={() => { resetDuenoState(); setActiveTab('facturacion'); }}>
+                                <i className="fas fa-file-invoice-dollar"></i>
+                                <span>Facturación</span>
                             </button>
                             <button className={`mob-nav-btn ${activeTab === 'resultados' && duenoView !== 'config' ? 'active' : ''}`}
                                 onClick={() => { resetDuenoState(); setActiveTab('resultados'); }}>
