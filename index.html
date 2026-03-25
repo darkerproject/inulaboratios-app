@@ -2135,7 +2135,7 @@
                 const statusOrder = ['pending','confirmed','moto_en_camino','moto_arrived','sample_received','arrived_at_lab','processing','results_uploaded','completed'];
                 const currentIndex = statusOrder.indexOf(trackingOrder.status === 'pending' ? 'confirmed' : trackingOrder.status);
                 return (
-                    <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'#f3f4f6',zIndex:9999,display:'flex',flexDirection:'column'}}>
+                    <div style={{position:'fixed',top:0,left:0,right:0,bottom:'calc(64px + env(safe-area-inset-bottom,0px))',background:'#f3f4f6',zIndex:9999,display:'flex',flexDirection:'column'}}>
 
                         {/* Toolbar */}
                         <div style={{flexShrink:0,background:'white',borderBottom:'1px solid #e5e7eb',padding:'12px 16px',paddingTop:'calc(12px + env(safe-area-inset-top,0px))',display:'flex',alignItems:'center',gap:'10px'}}>
@@ -2173,7 +2173,7 @@
                             <p style={{fontWeight:700,fontSize:'12px',color:'#1f2937',margin:'0 0 8px',flexShrink:0}}>Estado del pedido</p>
                             <div style={{flex:1,minHeight:0,position:'relative'}}>
                                 <div style={{height:'100%',overflowY:'auto',scrollbarWidth:'none',msOverflowStyle:'none'}}>
-                                    <div style={{paddingTop:'32px',paddingBottom:'16px'}}>
+                                    <div style={{paddingTop:'20px',paddingBottom:'16px'}}>
                                         {steps.map((step, index) => {
                                             const isCompleted = index <= currentIndex;
                                             const isLast = index === steps.length - 1;
