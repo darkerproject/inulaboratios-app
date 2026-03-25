@@ -2166,6 +2166,10 @@
                                 <i className="fas fa-map-marker-alt" style={{color:'#06b6d4',fontSize:'10px',marginTop:'2px',flexShrink:0}}></i>
                                 <p style={{fontSize:'11px',color:'#6b7280',margin:0}}>{trackingOrder.items[0]?.address?.address || 'Sin dirección'}, {trackingOrder.items[0]?.address?.district || ''}</p>
                             </div>
+                            <div style={{marginTop:'6px',paddingTop:'6px',borderTop:'1px solid #f3f4f6',display:'flex',alignItems:'flex-start',gap:'5px'}}>
+                                <i className="fas fa-comment-alt" style={{color:'#06b6d4',fontSize:'10px',marginTop:'2px',flexShrink:0}}></i>
+                                <p style={{fontSize:'11px',color:'#6b7280',margin:0}}>{trackingOrder.comment || 'Sin comentarios'}</p>
+                            </div>
                         </div>
 
                         {/* Estado del pedido — flex-1 con scroll y fades */}
