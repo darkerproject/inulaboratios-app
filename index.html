@@ -2134,11 +2134,11 @@
                 ];
                 const statusOrder = ['pending','confirmed','moto_en_camino','moto_arrived','sample_received','arrived_at_lab','processing','results_uploaded','completed'];
                 const currentIndex = statusOrder.indexOf(trackingOrder.status === 'pending' ? 'confirmed' : trackingOrder.status);
-                const navH = 'calc(64px + env(safe-area-inset-bottom, 0px))';
                 return (
-                    <div style={{position:'fixed', top:0, left:0, right:0, bottom:navH, background:'#f3f4f6', zIndex:9999, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+                    <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'#f3f4f6',zIndex:9999,display:'flex',flexDirection:'column'}}>
+
                         {/* Toolbar */}
-                        <div style={{flexShrink:0, background:'white', borderBottom:'1px solid #e5e7eb', padding:'12px 16px', paddingTop:'calc(12px + env(safe-area-inset-top,0px))', display:'flex', alignItems:'center', gap:'10px'}}>
+                        <div style={{flexShrink:0,background:'white',borderBottom:'1px solid #e5e7eb',padding:'12px 16px',paddingTop:'calc(12px + env(safe-area-inset-top,0px))',display:'flex',alignItems:'center',gap:'10px'}}>
                             <button onClick={() => setViewingOrderTracking(null)} style={{width:'34px',height:'34px',borderRadius:'50%',background:'#f3f4f6',border:'none',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',flexShrink:0}}>
                                 <i className="fas fa-arrow-left" style={{fontSize:'13px',color:'#4b5563'}}></i>
                             </button>
@@ -2149,8 +2149,8 @@
                         </div>
 
                         {/* Detalle del pedido — fijo */}
-                        <div style={{flexShrink:0, background:'white', margin:'10px 14px 0', borderRadius:'16px', padding:'12px', boxShadow:'0 1px 3px rgba(0,0,0,0.07)'}}>
-                            <p style={{fontWeight:700, fontSize:'12px', color:'#1f2937', margin:'0 0 8px'}}>Detalle del pedido</p>
+                        <div style={{flexShrink:0,background:'white',margin:'10px 14px 0',borderRadius:'16px',padding:'12px',boxShadow:'0 1px 3px rgba(0,0,0,0.07)'}}>
+                            <p style={{fontWeight:700,fontSize:'12px',color:'#1f2937',margin:'0 0 8px'}}>Detalle del pedido</p>
                             {trackingOrder.items.map((item, idx) => (
                                 <div key={idx} style={{display:'flex',alignItems:'center',gap:'10px',background:'#f9fafb',borderRadius:'12px',padding:'8px',marginBottom:'6px'}}>
                                     <div className={item.exam.bg} style={{width:'34px',height:'34px',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
@@ -2169,30 +2169,28 @@
                         </div>
 
                         {/* Estado del pedido — flex-1 con scroll y fades */}
-                        <div style={{flex:1, minHeight:0, margin:'10px 14px 14px', background:'white', borderRadius:'16px', boxShadow:'0 1px 3px rgba(0,0,0,0.07)', display:'flex', flexDirection:'column', padding:'12px', overflow:'hidden'}}>
-                            <p style={{fontWeight:700, fontSize:'12px', color:'#1f2937', margin:'0 0 6px', flexShrink:0}}>Estado del pedido</p>
-                            <div style={{flex:1, minHeight:0, position:'relative'}}>
-                                <div style={{height:'100%', overflowY:'auto', scrollbarWidth:'none', msOverflowStyle:'none'}}>
-                                    <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:'100%'}}>
+                        <div style={{flex:1,minHeight:0,margin:'10px 14px 0',background:'white',borderRadius:'16px',boxShadow:'0 1px 3px rgba(0,0,0,0.07)',display:'flex',flexDirection:'column',padding:'12px',overflow:'hidden'}}>
+                            <p style={{fontWeight:700,fontSize:'12px',color:'#1f2937',margin:'0 0 8px',flexShrink:0}}>Estado del pedido</p>
+                            <div style={{flex:1,minHeight:0,position:'relative'}}>
+                                <div style={{height:'100%',overflowY:'auto',scrollbarWidth:'none',msOverflowStyle:'none'}}>
+                                    <div style={{paddingTop:'4px',paddingBottom:'4px'}}>
                                         {steps.map((step, index) => {
                                             const isCompleted = index <= currentIndex;
                                             const isLast = index === steps.length - 1;
                                             return (
-                                                <div key={step.id} style={{display:'flex', gap:'10px'}}>
+                                                <div key={step.id} style={{display:'flex',gap:'10px',marginBottom:isLast?0:'16px'}}>
                                                     <div style={{display:'flex',flexDirection:'column',alignItems:'center',flexShrink:0}}>
-                                                        <div style={{width:'22px',height:'22px',borderRadius:'50%',background:isCompleted?'#06b6d4':'#e5e7eb',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                                                        <div style={{width:'24px',height:'24px',borderRadius:'50%',background:isCompleted?'#06b6d4':'#e5e7eb',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
                                                             {isCompleted
                                                                 ? <i className="fas fa-check" style={{fontSize:'9px',color:'white'}}></i>
                                                                 : <i className={`fas ${step.icon}`} style={{fontSize:'9px',color:'#9ca3af'}}></i>}
                                                         </div>
-                                                        {!isLast && <div style={{width:'2px',flex:1,minHeight:'12px',background:index<currentIndex?'#06b6d4':'#e5e7eb'}}></div>}
+                                                        {!isLast && <div style={{width:'2px',height:'100%',minHeight:'16px',background:index<currentIndex?'#06b6d4':'#e5e7eb',margin:'3px 0'}}></div>}
                                                     </div>
-                                                    <div style={{flex:1,display:'flex',justifyContent:'space-between',alignItems:'flex-start',paddingBottom:isLast?0:'10px'}}>
-                                                        <div>
-                                                            <p style={{fontSize:'12px',fontWeight:500,color:isCompleted?'#1f2937':'#9ca3af',margin:0,lineHeight:1.3}}>{step.label}</p>
-                                                            <p style={{fontSize:'10px',color:isCompleted?'#6b7280':'#d1d5db',margin:'1px 0 0',lineHeight:1.3}}>{step.subtitle}</p>
-                                                        </div>
-                                                        {isCompleted && step.date && <p style={{fontSize:'10px',color:'#06b6d4',whiteSpace:'nowrap',marginLeft:'8px',flexShrink:0}}>{formatDT(step.date)}</p>}
+                                                    <div style={{flex:1,paddingTop:'2px'}}>
+                                                        <p style={{fontSize:'13px',fontWeight:500,color:isCompleted?'#1f2937':'#9ca3af',margin:0,lineHeight:1.3}}>{step.label}</p>
+                                                        <p style={{fontSize:'11px',color:isCompleted?'#6b7280':'#d1d5db',margin:'2px 0 0',lineHeight:1.3}}>{step.subtitle}</p>
+                                                        {isCompleted && step.date && <p style={{fontSize:'10px',color:'#06b6d4',margin:'2px 0 0'}}>{formatDT(step.date)}</p>}
                                                     </div>
                                                 </div>
                                             );
@@ -2203,6 +2201,28 @@
                                 <div style={{position:'absolute',bottom:0,left:0,right:0,height:'28px',background:'linear-gradient(to top,white,transparent)',pointerEvents:'none'}}></div>
                             </div>
                         </div>
+
+                        {/* Nav bar — dentro del early return para que se muestre */}
+                        <div className="mob-bottom-nav" style={{position:'relative',zIndex:1}}>
+                            <div className="mob-bottom-nav-inner">
+                                <button className={`mob-nav-btn ${medicoView === 'inicio' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setMedicoView('inicio'); }}>
+                                    <i className="fas fa-home"></i><span>Inicio</span>
+                                </button>
+                                <button className={`mob-nav-btn ${medicoView === 'pedidos' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setMedicoView('pedidos'); }}>
+                                    <i className="fas fa-clipboard-list"></i><span>Pedidos</span>
+                                </button>
+                                <button className={`mob-nav-btn ${medicoView === 'mascotas' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setMedicoView('mascotas'); }}>
+                                    <i className="fas fa-paw"></i><span>Pacientes</span>
+                                </button>
+                                <button className={`mob-nav-btn ${medicoView === 'resultados' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setMedicoView('resultados'); }}>
+                                    <i className="fas fa-file-medical"></i><span>Resultados</span>
+                                </button>
+                                <button className={`mob-nav-btn ${medicoView === 'facturacion' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setMedicoView('facturacion'); }}>
+                                    <i className="fas fa-file-invoice-dollar"></i><span>Facturas</span>
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 );
             }
