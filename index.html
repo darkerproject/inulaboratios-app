@@ -2117,6 +2117,88 @@
                 );
             }
 
+            // Tracking móvil — early return para evitar el transform de mob-content
+            if (viewingOrderTracking && window.innerWidth < 768) {
+                const trackingOrder = (database.orders || []).find(o => o.id === viewingOrderTracking.id) || viewingOrderTracking;
+                const formatDT = (date) => { if (!date) return ''; const d = new Date(date); return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) + ' - ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }); };
+                const steps = [
+                    { id: 'pending', label: 'Pedido realizado', subtitle: 'Tu pedido ha sido registrado', icon: 'fa-clipboard-check', date: trackingOrder.date },
+                    { id: 'confirmed', label: 'Pedido confirmado', subtitle: 'El laboratorio confirmó tu pedido', icon: 'fa-check-circle', date: trackingOrder.confirmedAt },
+                    { id: 'moto_en_camino', label: 'Motorizado en camino', subtitle: 'El motorizado va hacia tu ubicación', icon: 'fa-motorcycle', date: trackingOrder.motoStartedAt },
+                    { id: 'moto_arrived', label: 'Motorizado llegó', subtitle: 'Por favor entrega la muestra', icon: 'fa-map-marker-alt', date: trackingOrder.motoArrivedAt },
+                    { id: 'sample_received', label: 'Muestra recogida', subtitle: 'Tu muestra va camino al laboratorio', icon: 'fa-vial', date: trackingOrder.sampleReceivedAt },
+                    { id: 'arrived_at_lab', label: 'En laboratorio', subtitle: 'La muestra llegó al laboratorio', icon: 'fa-flask', date: trackingOrder.arrivedAtLabAt },
+                    { id: 'processing', label: 'Procesando muestra', subtitle: 'Estamos analizando tu muestra', icon: 'fa-cog', date: trackingOrder.processingAt },
+                    { id: 'results_uploaded', label: 'Resultados listos', subtitle: 'Realiza el pago para ver los resultados', icon: 'fa-file-medical', date: trackingOrder.resultsUploadedAt },
+                    { id: 'completed', label: 'Entregado', subtitle: '¡Ya puedes ver tus resultados!', icon: 'fa-check-double', date: trackingOrder.completedAt },
+                ];
+                const statusOrder = ['pending','confirmed','moto_en_camino','moto_arrived','sample_received','arrived_at_lab','processing','results_uploaded','completed'];
+                const currentIndex = statusOrder.indexOf(trackingOrder.status === 'pending' ? 'confirmed' : trackingOrder.status);
+                return (
+                    <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:9999, display:'flex', flexDirection:'column'}}>
+                        <div style={{flexShrink:0, background:'white', borderBottom:'1px solid #e5e7eb', padding:'12px 16px', display:'flex', alignItems:'center', gap:'12px', paddingTop:'calc(12px + env(safe-area-inset-top, 0px))'}}>
+                            <button onClick={() => setViewingOrderTracking(null)} style={{width:'36px', height:'36px', borderRadius:'50%', background:'#f3f4f6', border:'none', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0}}>
+                                <i className="fas fa-arrow-left" style={{fontSize:'14px', color:'#4b5563'}}></i>
+                            </button>
+                            <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+                                <i className="fas fa-route" style={{color:'#06b6d4'}}></i>
+                                <span style={{color:'#0891b2', fontWeight:600, fontSize:'14px'}}>Tracking del Pedido</span>
+                            </div>
+                        </div>
+                        <div style={{flexShrink:0, background:'white', margin:'12px 16px 0', borderRadius:'16px', padding:'14px', boxShadow:'0 1px 4px rgba(0,0,0,0.08)'}}>
+                            <p style={{fontWeight:700, fontSize:'13px', color:'#1f2937', margin:'0 0 10px'}}>Detalle del pedido</p>
+                            {trackingOrder.items.map((item, idx) => (
+                                <div key={idx} style={{display:'flex', alignItems:'center', gap:'10px', padding:'8px', background:'#f9fafb', borderRadius:'12px', marginBottom:'6px'}}>
+                                    <div className={`${item.exam.bg}`} style={{width:'36px', height:'36px', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
+                                        <i className={`fas ${item.exam.icon} ${item.exam.color}`} style={{fontSize:'14px'}}></i>
+                                    </div>
+                                    <div style={{flex:1, minWidth:0}}>
+                                        <p style={{fontWeight:500, fontSize:'12px', color:'#1f2937', margin:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{item.exam.name}</p>
+                                        <p style={{fontSize:'11px', color:'#6b7280', margin:0}}>{item.pet.photo} {getPetFullName(item.pet)}</p>
+                                    </div>
+                                </div>
+                            ))}
+                            <div style={{marginTop:'8px', paddingTop:'8px', borderTop:'1px solid #f3f4f6', display:'flex', alignItems:'flex-start', gap:'6px'}}>
+                                <i className="fas fa-map-marker-alt" style={{color:'#06b6d4', fontSize:'11px', marginTop:'2px', flexShrink:0}}></i>
+                                <p style={{fontSize:'11px', color:'#6b7280', margin:0}}>{trackingOrder.items[0]?.address?.address || 'Sin dirección'}, {trackingOrder.items[0]?.address?.district || ''}</p>
+                            </div>
+                        </div>
+                        <div style={{flex:1, minHeight:0, margin:'12px 16px', marginBottom:'calc(16px + env(safe-area-inset-bottom, 0px))', background:'white', borderRadius:'16px', boxShadow:'0 1px 4px rgba(0,0,0,0.08)', display:'flex', flexDirection:'column', padding:'14px', overflow:'hidden'}}>
+                            <p style={{fontWeight:700, fontSize:'13px', color:'#1f2937', margin:'0 0 8px', flexShrink:0}}>Estado del pedido</p>
+                            <div style={{flex:1, minHeight:0, position:'relative'}}>
+                                <div style={{height:'100%', overflowY:'auto', scrollbarWidth:'none', msOverflowStyle:'none'}}>
+                                    <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:'100%'}}>
+                                        {steps.map((step, index) => {
+                                            const isCompleted = index <= currentIndex;
+                                            const isLast = index === steps.length - 1;
+                                            return (
+                                                <div key={step.id} style={{display:'flex', gap:'8px'}}>
+                                                    <div style={{display:'flex', flexDirection:'column', alignItems:'center', flexShrink:0}}>
+                                                        <div style={{width:'20px', height:'20px', borderRadius:'50%', background: isCompleted ? '#06b6d4' : '#e5e7eb', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
+                                                            {isCompleted ? <i className="fas fa-check" style={{fontSize:'8px', color:'white'}}></i> : <i className={`fas ${step.icon}`} style={{fontSize:'8px', color:'#9ca3af'}}></i>}
+                                                        </div>
+                                                        {!isLast && <div style={{width:'2px', flex:1, minHeight:'8px', background: index < currentIndex ? '#06b6d4' : '#e5e7eb'}}></div>}
+                                                    </div>
+                                                    <div style={{flex:1, paddingBottom: isLast ? 0 : '4px', display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+                                                        <div>
+                                                            <p style={{fontSize:'12px', fontWeight:500, color: isCompleted ? '#1f2937' : '#9ca3af', margin:0}}>{step.label}</p>
+                                                            <p style={{fontSize:'10px', color: isCompleted ? '#6b7280' : '#d1d5db', margin:0}}>{step.subtitle}</p>
+                                                        </div>
+                                                        {isCompleted && step.date && <p style={{fontSize:'10px', color:'#06b6d4', whiteSpace:'nowrap', marginLeft:'8px'}}>{formatDT(step.date)}</p>}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                                <div style={{position:'absolute', top:0, left:0, right:0, height:'32px', background:'linear-gradient(to bottom, white, transparent)', pointerEvents:'none'}}></div>
+                                <div style={{position:'absolute', bottom:0, left:0, right:0, height:'32px', background:'linear-gradient(to top, white, transparent)', pointerEvents:'none'}}></div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
             // Vista PDF médico — early return para evitar el transform de mob-content
             if (selectedExam && freshUser.type === 'medico' && window.innerWidth < 768) {
                 return (
