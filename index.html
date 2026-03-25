@@ -1350,7 +1350,7 @@
                                         <div className="flex items-center gap-2 mb-4"><div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center"><i className="fas fa-syringe text-emerald-600 text-sm"></i></div><h3 className="font-bold text-gray-800 text-lg">Para el caso de toma de muestra a domicilio</h3></div>
                                         <p className="text-sm text-gray-500 mb-3">Cuando necesitas que un profesional vaya a tu domicilio a tomar la muestra de tu mascota.</p>
                                     </div>
-                                    <div className="flex flex-col justify-between flex-1">
+                                    <div className="flex flex-col justify-between flex-1 min-h-0">
                                         {termsContent.tomaMuestra.map((item, i) => (
                                             <div key={i} className="flex gap-3"><span className="w-6 h-6 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i+1}</span><p className="text-sm text-gray-600 leading-relaxed text-justify" dangerouslySetInnerHTML={{__html: item}}></p></div>
                                         ))}
@@ -4453,7 +4453,7 @@
                                                 <div className="flex-1 p-4 overflow-hidden">
                                                     <div className="flex gap-6 h-full">
                                                         {/* Columna izquierda - Timeline */}
-                                                        <div className="w-1/2 bg-white rounded-2xl shadow-lg p-4 flex flex-col min-h-0">
+                                                        <div className="w-1/2 bg-white rounded-2xl shadow-lg p-4 flex flex-col h-full overflow-y-auto">
                                                             <h3 className="font-bold text-gray-800 mb-4">Estado del pedido</h3>
                                                             <div className="space-y-3">
                                                                 {trackingSteps.map((step, index) => {
@@ -4466,7 +4466,7 @@
                                                                                     {isCompleted ? <i className="fas fa-check text-xs"></i> : <i className={`fas ${step.icon} text-xs`}></i>}
                                                                                 </div>
                                                                                 {!isLast && (
-                                                                                    <div className={`w-0.5 flex-1 min-h-2 ${index < trackingCurrentIndex ? 'bg-cyan-500' : 'bg-gray-200'}`}></div>
+                                                                                    <div className={`w-0.5 flex-1 min-h-3 ${index < trackingCurrentIndex ? 'bg-cyan-500' : 'bg-gray-200'}`}></div>
                                                                                 )}
                                                                             </div>
                                                                             <div className="flex-1">
