@@ -4420,7 +4420,7 @@
                                             <p className="text-xs text-gray-500">Clínica</p>
                                         </div>
                                         <button 
-                                            onClick={() => setMedicoView('configuracion')}
+                                            onClick={() => { setViewingOrderTracking(null); setMedicoView('configuracion'); }}
                                             className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center text-gray-600 transition-colors"
                                         >
                                             <i className="fas fa-bars"></i>
