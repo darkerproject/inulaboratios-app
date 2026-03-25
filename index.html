@@ -2873,7 +2873,7 @@
                             )}
 
                             {/* ── Contenido scrolleable ── */}
-                            <div className="mob-content" style={viewingOrderTracking ? {overflow:'hidden', minHeight:'unset', height:'calc(100vh - 56px - 64px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))', padding:0} : medicoView === 'inicio' && !selectedExam && !viewingInvoice && !currentExamForPet && !showOrderSummary ? {overflow:'hidden', minHeight:'unset', height:'calc(100vh - 56px - 64px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))'} : {}}>
+                            <div className="mob-content" style={viewingOrderTracking ? {overflow:'hidden', minHeight:'unset', height:'calc(100vh - 56px - 64px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))', paddingTop:0, paddingBottom:0} : medicoView === 'inicio' && !selectedExam && !viewingInvoice && !currentExamForPet && !showOrderSummary ? {overflow:'hidden', minHeight:'unset', height:'calc(100vh - 56px - 64px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))'} : {}}>
                                 <div className={viewingOrderTracking ? "" : "max-w-4xl mx-auto px-4 py-5"}>
                             
                             {/* Mensaje de éxito */}
@@ -2907,7 +2907,7 @@
                                 const trackingCurrentIndex = trackingStatusOrder.indexOf(trackingOrder.status === 'pending' ? 'confirmed' : trackingOrder.status);
                                 
                                 return (
-                                    <div style={{height:'100%',background:'#f3f4f6',display:'flex',flexDirection:'column',overflow:'hidden'}}>
+                                    <div style={{height:'calc(100vh - 56px - 64px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))',background:'#f3f4f6',display:'flex',flexDirection:'column',overflow:'hidden'}}>
                                         <div style={{flexShrink:0,background:'white',borderBottom:'1px solid #e5e7eb',padding:'12px 16px',display:'flex',alignItems:'center',gap:'12px'}}>
                                             <button onClick={() => setViewingOrderTracking(null)} className="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
                                                 <i className="fas fa-arrow-left text-sm"></i>
@@ -5787,7 +5787,7 @@
                             </div>
                         </div>
                     ) : (
-                    <div className="app-content-dueno lg:ml-56" style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'hidden' : 'auto', height: viewingOrderTracking ? 'calc(100vh - 56px - env(safe-area-inset-top,0px))' : undefined}}>
+                    <div className="app-content-dueno lg:ml-56" style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'hidden' : 'auto'}}>
                         <div className="dueno-content-wrapper">
                         
                         {/* === Vista PDF Resultado (inline desktop) === */}
@@ -5894,7 +5894,7 @@
                             const statusOrder = ['pending','confirmed','moto_en_camino','moto_arrived','sample_received','arrived_at_lab','processing','results_uploaded','completed'];
                             const currentIndex = statusOrder.indexOf(order.status === 'pending' ? 'confirmed' : order.status);
                             return (
-                                <div style={{height:'100%', background:'#f3f4f6', display:'flex', flexDirection:'column', overflow:'hidden'}}>
+                                <div style={{height:'calc(100vh - 56px - 64px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))',background:'#f3f4f6',display:'flex',flexDirection:'column',overflow:'hidden'}}>
                                     {/* Toolbar fija */}
                                     <div style={{flexShrink:0, background:'white', borderBottom:'1px solid #e5e7eb', padding:'12px 16px', display:'flex', alignItems:'center', gap:'12px'}}>
                                         <button onClick={() => setViewingOrderTracking(null)} className="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
