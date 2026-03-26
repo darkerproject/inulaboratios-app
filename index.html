@@ -2328,6 +2328,10 @@
                         </div>
                         <span className="mob-header-title">{freshUser.name}</span>
                         <div className="mob-header-actions">
+                            <button onClick={() => cart.length > 0 && setShowOrderSummary(true)} className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${cart.length > 0 ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-300 cursor-default'}`}>
+                                <i className="fas fa-shopping-cart text-base"></i>
+                                {cart.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">{cart.length}</span>}
+                            </button>
                             {(countUnseenExams(petsOrPatients) + countPendingPayments()) > 0 && (
                                 <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
                                     {countUnseenExams(petsOrPatients) + countPendingPayments()}
@@ -5904,6 +5908,72 @@
                     <div className="app-content-dueno lg:ml-56" style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'hidden' : 'auto'}}>
                         <div className="dueno-content-wrapper">
                         
+                        {/* === Carrito / Resumen del Pedido (solo mobile dueño) === */}
+                        {showOrderSummary && !currentExamForPet && (
+                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', left:0, right:0, bottom:'calc(64px + env(safe-area-inset-bottom,0px))', display:'flex', flexDirection:'column', background:'#f3f4f6', zIndex:50}}>
+                                <div style={{background:'linear-gradient(135deg, #06b6d4, #0284c7)', boxShadow:'0 3px 12px rgba(6,182,212,0.35)', position:'relative', zIndex:2}}>
+                                    <div className="px-4 flex items-center gap-3" style={{minHeight:'56px', paddingTop:'12px', paddingBottom:'12px'}}>
+                                        <button onClick={() => setShowOrderSummary(false)} className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white flex-shrink-0">
+                                            <i className="fas fa-arrow-left text-sm"></i>
+                                        </button>
+                                        <h2 className="text-sm font-bold text-white flex-1">Resumen del Pedido</h2>
+                                        <span className="text-xs text-cyan-100">{cart.length} examen{cart.length !== 1 ? 'es' : ''}</span>
+                                    </div>
+                                </div>
+                                <div style={{flex:1, overflowY:'auto', padding:'12px 16px'}}>
+                                    {cart.map(item => (
+                                        <div key={item.exam.id} className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 mb-2 flex items-center gap-3">
+                                            <div className={`w-9 h-9 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                                <i className={`fas ${item.exam.icon} ${item.exam.color} text-sm`}></i>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-semibold text-gray-800 text-sm leading-tight truncate">{item.exam.name}</p>
+                                                <p className="text-xs text-gray-400 truncate mt-0.5">{item.pet.photo} {getPetFullName(item.pet)} · <i className="fas fa-map-marker-alt text-cyan-400 text-xs"></i> {item.address?.district}</p>
+                                            </div>
+                                            <div className="flex items-center gap-2.5 flex-shrink-0">
+                                                {item.exam.price && <span className="text-cyan-600 font-bold text-sm">S/ {item.exam.price}</span>}
+                                                <button onClick={() => removeFromCart(item.exam.id)} className="p-1 active:opacity-50">
+                                                    <i className="fas fa-trash-alt text-gray-300 text-sm"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {cart.length === 0 && (
+                                        <div className="text-center py-10 text-gray-400">
+                                            <i className="fas fa-shopping-cart text-3xl mb-2 block text-gray-300"></i>
+                                            <p className="text-sm">El carrito está vacío</p>
+                                        </div>
+                                    )}
+                                </div>
+                                <div style={{background:'white', boxShadow:'0 -4px 16px rgba(0,0,0,0.10)', borderTop:'1px solid #e5e7eb', position:'relative', zIndex:2}}>
+                                    <div className="px-4 pt-3 pb-3 space-y-2.5">
+                                        <div className="flex gap-2">
+                                            <button onClick={() => setInvoiceType('boleta')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-receipt mr-1.5"></i>Boleta</button>
+                                            <button onClick={() => setInvoiceType('factura')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'factura' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-file-invoice mr-1.5"></i>Factura</button>
+                                        </div>
+                                        <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none text-xs resize-none" rows="2" maxLength="500" />
+                                        {cart.some(i => i.exam.price) && (
+                                            <div className="flex items-center justify-between py-2 border-t border-gray-100">
+                                                <span className="text-sm text-gray-600 font-semibold">Total estimado</span>
+                                                <span className="text-base font-bold text-cyan-600">S/ {cart.reduce((sum, i) => sum + (parseFloat(i.exam.price) || 0), 0).toFixed(2)}</span>
+                                            </div>
+                                        )}
+                                        <div className="border-t border-gray-100 pt-2 pb-1">
+                                            <label className="flex items-start gap-2 cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                                                <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-cyan-500 cursor-pointer flex-shrink-0 mt-0.5" />
+                                                <span className="text-xs text-gray-500 leading-relaxed">
+                                                    He leído y acepto los <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }} className="text-cyan-600 font-semibold underline">términos y condiciones</button> de entrega y procesamiento de muestras.
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-2.5 rounded-xl font-semibold text-sm ${termsAccepted ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
+                                            <i className="fas fa-paper-plane mr-2"></i>Solicitar Pedido
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* === Vista PDF Resultado (inline desktop) === */}
                         {selectedExam && !viewingOrderTracking && (
                             <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
