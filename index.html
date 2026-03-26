@@ -2315,7 +2315,8 @@
             const petsOrPatients = freshUser.type === 'medico' ? (freshUser.patients || []) : (freshUser.pets || []);
             const entityName = freshUser.type === 'medico' ? 'paciente' : 'mascota';
             const filteredPets = petSearchTerm.trim() === '' ? petsOrPatients : petsOrPatients.filter(p => p.name.toLowerCase().includes(petSearchTerm.toLowerCase()));
-            const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); };
+            const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); };
+            const switchDuenoTab = (tab) => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setActiveTab(tab); };
             
             const renderDuenoHeader = () => (
                 <>
@@ -5908,72 +5909,6 @@
                     <div className="app-content-dueno lg:ml-56" style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'hidden' : 'auto'}}>
                         <div className="dueno-content-wrapper">
                         
-                        {/* === Carrito / Resumen del Pedido (solo mobile dueño) === */}
-                        {showOrderSummary && !currentExamForPet && (
-                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', left:0, right:0, bottom:'calc(64px + env(safe-area-inset-bottom,0px))', display:'flex', flexDirection:'column', background:'#f3f4f6', zIndex:50}}>
-                                <div style={{background:'linear-gradient(135deg, #06b6d4, #0284c7)', boxShadow:'0 3px 12px rgba(6,182,212,0.35)', position:'relative', zIndex:2}}>
-                                    <div className="px-4 flex items-center gap-3" style={{minHeight:'56px', paddingTop:'12px', paddingBottom:'12px'}}>
-                                        <button onClick={() => setShowOrderSummary(false)} className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white flex-shrink-0">
-                                            <i className="fas fa-arrow-left text-sm"></i>
-                                        </button>
-                                        <h2 className="text-sm font-bold text-white flex-1">Resumen del Pedido</h2>
-                                        <span className="text-xs text-cyan-100">{cart.length} examen{cart.length !== 1 ? 'es' : ''}</span>
-                                    </div>
-                                </div>
-                                <div style={{flex:1, overflowY:'auto', padding:'12px 16px'}}>
-                                    {cart.map(item => (
-                                        <div key={item.exam.id} className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 mb-2 flex items-center gap-3">
-                                            <div className={`w-9 h-9 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                                <i className={`fas ${item.exam.icon} ${item.exam.color} text-sm`}></i>
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-semibold text-gray-800 text-sm leading-tight truncate">{item.exam.name}</p>
-                                                <p className="text-xs text-gray-400 truncate mt-0.5">{item.pet.photo} {getPetFullName(item.pet)} · <i className="fas fa-map-marker-alt text-cyan-400 text-xs"></i> {item.address?.district}</p>
-                                            </div>
-                                            <div className="flex items-center gap-2.5 flex-shrink-0">
-                                                {item.exam.price && <span className="text-cyan-600 font-bold text-sm">S/ {item.exam.price}</span>}
-                                                <button onClick={() => removeFromCart(item.exam.id)} className="p-1 active:opacity-50">
-                                                    <i className="fas fa-trash-alt text-gray-300 text-sm"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {cart.length === 0 && (
-                                        <div className="text-center py-10 text-gray-400">
-                                            <i className="fas fa-shopping-cart text-3xl mb-2 block text-gray-300"></i>
-                                            <p className="text-sm">El carrito está vacío</p>
-                                        </div>
-                                    )}
-                                </div>
-                                <div style={{background:'white', boxShadow:'0 -4px 16px rgba(0,0,0,0.10)', borderTop:'1px solid #e5e7eb', position:'relative', zIndex:2}}>
-                                    <div className="px-4 pt-3 pb-3 space-y-2.5">
-                                        <div className="flex gap-2">
-                                            <button onClick={() => setInvoiceType('boleta')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-receipt mr-1.5"></i>Boleta</button>
-                                            <button onClick={() => setInvoiceType('factura')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'factura' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-file-invoice mr-1.5"></i>Factura</button>
-                                        </div>
-                                        <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none text-xs resize-none" rows="2" maxLength="500" />
-                                        {cart.some(i => i.exam.price) && (
-                                            <div className="flex items-center justify-between py-2 border-t border-gray-100">
-                                                <span className="text-sm text-gray-600 font-semibold">Total estimado</span>
-                                                <span className="text-base font-bold text-cyan-600">S/ {cart.reduce((sum, i) => sum + (parseFloat(i.exam.price) || 0), 0).toFixed(2)}</span>
-                                            </div>
-                                        )}
-                                        <div className="border-t border-gray-100 pt-2 pb-1">
-                                            <label className="flex items-start gap-2 cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                                                <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-cyan-500 cursor-pointer flex-shrink-0 mt-0.5" />
-                                                <span className="text-xs text-gray-500 leading-relaxed">
-                                                    He leído y acepto los <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }} className="text-cyan-600 font-semibold underline">términos y condiciones</button> de entrega y procesamiento de muestras.
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-2.5 rounded-xl font-semibold text-sm ${termsAccepted ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
-                                            <i className="fas fa-paper-plane mr-2"></i>Solicitar Pedido
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
                         {/* === Vista PDF Resultado (inline desktop) === */}
                         {selectedExam && !viewingOrderTracking && (
                             <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
@@ -6624,7 +6559,7 @@
                             )}
                             
                             {cart.length > 0 && <div className="fixed bottom-5 right-4 bg-slate-800 text-white pl-4 pr-3 py-3 rounded-2xl shadow-2xl"><div className="flex items-center gap-4"><div className="w-9 h-9 bg-emerald-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">{cart.length}</div><div className="min-w-0"><p className="font-medium text-sm">Pedido listo</p><p className="text-xs text-gray-400 truncate max-w-[100px]">{cart.map(c => getPetFullName(c.pet)).join(', ')}</p></div><button onClick={() => setShowOrderSummary(true)} className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2.5 rounded-xl font-semibold text-sm whitespace-nowrap flex-shrink-0 ml-2">Solicitar</button></div></div>}
-                            {showOrderSummary && <div className="modal-overlay flex items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget) setShowOrderSummary(false); }}><div className="bg-white rounded-3xl w-full max-w-3xl shadow-2xl flex flex-col" style={{height: '680px'}}><div className="px-6 py-4 border-b flex items-center justify-between flex-shrink-0"><h2 className="text-xl font-bold text-gray-800"><i className="fas fa-clipboard-list text-cyan-500 mr-2"></i>Resumen del Pedido</h2><button onClick={() => setShowOrderSummary(false)} className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors"><i className="fas fa-times"></i></button></div><div className="flex-1 flex flex-col lg:flex-row min-h-0"><div className="lg:w-1/2 p-6 lg:border-r overflow-y-auto"><p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3"><i className="fas fa-vials text-cyan-500 mr-2"></i>Exámenes ({cart.length})</p><div className="space-y-3">{cart.map(item => (<div key={item.exam.id} className="bg-gray-50 rounded-xl p-4"><div className="flex items-start justify-between mb-2"><div className="flex items-center gap-3 flex-1 min-w-0"><div className={`w-10 h-10 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}><i className={`fas ${item.exam.icon} ${item.exam.color}`}></i></div><div className="min-w-0"><span className="font-medium text-gray-800 text-sm">{item.exam.name}</span>{item.exam.subtitle && <p className="text-xs text-gray-500 truncate">{item.exam.subtitle}</p>}</div></div><div className="flex items-center gap-3 flex-shrink-0 ml-3">{item.exam.price && <span className="text-cyan-600 font-bold text-sm whitespace-nowrap">S/ {item.exam.price}</span>}<button onClick={() => removeFromCart(item.exam.id)} className="text-red-400 hover:text-red-600"><i className="fas fa-trash text-sm"></i></button></div></div><div className="border-t pt-2 mt-2 space-y-1.5"><div className="flex items-center gap-2"><span className="text-lg">{item.pet.photo}</span><span className="text-sm text-gray-600">{getPetFullName(item.pet)}</span></div><div className="flex items-start gap-2 text-xs text-gray-500"><i className="fas fa-map-marker-alt mt-0.5 text-cyan-500"></i><span>{item.address?.name}: {item.address?.address}, {item.address?.district}</span></div>{item.tomaMuestra && <div className="flex items-center gap-2 text-xs"><i className="fas fa-syringe text-emerald-500"></i><span className="text-emerald-600 font-medium">Toma de muestra a domicilio {(() => { const p = getTomaMuestraPrice(item.address?.district, examTotal); return p !== null ? `(+S/ ${p})` : ''; })()}</span></div>}</div></div>))}</div></div><div className="lg:w-1/2 p-6"><p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3"><i className="fas fa-cog text-gray-400 mr-2"></i>Detalles</p><div className="bg-gray-50 rounded-xl p-4 mb-4"><p className="text-sm font-medium text-gray-700 mb-3"><i className="fas fa-file-invoice-dollar text-amber-600 mr-2"></i>Tipo de comprobante</p><div className="grid grid-cols-2 gap-2"><button onClick={() => setInvoiceType('boleta')} className={`py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:border-cyan-300'}`}><i className="fas fa-receipt mr-1.5"></i>Boleta</button><button onClick={() => setInvoiceType('factura')} className={`py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${invoiceType === 'factura' ? 'bg-amber-500 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:border-amber-300'}`}><i className="fas fa-file-invoice mr-1.5"></i>Factura</button></div></div><div className="bg-gray-50 rounded-xl p-4 mb-4"><p className="text-sm font-medium text-gray-700 mb-3"><i className="fas fa-comment-alt text-cyan-500 mr-2"></i>Comentarios</p><textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Ej: Recoger muestra después de las 10am, tocar timbre 2 veces..." className="w-full px-3 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none text-sm resize-none" rows="3" maxLength="500" /><p className="text-xs text-gray-400 mt-1 text-right">{orderComment.length}/500</p></div>{renderTermsCheckbox()}<button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-3.5 rounded-xl font-semibold transition-all ${termsAccepted ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}><i className="fas fa-paper-plane mr-2"></i>Solicitar Pedido</button></div></div></div></div>}
+                            {showOrderSummary && <div className="hidden lg:flex modal-overlay items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget) setShowOrderSummary(false); }}><div className="bg-white rounded-3xl w-full max-w-3xl shadow-2xl flex flex-col" style={{height: '680px'}}><div className="px-6 py-4 border-b flex items-center justify-between flex-shrink-0"><h2 className="text-xl font-bold text-gray-800"><i className="fas fa-clipboard-list text-cyan-500 mr-2"></i>Resumen del Pedido</h2><button onClick={() => setShowOrderSummary(false)} className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors"><i className="fas fa-times"></i></button></div><div className="flex-1 flex flex-col lg:flex-row min-h-0"><div className="lg:w-1/2 p-6 lg:border-r overflow-y-auto"><p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3"><i className="fas fa-vials text-cyan-500 mr-2"></i>Exámenes ({cart.length})</p><div className="space-y-3">{cart.map(item => (<div key={item.exam.id} className="bg-gray-50 rounded-xl p-4"><div className="flex items-start justify-between mb-2"><div className="flex items-center gap-3 flex-1 min-w-0"><div className={`w-10 h-10 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}><i className={`fas ${item.exam.icon} ${item.exam.color}`}></i></div><div className="min-w-0"><span className="font-medium text-gray-800 text-sm">{item.exam.name}</span>{item.exam.subtitle && <p className="text-xs text-gray-500 truncate">{item.exam.subtitle}</p>}</div></div><div className="flex items-center gap-3 flex-shrink-0 ml-3">{item.exam.price && <span className="text-cyan-600 font-bold text-sm whitespace-nowrap">S/ {item.exam.price}</span>}<button onClick={() => removeFromCart(item.exam.id)} className="text-red-400 hover:text-red-600"><i className="fas fa-trash text-sm"></i></button></div></div><div className="border-t pt-2 mt-2 space-y-1.5"><div className="flex items-center gap-2"><span className="text-lg">{item.pet.photo}</span><span className="text-sm text-gray-600">{getPetFullName(item.pet)}</span></div><div className="flex items-start gap-2 text-xs text-gray-500"><i className="fas fa-map-marker-alt mt-0.5 text-cyan-500"></i><span>{item.address?.name}: {item.address?.address}, {item.address?.district}</span></div>{item.tomaMuestra && <div className="flex items-center gap-2 text-xs"><i className="fas fa-syringe text-emerald-500"></i><span className="text-emerald-600 font-medium">Toma de muestra a domicilio {(() => { const p = getTomaMuestraPrice(item.address?.district, examTotal); return p !== null ? `(+S/ ${p})` : ''; })()}</span></div>}</div></div>))}</div></div><div className="lg:w-1/2 p-6"><p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3"><i className="fas fa-cog text-gray-400 mr-2"></i>Detalles</p><div className="bg-gray-50 rounded-xl p-4 mb-4"><p className="text-sm font-medium text-gray-700 mb-3"><i className="fas fa-file-invoice-dollar text-amber-600 mr-2"></i>Tipo de comprobante</p><div className="grid grid-cols-2 gap-2"><button onClick={() => setInvoiceType('boleta')} className={`py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:border-cyan-300'}`}><i className="fas fa-receipt mr-1.5"></i>Boleta</button><button onClick={() => setInvoiceType('factura')} className={`py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${invoiceType === 'factura' ? 'bg-amber-500 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:border-amber-300'}`}><i className="fas fa-file-invoice mr-1.5"></i>Factura</button></div></div><div className="bg-gray-50 rounded-xl p-4 mb-4"><p className="text-sm font-medium text-gray-700 mb-3"><i className="fas fa-comment-alt text-cyan-500 mr-2"></i>Comentarios</p><textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Ej: Recoger muestra después de las 10am, tocar timbre 2 veces..." className="w-full px-3 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none text-sm resize-none" rows="3" maxLength="500" /><p className="text-xs text-gray-400 mt-1 text-right">{orderComment.length}/500</p></div>{renderTermsCheckbox()}<button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-3.5 rounded-xl font-semibold transition-all ${termsAccepted ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}><i className="fas fa-paper-plane mr-2"></i>Solicitar Pedido</button></div></div></div></div>}
                         </div>)}
                         {activeTab === 'resultados' && (<div className="dueno-normal-content">
                             <div className="flex items-center gap-2 mb-4">
@@ -6888,16 +6823,82 @@
                     </div>
                     )}
 
+                    {/* ── Carrito / Resumen del Pedido (solo mobile dueño) ── */}
+                    {showOrderSummary && !currentExamForPet && (
+                        <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom,0px))', display:'flex', flexDirection:'column', background:'#f3f4f6', zIndex:9998}}>
+                            <div style={{background:'linear-gradient(135deg, #06b6d4, #0284c7)', boxShadow:'0 3px 12px rgba(6,182,212,0.35)', position:'relative', zIndex:2}}>
+                                <div className="px-4 flex items-center gap-3" style={{minHeight:'56px', paddingTop:'12px', paddingBottom:'12px'}}>
+                                    <button onClick={() => setShowOrderSummary(false)} className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white flex-shrink-0">
+                                        <i className="fas fa-arrow-left text-sm"></i>
+                                    </button>
+                                    <h2 className="text-sm font-bold text-white flex-1">Resumen del Pedido</h2>
+                                    <span className="text-xs text-cyan-100">{cart.length} examen{cart.length !== 1 ? 'es' : ''}</span>
+                                </div>
+                            </div>
+                            <div style={{flex:1, overflowY:'auto', padding:'12px 16px'}}>
+                                {cart.map(item => (
+                                    <div key={item.exam.id} className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 mb-2 flex items-center gap-3">
+                                        <div className={`w-9 h-9 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                            <i className={`fas ${item.exam.icon} ${item.exam.color} text-sm`}></i>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-semibold text-gray-800 text-sm leading-tight truncate">{item.exam.name}</p>
+                                            <p className="text-xs text-gray-400 truncate mt-0.5">{item.pet.photo} {getPetFullName(item.pet)} · <i className="fas fa-map-marker-alt text-cyan-400 text-xs"></i> {item.address?.district}</p>
+                                        </div>
+                                        <div className="flex items-center gap-2.5 flex-shrink-0">
+                                            {item.exam.price && <span className="text-cyan-600 font-bold text-sm">S/ {item.exam.price}</span>}
+                                            <button onClick={() => removeFromCart(item.exam.id)} className="p-1 active:opacity-50">
+                                                <i className="fas fa-trash-alt text-gray-300 text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                                {cart.length === 0 && (
+                                    <div className="text-center py-10 text-gray-400">
+                                        <i className="fas fa-shopping-cart text-3xl mb-2 block text-gray-300"></i>
+                                        <p className="text-sm">El carrito está vacío</p>
+                                    </div>
+                                )}
+                            </div>
+                            <div style={{background:'white', boxShadow:'0 -4px 16px rgba(0,0,0,0.10)', borderTop:'1px solid #e5e7eb', position:'relative', zIndex:2}}>
+                                <div className="px-4 pt-3 pb-3 space-y-2.5">
+                                    <div className="flex gap-2">
+                                        <button onClick={() => setInvoiceType('boleta')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-receipt mr-1.5"></i>Boleta</button>
+                                        <button onClick={() => setInvoiceType('factura')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'factura' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-file-invoice mr-1.5"></i>Factura</button>
+                                    </div>
+                                    <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none text-xs resize-none" rows="2" maxLength="500" />
+                                    {cart.some(i => i.exam.price) && (
+                                        <div className="flex items-center justify-between py-2 border-t border-gray-100">
+                                            <span className="text-sm text-gray-600 font-semibold">Total estimado</span>
+                                            <span className="text-base font-bold text-cyan-600">S/ {cart.reduce((sum, i) => sum + (parseFloat(i.exam.price) || 0), 0).toFixed(2)}</span>
+                                        </div>
+                                    )}
+                                    <div className="border-t border-gray-100 pt-2 pb-1">
+                                        <label className="flex items-start gap-2 cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                                            <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-cyan-500 cursor-pointer flex-shrink-0 mt-0.5" />
+                                            <span className="text-xs text-gray-500 leading-relaxed">
+                                                He leído y acepto los <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }} className="text-cyan-600 font-semibold underline">términos y condiciones</button> de entrega y procesamiento de muestras.
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-2.5 rounded-xl font-semibold text-sm ${termsAccepted ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
+                                        <i className="fas fa-paper-plane mr-2"></i>Solicitar Pedido
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* ── Bottom Navigation Bar (Dueño) - Mobile only ── */}
                     <div className="mob-bottom-nav lg:hidden">
                         <div className="mob-bottom-nav-inner">
                             <button className={`mob-nav-btn ${activeTab === 'pedidos' && duenoView !== 'config' ? 'active' : ''}`}
-                                onClick={() => { resetDuenoState(); setActiveTab('pedidos'); }}>
+                                onClick={() => switchDuenoTab('pedidos')}>
                                 <i className="fas fa-clipboard-list"></i>
                                 <span>Pedidos</span>
                             </button>
                             <button className={`mob-nav-btn ${activeTab === 'resultados' && duenoView !== 'config' ? 'active' : ''}`}
-                                onClick={() => { resetDuenoState(); setActiveTab('resultados'); }}>
+                                onClick={() => switchDuenoTab('resultados')}>
                                 <i className="fas fa-file-medical"></i>
                                 <span>Resultados</span>
                                 {(countUnseenExams(petsOrPatients) + countPendingPayments()) > 0 && (
@@ -6905,7 +6906,7 @@
                                 )}
                             </button>
                             <button className={`mob-nav-btn ${activeTab === 'facturacion' ? 'active' : ''}`}
-                                onClick={() => { resetDuenoState(); setActiveTab('facturacion'); }}>
+                                onClick={() => switchDuenoTab('facturacion')}>
                                 <i className="fas fa-file-invoice-dollar"></i>
                                 <span>Facturación</span>
                             </button>
