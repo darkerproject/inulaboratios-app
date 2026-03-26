@@ -6465,9 +6465,7 @@
                                 const usedInvIds = new Set();
                                 userOrders.forEach(order => {
                                     allPendingItems.push({ type: 'tracking', order });
-                                    if (order.status === 'results_uploaded') {
-                                        allPendingItems.push({ type: 'comprobante', order });
-                                    }
+                                    allPendingItems.push({ type: 'comprobante', order });
                                     const inv = pendingInvoices.find(o => o.id === order.id);
                                     if (inv) { allPendingItems.push({ type: 'invoice', order: inv }); usedInvIds.add(inv.id); }
                                 });
