@@ -409,7 +409,7 @@
             .mob-content .rounded-xl, .app-content-dueno .rounded-xl { border-radius: 0.65rem !important; }
         }
             .dueno-cart-comment, .dueno-cart-comment::placeholder {
-                font-size: 8px !important;
+                font-size: 10px !important;
             }
             .mob-nav-badge {
                 position: absolute;
@@ -6866,8 +6866,8 @@
                             <div style={{background:'white', boxShadow:'0 -4px 16px rgba(0,0,0,0.10)', borderTop:'1px solid #e5e7eb', position:'relative', zIndex:2}}>
                                 <div className="px-4 pt-3 pb-6 space-y-2.5">
                                     <div className="flex gap-2">
-                                        <button onClick={() => setInvoiceType('boleta')} className={`flex-1 py-1.5 rounded-lg text-xs font-medium ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-receipt mr-1"></i>Boleta</button>
-                                        <button onClick={() => setInvoiceType('factura')} className={`flex-1 py-1.5 rounded-lg text-xs font-medium ${invoiceType === 'factura' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-file-invoice mr-1"></i>Factura</button>
+                                        <button onClick={() => setInvoiceType('boleta')} className={`flex-1 py-2 rounded-lg text-xs font-medium ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-receipt mr-1"></i>Boleta</button>
+                                        <button onClick={() => setInvoiceType('factura')} className={`flex-1 py-2 rounded-lg text-xs font-medium ${invoiceType === 'factura' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-file-invoice mr-1"></i>Factura</button>
                                     </div>
                                     <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none resize-none dueno-cart-comment" rows="1" maxLength="500" />
                                     {cart.some(i => i.exam.price) && (
@@ -6884,7 +6884,7 @@
                                             </span>
                                         </label>
                                     </div>
-                                    <button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-2 rounded-xl font-semibold text-xs ${termsAccepted ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
+                                    <button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-2.5 rounded-xl font-semibold text-xs ${termsAccepted ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
                                         <i className="fas fa-paper-plane mr-1.5"></i>Solicitar Pedido
                                     </button>
                                 </div>
