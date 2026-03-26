@@ -1285,6 +1285,11 @@
             const [examFilterDay, setExamFilterDay] = useState('');
             const [examFilterMonth, setExamFilterMonth] = useState('');
             const [examFilterYear, setExamFilterYear] = useState('');
+            const [facSearchTerm, setFacSearchTerm] = useState('');
+            const [facFilterDay, setFacFilterDay] = useState('');
+            const [facFilterMonth, setFacFilterMonth] = useState('');
+            const [facFilterYear, setFacFilterYear] = useState('');
+            const [addressSearchTerm, setAddressSearchTerm] = useState('');
             const [menuOpen, setMenuOpen] = useState(false);
             const [duenoMenuOpen, setDuenoMenuOpen] = useState(false);
             const [duenoView, setDuenoView] = useState('main'); // 'main' o 'config'
@@ -2315,7 +2320,7 @@
             const petsOrPatients = freshUser.type === 'medico' ? (freshUser.patients || []) : (freshUser.pets || []);
             const entityName = freshUser.type === 'medico' ? 'paciente' : 'mascota';
             const filteredPets = petSearchTerm.trim() === '' ? petsOrPatients : petsOrPatients.filter(p => p.name.toLowerCase().includes(petSearchTerm.toLowerCase()));
-            const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); };
+            const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setAddressSearchTerm(''); setFacSearchTerm(''); setFacFilterDay(''); setFacFilterMonth(''); setFacFilterYear(''); setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); };
             
             const renderDuenoHeader = () => (
                 <>
@@ -2328,6 +2333,10 @@
                         </div>
                         <span className="mob-header-title">{freshUser.name}</span>
                         <div className="mob-header-actions">
+                            <button onClick={() => cart.length > 0 && setShowOrderSummary(true)} className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${cart.length > 0 ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-300 cursor-default'}`}>
+                                <i className="fas fa-shopping-cart text-base"></i>
+                                {cart.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">{cart.length}</span>}
+                            </button>
                             {(countUnseenExams(petsOrPatients) + countPendingPayments()) > 0 && (
                                 <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
                                     {countUnseenExams(petsOrPatients) + countPendingPayments()}
@@ -2892,6 +2901,31 @@
                             if (examFilterDay && day !== examFilterDay) return false;
                             if (examFilterMonth && month !== examFilterMonth) return false;
                             if (examFilterYear && year !== examFilterYear) return false;
+                            return true;
+                        });
+                    }
+                    return filtered;
+                };
+                
+                // Filtrar facturas/boletas según filtros
+                const filterInvoices = (invoices) => {
+                    let filtered = [...invoices];
+                    if (facSearchTerm) {
+                        filtered = filtered.filter(inv => {
+                            const type = inv.documentType === 'boleta' ? 'boleta' : 'factura';
+                            const petNames = (inv.items || []).map(it => it.pet?.name || '').join(' ').toLowerCase();
+                            return type.includes(facSearchTerm.toLowerCase()) || petNames.includes(facSearchTerm.toLowerCase());
+                        });
+                    }
+                    if (facFilterDay || facFilterMonth || facFilterYear) {
+                        filtered = filtered.filter(inv => {
+                            const d = new Date(inv.createdAt || inv.date);
+                            const day = String(d.getDate()).padStart(2, '0');
+                            const month = String(d.getMonth() + 1).padStart(2, '0');
+                            const year = String(d.getFullYear());
+                            if (facFilterDay && day !== facFilterDay) return false;
+                            if (facFilterMonth && month !== facFilterMonth) return false;
+                            if (facFilterYear && year !== facFilterYear) return false;
                             return true;
                         });
                     }
@@ -5904,6 +5938,72 @@
                     <div className="app-content-dueno lg:ml-56" style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'hidden' : 'auto'}}>
                         <div className="dueno-content-wrapper">
                         
+                        {/* === Carrito / Resumen del Pedido (mobile dueño) === */}
+                        {showOrderSummary && !currentExamForPet && (
+                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', left:0, right:0, bottom:'calc(64px + env(safe-area-inset-bottom,0px))', display:'flex', flexDirection:'column', background:'#f3f4f6', zIndex:50}}>
+                                <div style={{background:'linear-gradient(135deg, #06b6d4, #0284c7)', boxShadow:'0 3px 12px rgba(6,182,212,0.35)', position:'relative', zIndex:2}}>
+                                    <div className="px-4 flex items-center gap-3" style={{minHeight:'56px', paddingTop:'12px', paddingBottom:'12px'}}>
+                                        <button onClick={() => setShowOrderSummary(false)} className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white flex-shrink-0">
+                                            <i className="fas fa-arrow-left text-sm"></i>
+                                        </button>
+                                        <h2 className="text-sm font-bold text-white flex-1">Resumen del Pedido</h2>
+                                        <span className="text-xs text-cyan-100">{cart.length} examen{cart.length !== 1 ? 'es' : ''}</span>
+                                    </div>
+                                </div>
+                                <div style={{flex:1, overflowY:'auto', padding:'12px 16px'}}>
+                                    {cart.map(item => (
+                                        <div key={item.exam.id} className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 mb-2 flex items-center gap-3">
+                                            <div className={`w-9 h-9 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                                <i className={`fas ${item.exam.icon} ${item.exam.color} text-sm`}></i>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-semibold text-gray-800 text-sm leading-tight truncate">{item.exam.name}</p>
+                                                <p className="text-xs text-gray-400 truncate mt-0.5">{item.pet.photo} {getPetFullName(item.pet)} · <i className="fas fa-map-marker-alt text-cyan-400 text-xs"></i> {item.address?.district}</p>
+                                            </div>
+                                            <div className="flex items-center gap-2.5 flex-shrink-0">
+                                                {item.exam.price && <span className="text-cyan-600 font-bold text-sm">S/ {item.exam.price}</span>}
+                                                <button onClick={() => removeFromCart(item.exam.id)} className="p-1 active:opacity-50">
+                                                    <i className="fas fa-trash-alt text-gray-300 text-sm"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {cart.length === 0 && (
+                                        <div className="text-center py-10 text-gray-400">
+                                            <i className="fas fa-shopping-cart text-3xl mb-2 block text-gray-300"></i>
+                                            <p className="text-sm">El carrito está vacío</p>
+                                        </div>
+                                    )}
+                                </div>
+                                <div style={{background:'white', boxShadow:'0 -4px 16px rgba(0,0,0,0.10)', borderTop:'1px solid #e5e7eb', position:'relative', zIndex:2}}>
+                                    <div className="px-4 pt-3 pb-3 space-y-2.5">
+                                        <div className="flex gap-2">
+                                            <button onClick={() => setInvoiceType('boleta')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-receipt mr-1.5"></i>Boleta</button>
+                                            <button onClick={() => setInvoiceType('factura')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'factura' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-file-invoice mr-1.5"></i>Factura</button>
+                                        </div>
+                                        <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none text-xs resize-none" rows="2" maxLength="500" />
+                                        {cart.some(i => i.exam.price) && (
+                                            <div className="flex items-center justify-between py-2 border-t border-gray-100">
+                                                <span className="text-sm text-gray-600 font-semibold">Total estimado</span>
+                                                <span className="text-base font-bold text-cyan-600">S/ {cart.reduce((sum, i) => sum + (parseFloat(i.exam.price) || 0), 0).toFixed(2)}</span>
+                                            </div>
+                                        )}
+                                        <div className="border-t border-gray-100 pt-2 pb-1">
+                                            <label className="flex items-start gap-2 cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                                                <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-cyan-500 cursor-pointer flex-shrink-0 mt-0.5" />
+                                                <span className="text-xs text-gray-500 leading-relaxed">
+                                                    He leído y acepto los <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }} className="text-cyan-600 font-semibold underline">términos y condiciones</button> de entrega y procesamiento de muestras.
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-2.5 rounded-xl font-semibold text-sm ${termsAccepted ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
+                                            <i className="fas fa-paper-plane mr-2"></i>Solicitar Pedido
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
                         {/* === Vista PDF Resultado (inline desktop) === */}
                         {selectedExam && !viewingOrderTracking && (
                             <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
@@ -6152,65 +6252,66 @@
                                 {/* Sección 1: Header fijo con info de mascota */}
                                 <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300">
                                     {/* Fila 1: Info de la mascota */}
-                                    <div className="p-4 border-b border-gray-200">
-                                        <div className="flex items-center gap-4">
-                                            <button onClick={() => setSelectedPet(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
-                                                <i className="fas fa-arrow-left"></i>
+                                    <div className="p-3 lg:p-4 border-b border-gray-200">
+                                        <div className="flex items-center gap-3 lg:gap-4">
+                                            <button onClick={() => setSelectedPet(null)} className="w-8 h-8 lg:w-10 lg:h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm flex-shrink-0">
+                                                <i className="fas fa-arrow-left text-sm"></i>
                                             </button>
-                                            <span className="text-4xl">{currentPet.photo}</span>
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-3">
-                                                    <h1 className="text-xl font-bold text-gray-800">{getPetFullName(currentPet)}</h1>
-                                                    <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">{currentPet.exams.length} exámenes</span>
+                                            <span className="text-3xl lg:text-4xl">{currentPet.photo}</span>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 lg:gap-3">
+                                                    <h1 className="text-base lg:text-xl font-bold text-gray-800 truncate">{getPetFullName(currentPet)}</h1>
+                                                    <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0">{currentPet.exams.length} exámenes</span>
                                                 </div>
-                                                <div className="flex items-center gap-4 mt-1">
-                                                    <span className="text-sm text-gray-600"><i className="fas fa-dog text-cyan-500 mr-1"></i>{currentPet.breed}</span>
-                                                    <span className="text-sm text-gray-600"><i className="fas fa-birthday-cake text-cyan-500 mr-1"></i>{formatAge(currentPet)}</span>
-                                                    <span className="text-sm text-gray-600"><i className="fas fa-venus-mars text-cyan-500 mr-1"></i>{currentPet.sex}</span>
+                                                <div className="flex items-center gap-3 lg:gap-4 mt-1">
+                                                    <span className="text-xs lg:text-sm text-gray-600"><i className="fas fa-dog text-cyan-500 mr-1"></i>{currentPet.breed}</span>
+                                                    <span className="text-xs lg:text-sm text-gray-600"><i className="fas fa-birthday-cake text-cyan-500 mr-1"></i>{formatAge(currentPet)}</span>
+                                                    <span className="text-xs lg:text-sm text-gray-600"><i className="fas fa-venus-mars text-cyan-500 mr-1"></i>{currentPet.sex}</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    {/* Fila 2: Buscador y filtros */}
-                                    <div className="p-4 flex items-center gap-3">
-                                        <div className="relative flex-1">
-                                            <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                    {/* Fila 2: Buscador */}
+                                    <div className="px-3 pt-2 pb-1 lg:px-4 lg:pt-3 lg:pb-0">
+                                        <div className="relative">
+                                            <i className="fas fa-search absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                                             <input type="text" value={examSearchTerm} onChange={(e) => setExamSearchTerm(e.target.value)} 
                                                 placeholder="Buscar examen..." 
-                                                className="w-full h-10 pl-11 pr-10 rounded-full border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white text-sm" />
-                                            {examSearchTerm && <button onClick={() => setExamSearchTerm('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times"></i></button>}
+                                                className="w-full h-8 lg:h-10 pl-9 lg:pl-11 pr-8 lg:pr-10 rounded-full border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white text-xs lg:text-sm" />
+                                            {examSearchTerm && <button onClick={() => setExamSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times text-sm"></i></button>}
                                         </div>
-                                        
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-gray-500">Filtrar por:</span>
-                                            <div className="relative">
-                                                <select value={examFilterDay} onChange={(e) => setExamFilterDay(e.target.value)} className="h-10 w-20 pl-3 pr-7 rounded-full bg-white border border-gray-300 text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
-                                                    <option value="">Día</option>
-                                                    {[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}
-                                                </select>
-                                                <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                                            </div>
-                                            <div className="relative">
-                                                <select value={examFilterMonth} onChange={(e) => setExamFilterMonth(e.target.value)} className="h-10 w-24 pl-3 pr-7 rounded-full bg-white border border-gray-300 text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
-                                                    <option value="">Mes</option>
-                                                    {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}
-                                                </select>
-                                                <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                                            </div>
-                                            <div className="relative">
-                                                <select value={examFilterYear} onChange={(e) => setExamFilterYear(e.target.value)} className="h-10 w-24 pl-3 pr-7 rounded-full bg-white border border-gray-300 text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
-                                                    <option value="">Año</option>
-                                                    {['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}
-                                                </select>
-                                                <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                                            </div>
-                                            {(examFilterDay || examFilterMonth || examFilterYear) && (
-                                                <button onClick={() => { setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="h-10 px-3 rounded-full bg-red-100 text-red-600 text-xs hover:bg-red-200">
-                                                    <i className="fas fa-times mr-1"></i>Limpiar
-                                                </button>
-                                            )}
+                                    </div>
+                                    
+                                    {/* Fila 3: Filtros */}
+                                    <div className="px-3 pt-1 pb-2 lg:px-4 lg:pt-2 lg:pb-3 flex items-center gap-1.5 lg:gap-2">
+                                        <span className="text-xs text-gray-500 flex-shrink-0">Filtrar por:</span>
+                                        <div className="relative">
+                                            <select value={examFilterDay} onChange={(e) => setExamFilterDay(e.target.value)} className="h-7 lg:h-10 w-16 lg:w-20 pl-2 lg:pl-3 pr-5 lg:pr-7 rounded-full bg-white border border-gray-300 text-xs lg:text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
+                                                <option value="">Día</option>
+                                                {[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-1.5 lg:right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
                                         </div>
+                                        <div className="relative">
+                                            <select value={examFilterMonth} onChange={(e) => setExamFilterMonth(e.target.value)} className="h-7 lg:h-10 w-16 lg:w-24 pl-2 lg:pl-3 pr-5 lg:pr-7 rounded-full bg-white border border-gray-300 text-xs lg:text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
+                                                <option value="">Mes</option>
+                                                {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-1.5 lg:right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                        </div>
+                                        <div className="relative">
+                                            <select value={examFilterYear} onChange={(e) => setExamFilterYear(e.target.value)} className="h-7 lg:h-10 w-18 lg:w-24 pl-2 lg:pl-3 pr-5 lg:pr-7 rounded-full bg-white border border-gray-300 text-xs lg:text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
+                                                <option value="">Año</option>
+                                                {['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-1.5 lg:right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                        </div>
+                                        {(examFilterDay || examFilterMonth || examFilterYear) && (
+                                            <button onClick={() => { setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="h-7 lg:h-10 px-2 lg:px-3 rounded-full bg-red-100 text-red-600 text-xs hover:bg-red-200 flex-shrink-0">
+                                                <i className="fas fa-times"></i>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                                 
@@ -6267,20 +6368,81 @@
                                 else if (showNewPetForm) { setShowNewPetForm(false); }
                                 else { setCurrentExamForPet(null); removeFromPending(currentExamForPet.id); }
                             };
-                            return (<div className="dueno-normal-content">
-                                <button onClick={backHandler} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-4"><i className="fas fa-arrow-left"></i><span className="text-sm font-medium">Volver</span></button>
+                            const filteredAddressesLocal = addressSearchTerm.trim() === '' ? userAddresses : userAddresses.filter(a => 
+                                a.name.toLowerCase().includes(addressSearchTerm.toLowerCase()) || 
+                                a.address.toLowerCase().includes(addressSearchTerm.toLowerCase()) ||
+                                a.district.toLowerCase().includes(addressSearchTerm.toLowerCase())
+                            );
+                            return (
+                            <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
+                                {/* Header fijo cyan */}
+                                <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-3 lg:p-4">
+                                    <div className="flex items-center gap-3">
+                                        <button onClick={backHandler} className="w-9 h-9 lg:w-10 lg:h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm flex-shrink-0">
+                                            <i className="fas fa-arrow-left text-sm"></i>
+                                        </button>
+                                        <div className="flex items-center gap-2 px-2">
+                                            <i className="fas fa-shopping-cart text-cyan-500 text-lg"></i>
+                                            <span className="text-cyan-600 font-semibold text-sm lg:text-base">Nuevo Pedido</span>
+                                            {pendingExams.length > 1 && <span className="text-xs text-blue-500 ml-2">{pendingExams.findIndex(e => e.id === currentExamForPet.id) + 1}/{pendingExams.length}</span>}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Contenido scrolleable */}
+                                <div className="flex-1 overflow-y-auto p-4 lg:p-6">
+                                    <div className="max-w-lg mx-auto">
+                                {/* Card del examen */}
                                 <div className="bg-white rounded-2xl shadow p-4 mb-4 flex items-center gap-4">
                                     <div className={`w-12 h-12 ${currentExamForPet.bg} rounded-xl flex items-center justify-center`}><i className={`fas ${currentExamForPet.icon} ${currentExamForPet.color} text-xl`}></i></div>
                                     <div className="flex-1"><p className="font-bold text-gray-800">{currentExamForPet.name}</p>{currentExamForPet.subtitle && <p className="text-xs text-gray-500">{currentExamForPet.subtitle}</p>}<p className="text-sm text-cyan-600 mt-1">{showAddressSelection ? `${selectedPetForOrder?.name} - Selecciona dirección` : `Selecciona ${entityName}`}</p></div>
                                 </div>
-                                <div className="flex items-center gap-2 mb-4">{[{n:1,l:'Mascota',done:showAddressSelection},{n:2,l:'Dirección',done:false}].map((s,i) => (<React.Fragment key={i}>{i > 0 && <div className={`flex-1 h-0.5 ${s.done || showAddressSelection ? 'bg-cyan-500' : 'bg-gray-200'}`}></div>}<div className="flex items-center gap-2"><div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${(i === 0 && !showAddressSelection) || (i === 1 && showAddressSelection) ? 'bg-cyan-500 text-white' : s.done ? 'bg-cyan-500 text-white' : 'bg-gray-200 text-gray-400'}`}>{s.done ? '✓' : s.n}</div><span className={`text-xs font-medium ${(i === 0 && !showAddressSelection) || (i === 1 && showAddressSelection) ? 'text-cyan-600' : 'text-gray-400'}`}>{s.l}</span></div></React.Fragment>))}</div>
+                                
+                                {/* Pasos visuales */}
+                                <div className="flex items-center justify-center gap-2 mb-4">
+                                    <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${!showAddressSelection ? 'bg-cyan-500 text-white' : 'bg-emerald-100 text-emerald-700'}`}>
+                                        <i className={`fas ${!showAddressSelection ? 'fa-paw' : 'fa-check'}`}></i> Mascota
+                                    </div>
+                                    <i className="fas fa-chevron-right text-gray-300 text-xs"></i>
+                                    <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${showAddressSelection ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                        <i className="fas fa-map-marker-alt"></i> Dirección
+                                    </div>
+                                </div>
+
+                                {/* PASO 1: Selección de mascota */}
                                 {!showAddressSelection ? (
                                     <>
                                         {!showNewPetForm ? (
-                                            <div className="space-y-3">
-                                                {petsOrPatients.map(pet => (<div key={pet.id} onClick={() => assignPetToExam(pet)} className="bg-white rounded-2xl p-4 shadow cursor-pointer hover:shadow-lg hover:border-cyan-500 border-2 border-transparent transition-all"><div className="flex items-center gap-4"><div className="text-4xl">{pet.photo}</div><div className="flex-1"><h3 className="font-bold text-gray-800">{getPetFullName(pet)}</h3><p className="text-gray-500 text-sm">{pet.breed} • {formatAge(pet)} • {pet.sex}</p></div><i className="fas fa-chevron-right text-gray-400"></i></div></div>))}
-                                                <button onClick={() => setShowNewPetForm(true)} className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-cyan-400 hover:text-cyan-600 transition-all"><i className="fas fa-plus mr-2"></i>Agregar nueva mascota</button>
-                                            </div>
+                                            <>
+                                                {/* Buscador de mascota */}
+                                                <div className="relative mb-4">
+                                                    <i className="fas fa-search absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                                    <input type="text" value={petSearchTerm} onChange={(e) => setPetSearchTerm(e.target.value)} 
+                                                        placeholder={`Buscar ${entityName}...`} 
+                                                        className="w-full h-9 lg:h-11 pl-9 lg:pl-11 pr-4 rounded-full border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white text-sm" />
+                                                </div>
+                                                <div className="bg-white rounded-2xl shadow overflow-hidden mb-4">
+                                                    <div className="max-h-64 overflow-y-auto" style={{scrollbarWidth:'none'}}>
+                                                        {filteredPets.length === 0 ? (
+                                                            <div className="p-8 text-center text-gray-500">
+                                                                <i className="fas fa-search text-3xl mb-2 text-gray-300"></i>
+                                                                <p>No se encontró ningún {entityName}</p>
+                                                            </div>
+                                                        ) : filteredPets.map(pet => (
+                                                            <div key={pet.id} onClick={() => assignPetToExam(pet)} 
+                                                                className="p-4 border-b border-gray-100 last:border-0 flex items-center gap-4 cursor-pointer hover:bg-gray-50">
+                                                                <div className="text-3xl">{pet.photo}</div>
+                                                                <div className="flex-1">
+                                                                    <h3 className="font-bold text-gray-800">{getPetFullName(pet)}</h3>
+                                                                    <p className="text-gray-500 text-sm">{pet.breed} • {formatAge(pet)} • {pet.sex}</p>
+                                                                </div>
+                                                                <i className="fas fa-chevron-right text-gray-400"></i>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <button onClick={() => setShowNewPetForm(true)} className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-cyan-400 hover:text-cyan-600 transition-all text-sm"><i className="fas fa-plus mr-2"></i>Agregar nueva mascota</button>
+                                            </>
                                         ) : (
                                             <div className="bg-white rounded-2xl shadow p-6">
                                                 <h3 className="text-lg font-bold text-gray-800 mb-4"><i className="fas fa-plus-circle mr-2 text-cyan-500"></i>Nueva Mascota</h3>
@@ -6329,8 +6491,15 @@
                                         ) : !showNewAddressForm ? (
                                             <div className="space-y-3">
                                                 <p className="text-sm text-gray-600 mb-2">Selecciona dónde recogeremos la muestra:</p>
-                                                {userAddresses.map((addr, idx) => (<div key={idx} onClick={() => handleDuenoAddressSelect(addr)} className="bg-white rounded-2xl p-4 shadow cursor-pointer hover:shadow-lg hover:border-cyan-500 border-2 border-transparent transition-all"><div className="flex items-center gap-3"><div className="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center"><i className="fas fa-map-marker-alt text-cyan-600"></i></div><div className="flex-1"><p className="font-bold text-gray-800">{addr.name}</p><p className="text-gray-500 text-sm">{addr.address}</p><p className="text-gray-400 text-xs">{addr.district} • Ref: {addr.reference}</p></div><i className="fas fa-chevron-right text-gray-400"></i></div></div>))}
-                                                <button onClick={() => setShowNewAddressForm(true)} className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-cyan-400 hover:text-cyan-600 transition-all"><i className="fas fa-plus mr-2"></i>Agregar nueva dirección</button>
+                                                {/* Buscador de dirección */}
+                                                <div className="relative mb-3">
+                                                    <i className="fas fa-search absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                                    <input type="text" value={addressSearchTerm} onChange={(e) => setAddressSearchTerm(e.target.value)} 
+                                                        placeholder="Buscar dirección..." 
+                                                        className="w-full h-9 lg:h-11 pl-9 lg:pl-11 pr-4 rounded-full border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white text-sm" />
+                                                </div>
+                                                {filteredAddressesLocal.map((addr, idx) => (<div key={idx} onClick={() => handleDuenoAddressSelect(addr)} className="bg-white rounded-2xl p-4 shadow cursor-pointer hover:shadow-lg hover:border-cyan-500 border-2 border-transparent transition-all"><div className="flex items-center gap-3"><div className="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center"><i className="fas fa-map-marker-alt text-cyan-600"></i></div><div className="flex-1"><p className="font-bold text-gray-800">{addr.name}</p><p className="text-gray-500 text-sm">{addr.address}</p><p className="text-gray-400 text-xs">{addr.district} • Ref: {addr.reference}</p></div><i className="fas fa-chevron-right text-gray-400"></i></div></div>))}
+                                                <button onClick={() => setShowNewAddressForm(true)} className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-cyan-400 hover:text-cyan-600 transition-all text-sm"><i className="fas fa-plus mr-2"></i>Agregar nueva dirección</button>
                                             </div>
                                         ) : (
                                             <div className="bg-white rounded-2xl shadow p-6">
@@ -6347,6 +6516,8 @@
                                         )}
                                     </>
                                 )}
+                                    </div>
+                                </div>
                             </div>);
                         })()}
                         
@@ -6475,17 +6646,6 @@
                                         ))}
                                     </div>
                                 )}
-                            </div>
-                            {/* Solo mobile: ayuda */}
-                            <div className="lg:hidden mt-6 p-4 bg-cyan-50 rounded-2xl border border-cyan-200">
-                                <p className="text-cyan-800 text-sm mb-3"><i className="fas fa-question-circle mr-2"></i><strong>¿No sabes cuál elegir?</strong></p>
-                                <a 
-                                    href="https://wa.me/51954904248?text=Hola,%20necesito%20ayuda%20para%20elegir%20un%20examen%20para%20mi%20mascota"
-                                    target="_blank"
-                                    className="w-full bg-white hover:bg-gray-50 border-2 border-emerald-500 text-emerald-600 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors"
-                                >
-                                    <i className="fab fa-whatsapp text-xl"></i> Dale aquí para que un asesor te contacte
-                                </a>
                             </div>
                             
                             {/* Modal de detalles del paquete */}
@@ -6775,11 +6935,52 @@
 
                         {activeTab === 'facturacion' && !facturacionInvoice && (() => {
                             const userInvoices = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoicePdf);
+                            const filteredInvoices = filterInvoices(userInvoices);
                             return (
                                 <div className="dueno-normal-content pb-6">
-                                    <div className="flex items-center gap-2 mb-4">
+                                    <div className="flex items-center gap-2 mb-3">
                                         <i className="fas fa-file-invoice-dollar text-amber-500 text-lg"></i>
                                         <h1 className="text-lg font-bold text-gray-800">Facturación</h1>
+                                    </div>
+                                    {/* Buscador */}
+                                    <div className="mb-2">
+                                        <div className="relative">
+                                            <i className="fas fa-search absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                            <input type="text" value={facSearchTerm} onChange={(e) => setFacSearchTerm(e.target.value)} 
+                                                placeholder="Buscar boleta o factura..." 
+                                                className="w-full h-8 lg:h-10 pl-9 lg:pl-11 pr-8 lg:pr-10 rounded-full border border-gray-300 focus:border-amber-500 focus:outline-none bg-white text-xs lg:text-sm" />
+                                            {facSearchTerm && <button onClick={() => setFacSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times text-sm"></i></button>}
+                                        </div>
+                                    </div>
+                                    {/* Filtros */}
+                                    <div className="flex items-center gap-1.5 lg:gap-2 mb-4">
+                                        <span className="text-xs text-gray-500 flex-shrink-0">Filtrar por:</span>
+                                        <div className="relative">
+                                            <select value={facFilterDay} onChange={(e) => setFacFilterDay(e.target.value)} className="h-7 lg:h-10 w-16 lg:w-20 pl-2 lg:pl-3 pr-5 lg:pr-7 rounded-full bg-white border border-gray-300 text-xs lg:text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
+                                                <option value="">Día</option>
+                                                {[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-1.5 lg:right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                        </div>
+                                        <div className="relative">
+                                            <select value={facFilterMonth} onChange={(e) => setFacFilterMonth(e.target.value)} className="h-7 lg:h-10 w-16 lg:w-24 pl-2 lg:pl-3 pr-5 lg:pr-7 rounded-full bg-white border border-gray-300 text-xs lg:text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
+                                                <option value="">Mes</option>
+                                                {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-1.5 lg:right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                        </div>
+                                        <div className="relative">
+                                            <select value={facFilterYear} onChange={(e) => setFacFilterYear(e.target.value)} className="h-7 lg:h-10 w-18 lg:w-24 pl-2 lg:pl-3 pr-5 lg:pr-7 rounded-full bg-white border border-gray-300 text-xs lg:text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
+                                                <option value="">Año</option>
+                                                {['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-1.5 lg:right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                        </div>
+                                        {(facFilterDay || facFilterMonth || facFilterYear) && (
+                                            <button onClick={() => { setFacFilterDay(''); setFacFilterMonth(''); setFacFilterYear(''); }} className="h-7 lg:h-10 px-2 lg:px-3 rounded-full bg-red-100 text-red-600 text-xs hover:bg-red-200 flex-shrink-0">
+                                                <i className="fas fa-times"></i>
+                                            </button>
+                                        )}
                                     </div>
                                     {userInvoices.length === 0 ? (
                                         <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
@@ -6787,9 +6988,14 @@
                                             <p className="text-gray-500 font-medium">No tienes comprobantes aún</p>
                                             <p className="text-gray-400 text-sm mt-1">Tus boletas y facturas aparecerán aquí</p>
                                         </div>
+                                    ) : filteredInvoices.length === 0 ? (
+                                        <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+                                            <i className="fas fa-search text-4xl text-gray-300 mb-2"></i>
+                                            <p className="text-gray-500">No se encontraron comprobantes con los filtros seleccionados</p>
+                                        </div>
                                     ) : (
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                            {userInvoices.map(inv => (
+                                            {filteredInvoices.map(inv => (
                                                 <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
                                                     <div className="flex items-center gap-4">
                                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
