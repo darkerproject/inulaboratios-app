@@ -6480,7 +6480,7 @@
                                                 {allPendingItems.map((item, idx) => {
                                                     const order = item.order;
                                                     if (item.type === 'comprobante') return (
-                                                        <div key={`comp-${order.id}`} onClick={() => setViewingInvoice(order)} className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-orange-400 cursor-pointer hover:shadow-md transition-shadow">
+                                                        <div key={`comp-${order.id}`} className="bg-white rounded-xl p-4 shadow-sm">
                                                             <div className="flex items-center justify-between mb-2">
                                                                 <div className="flex items-center gap-2">
                                                                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${order.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
@@ -6488,15 +6488,16 @@
                                                                     </div>
                                                                     <p className="font-semibold text-gray-800 text-sm">{order.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
                                                                 </div>
-                                                                <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">Pago pendiente</span>
+                                                                {order.status === 'results_uploaded' ? (
+                                                                    <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">Pago pendiente</span>
+                                                                ) : (
+                                                                    <span className="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">Pendiente</span>
+                                                                )}
                                                             </div>
                                                             <div className="space-y-1">
                                                                 {order.items.map((it, i) => (
                                                                     <p key={i} className="text-xs text-gray-500">{it.pet?.photo} {it.exam?.name}</p>
                                                                 ))}
-                                                            </div>
-                                                            <div className="mt-2 pt-2 border-t border-gray-100 flex items-center gap-2 text-xs text-orange-600 font-medium">
-                                                                <i className="fas fa-eye"></i> Ver comprobante
                                                             </div>
                                                         </div>
                                                     );
