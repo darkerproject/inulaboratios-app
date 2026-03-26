@@ -6373,32 +6373,15 @@
                                 a.address.toLowerCase().includes(addressSearchTerm.toLowerCase()) ||
                                 a.district.toLowerCase().includes(addressSearchTerm.toLowerCase())
                             );
-                            return (
-                            <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
-                                {/* Header fijo cyan */}
-                                <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-3 lg:p-4">
-                                    <div className="flex items-center gap-3">
-                                        <button onClick={backHandler} className="w-9 h-9 lg:w-10 lg:h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm flex-shrink-0">
-                                            <i className="fas fa-arrow-left text-sm"></i>
-                                        </button>
-                                        <div className="flex items-center gap-2 px-2">
-                                            <i className="fas fa-shopping-cart text-cyan-500 text-lg"></i>
-                                            <span className="text-cyan-600 font-semibold text-sm lg:text-base">Nuevo Pedido</span>
-                                            {pendingExams.length > 1 && <span className="text-xs text-blue-500 ml-2">{pendingExams.findIndex(e => e.id === currentExamForPet.id) + 1}/{pendingExams.length}</span>}
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                {/* Contenido scrolleable */}
-                                <div className="flex-1 overflow-y-auto p-4 lg:p-6">
-                                    <div className="max-w-lg mx-auto">
-                                {/* Card del examen */}
+                            
+                            const selectionContent = (<>
                                 <div className="bg-white rounded-2xl shadow p-4 mb-4 flex items-center gap-4">
                                     <div className={`w-12 h-12 ${currentExamForPet.bg} rounded-xl flex items-center justify-center`}><i className={`fas ${currentExamForPet.icon} ${currentExamForPet.color} text-xl`}></i></div>
                                     <div className="flex-1"><p className="font-bold text-gray-800">{currentExamForPet.name}</p>{currentExamForPet.subtitle && <p className="text-xs text-gray-500">{currentExamForPet.subtitle}</p>}<p className="text-sm text-cyan-600 mt-1">{showAddressSelection ? `${selectedPetForOrder?.name} - Selecciona dirección` : `Selecciona ${entityName}`}</p></div>
                                 </div>
-                                
-                                {/* Pasos visuales */}
+                                {pendingExams.length > 1 && <div className="bg-blue-50 rounded-xl p-3 mb-4 text-center">
+                                    <p className="text-sm text-blue-700">Examen {pendingExams.findIndex(e => e.id === currentExamForPet.id) + 1} de {pendingExams.length}</p>
+                                </div>}
                                 <div className="flex items-center justify-center gap-2 mb-4">
                                     <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${!showAddressSelection ? 'bg-cyan-500 text-white' : 'bg-emerald-100 text-emerald-700'}`}>
                                         <i className={`fas ${!showAddressSelection ? 'fa-paw' : 'fa-check'}`}></i> Mascota
@@ -6408,13 +6391,10 @@
                                         <i className="fas fa-map-marker-alt"></i> Dirección
                                     </div>
                                 </div>
-
-                                {/* PASO 1: Selección de mascota */}
                                 {!showAddressSelection ? (
                                     <>
                                         {!showNewPetForm ? (
                                             <>
-                                                {/* Buscador de mascota */}
                                                 <div className="relative mb-4">
                                                     <i className="fas fa-search absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                                                     <input type="text" value={petSearchTerm} onChange={(e) => setPetSearchTerm(e.target.value)} 
@@ -6491,12 +6471,11 @@
                                         ) : !showNewAddressForm ? (
                                             <div className="space-y-3">
                                                 <p className="text-sm text-gray-600 mb-2">Selecciona dónde recogeremos la muestra:</p>
-                                                {/* Buscador de dirección */}
-                                                <div className="relative mb-3">
-                                                    <i className="fas fa-search absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                                <div className="relative mb-3 lg:hidden">
+                                                    <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                                                     <input type="text" value={addressSearchTerm} onChange={(e) => setAddressSearchTerm(e.target.value)} 
                                                         placeholder="Buscar dirección..." 
-                                                        className="w-full h-9 lg:h-11 pl-9 lg:pl-11 pr-4 rounded-full border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white text-sm" />
+                                                        className="w-full h-9 pl-9 pr-4 rounded-full border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white text-sm" />
                                                 </div>
                                                 {filteredAddressesLocal.map((addr, idx) => (<div key={idx} onClick={() => handleDuenoAddressSelect(addr)} className="bg-white rounded-2xl p-4 shadow cursor-pointer hover:shadow-lg hover:border-cyan-500 border-2 border-transparent transition-all"><div className="flex items-center gap-3"><div className="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center"><i className="fas fa-map-marker-alt text-cyan-600"></i></div><div className="flex-1"><p className="font-bold text-gray-800">{addr.name}</p><p className="text-gray-500 text-sm">{addr.address}</p><p className="text-gray-400 text-xs">{addr.district} • Ref: {addr.reference}</p></div><i className="fas fa-chevron-right text-gray-400"></i></div></div>))}
                                                 <button onClick={() => setShowNewAddressForm(true)} className="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-cyan-400 hover:text-cyan-600 transition-all text-sm"><i className="fas fa-plus mr-2"></i>Agregar nueva dirección</button>
@@ -6516,9 +6495,33 @@
                                         )}
                                     </>
                                 )}
+                            </>);
+                            
+                            return (<>
+                                {/* Desktop: original dueno-normal-content layout */}
+                                <div className="hidden lg:block dueno-normal-content">
+                                    <button onClick={backHandler} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-4"><i className="fas fa-arrow-left"></i><span className="text-sm font-medium">Volver</span></button>
+                                    {selectionContent}
+                                </div>
+                                {/* Mobile: header-based layout */}
+                                <div className="lg:hidden flex flex-col" style={{height:'calc(100vh - 120px)'}}>
+                                    <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-3">
+                                        <div className="flex items-center gap-3">
+                                            <button onClick={backHandler} className="w-9 h-9 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm flex-shrink-0">
+                                                <i className="fas fa-arrow-left text-sm"></i>
+                                            </button>
+                                            <div className="flex items-center gap-2 px-2">
+                                                <i className="fas fa-shopping-cart text-cyan-500 text-lg"></i>
+                                                <span className="text-cyan-600 font-semibold text-sm">Nuevo Pedido</span>
+                                                {pendingExams.length > 1 && <span className="text-xs text-blue-500 ml-2">{pendingExams.findIndex(e => e.id === currentExamForPet.id) + 1}/{pendingExams.length}</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 overflow-y-auto p-4">
+                                        {selectionContent}
                                     </div>
                                 </div>
-                            </div>);
+                            </>);
                         })()}
                         
                         {/* === Vistas normales: Pedidos y Resultados === */}
