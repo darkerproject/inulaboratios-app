@@ -6145,12 +6145,114 @@
                         {/* === Vista Perfil de Mascota (inline) === */}
                         {!viewingOrderTracking && !selectedExam && !viewingInvoice && selectedPet && activeTab === 'resultados' && (() => {
                             const currentPet = petsOrPatients.find(p => p.id === selectedPet.id) || selectedPet;
-                            return (<div className="dueno-normal-content">
-                                <button onClick={() => setSelectedPet(null)} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-4"><i className="fas fa-arrow-left"></i><span className="text-sm font-medium">Volver a mascotas</span></button>
-                                <div className="bg-white rounded-2xl shadow-lg p-6 mb-6"><div className="flex items-center gap-4"><div className="text-5xl">{currentPet.photo}</div><div><h1 className="text-2xl font-bold text-gray-800">{currentPet.name}</h1>{currentPet.owner && <p className="text-gray-500 text-sm">Dueño: {currentPet.owner}</p>}<div className="flex flex-wrap gap-2 mt-2"><span className="bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full text-xs">{currentPet.breed}</span><span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs">{formatAge(currentPet)}</span><span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs">{currentPet.sex}</span></div></div></div></div>
-                                <h2 className="text-lg font-bold text-gray-800 mb-4">Resultados</h2>
-                                {currentPet.exams.length === 0 ? <div className="bg-white rounded-2xl p-10 text-center shadow"><i className="fas fa-folder-open text-4xl text-gray-300 mb-2"></i><p className="text-gray-500">No hay resultados disponibles</p></div> : <div className="space-y-3">{currentPet.exams.map(exam => (<div key={exam.id} onClick={() => markExamAsSeen(exam, currentPet)} className={`bg-white rounded-xl p-4 shadow cursor-pointer hover:shadow-lg flex items-center justify-between ${exam.seen === false ? 'border-l-4 border-red-500' : ''}`}><div className="flex items-center gap-3"><div className={`w-10 h-10 rounded-xl flex items-center justify-center ${exam.seen === false ? 'bg-red-100' : 'bg-cyan-100'}`}><i className={`fas fa-file-pdf ${exam.seen === false ? 'text-red-600' : 'text-cyan-600'}`}></i></div><div><p className="font-semibold text-gray-800">{exam.type}</p><p className="text-xs text-gray-500">{new Date(exam.date).toLocaleDateString('es-ES')}</p></div>{exam.seen === false && <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold ml-2">NUEVO</span>}</div><i className="fas fa-chevron-right text-gray-400"></i></div>))}</div>}
-                            </div>);
+                            return (
+                            <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
+                                {/* Sección 1: Header fijo con info de mascota */}
+                                <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300">
+                                    {/* Fila 1: Info de la mascota */}
+                                    <div className="p-4 border-b border-gray-200">
+                                        <div className="flex items-center gap-4">
+                                            <button onClick={() => setSelectedPet(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
+                                                <i className="fas fa-arrow-left"></i>
+                                            </button>
+                                            <span className="text-4xl">{currentPet.photo}</span>
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3">
+                                                    <h1 className="text-xl font-bold text-gray-800">{getPetFullName(currentPet)}</h1>
+                                                    <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">{currentPet.exams.length} exámenes</span>
+                                                </div>
+                                                <div className="flex items-center gap-4 mt-1">
+                                                    <span className="text-sm text-gray-600"><i className="fas fa-dog text-cyan-500 mr-1"></i>{currentPet.breed}</span>
+                                                    <span className="text-sm text-gray-600"><i className="fas fa-birthday-cake text-cyan-500 mr-1"></i>{formatAge(currentPet)}</span>
+                                                    <span className="text-sm text-gray-600"><i className="fas fa-venus-mars text-cyan-500 mr-1"></i>{currentPet.sex}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Fila 2: Buscador y filtros */}
+                                    <div className="p-4 flex items-center gap-3">
+                                        <div className="relative flex-1">
+                                            <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                            <input type="text" value={examSearchTerm} onChange={(e) => setExamSearchTerm(e.target.value)} 
+                                                placeholder="Buscar examen..." 
+                                                className="w-full h-10 pl-11 pr-10 rounded-full border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white text-sm" />
+                                            {examSearchTerm && <button onClick={() => setExamSearchTerm('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times"></i></button>}
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-gray-500">Filtrar por:</span>
+                                            <div className="relative">
+                                                <select value={examFilterDay} onChange={(e) => setExamFilterDay(e.target.value)} className="h-10 w-20 pl-3 pr-7 rounded-full bg-white border border-gray-300 text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
+                                                    <option value="">Día</option>
+                                                    {[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}
+                                                </select>
+                                                <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                            </div>
+                                            <div className="relative">
+                                                <select value={examFilterMonth} onChange={(e) => setExamFilterMonth(e.target.value)} className="h-10 w-24 pl-3 pr-7 rounded-full bg-white border border-gray-300 text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
+                                                    <option value="">Mes</option>
+                                                    {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}
+                                                </select>
+                                                <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                            </div>
+                                            <div className="relative">
+                                                <select value={examFilterYear} onChange={(e) => setExamFilterYear(e.target.value)} className="h-10 w-24 pl-3 pr-7 rounded-full bg-white border border-gray-300 text-sm focus:border-cyan-500 appearance-none cursor-pointer focus:outline-none">
+                                                    <option value="">Año</option>
+                                                    {['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}
+                                                </select>
+                                                <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                            </div>
+                                            {(examFilterDay || examFilterMonth || examFilterYear) && (
+                                                <button onClick={() => { setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="h-10 px-3 rounded-full bg-red-100 text-red-600 text-xs hover:bg-red-200">
+                                                    <i className="fas fa-times mr-1"></i>Limpiar
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Sección 2: Contenido scrolleable */}
+                                <div className="flex-1 overflow-y-auto p-6">
+                                    {currentPet.exams.length === 0 ? (
+                                        <div className="bg-white rounded-xl p-8 text-center shadow">
+                                            <i className="fas fa-folder-open text-4xl text-gray-300 mb-2"></i>
+                                            <p className="text-gray-500">No hay resultados disponibles</p>
+                                        </div>
+                                    ) : filterExams(currentPet.exams).length === 0 ? (
+                                        <div className="bg-white rounded-xl p-8 text-center shadow">
+                                            <i className="fas fa-search text-4xl text-gray-300 mb-2"></i>
+                                            <p className="text-gray-500">No se encontraron exámenes con los filtros seleccionados</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3 pb-6">
+                                            {filterExams(currentPet.exams)
+                                                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                                                .map(exam => (
+                                                <div key={exam.id} onClick={() => markExamAsSeen(exam, currentPet)} className={`bg-white rounded-xl p-4 shadow hover:shadow-lg cursor-pointer transition-all ${exam.seen === false ? 'border-l-4 border-red-500' : ''}`}>
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${exam.seen === false ? 'bg-red-100' : 'bg-purple-100'}`}>
+                                                            <i className={`fas fa-file-pdf text-xl ${exam.seen === false ? 'text-red-600' : 'text-purple-600'}`}></i>
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <p className="font-semibold text-gray-800">{exam.type}</p>
+                                                            <p className="text-sm text-gray-500">
+                                                                <i className="fas fa-calendar mr-1"></i>
+                                                                {new Date(exam.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                            </p>
+                                                        </div>
+                                                        {exam.seen === false && <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-bold">NUEVO</span>}
+                                                        <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                                                            <i className="fas fa-eye text-purple-600"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            );
                         })()}
                         
                         {/* === Vista Selección de Mascota/Dirección (inline) === */}
