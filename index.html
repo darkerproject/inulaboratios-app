@@ -6866,7 +6866,7 @@
                                         <button onClick={() => setInvoiceType('boleta')} className={`flex-1 py-1.5 rounded-lg text-xs font-medium ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-receipt mr-1"></i>Boleta</button>
                                         <button onClick={() => setInvoiceType('factura')} className={`flex-1 py-1.5 rounded-lg text-xs font-medium ${invoiceType === 'factura' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-file-invoice mr-1"></i>Factura</button>
                                     </div>
-                                    <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none resize-none" style={{fontSize:'10px'}} rows="1" maxLength="500" />
+                                    <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none resize-none" style={{fontSize:'8px'}} rows="1" maxLength="500" />
                                     {cart.some(i => i.exam.price) && (
                                         <div className="flex items-center justify-between py-1.5 border-t border-gray-100">
                                             <span className="text-xs text-gray-600 font-semibold">Total estimado</span>
