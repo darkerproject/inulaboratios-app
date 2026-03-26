@@ -6488,15 +6488,19 @@
                                                                     </div>
                                                                     <p className="font-semibold text-gray-800 text-sm">{order.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
                                                                 </div>
-                                                                {order.status === 'results_uploaded' ? (
-                                                                    <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">Pago pendiente</span>
-                                                                ) : (
-                                                                    <span className="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">Pendiente</span>
-                                                                )}
+                                                                <span className="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">{order.status === 'results_uploaded' ? 'Pago pendiente' : 'Pendiente'}</span>
                                                             </div>
-                                                            <div className="space-y-1">
+                                                            <div className="space-y-2">
                                                                 {order.items.map((it, i) => (
-                                                                    <p key={i} className="text-xs text-gray-500">{it.pet?.photo} {it.exam?.name}</p>
+                                                                    <div key={i} className="flex items-center gap-3 p-2 bg-gray-50 rounded-xl">
+                                                                        <div className={`w-9 h-9 ${it.exam.bg} rounded-lg flex items-center justify-center`}>
+                                                                            <i className={`fas ${it.exam.icon} ${it.exam.color} text-sm`}></i>
+                                                                        </div>
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <p className="text-gray-800 text-sm font-medium truncate">{it.exam.name}</p>
+                                                                            <p className="text-gray-500 text-xs">{it.pet?.photo} {getPetFullName(it.pet)}</p>
+                                                                        </div>
+                                                                    </div>
                                                                 ))}
                                                             </div>
                                                         </div>
