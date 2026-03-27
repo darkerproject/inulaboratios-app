@@ -430,18 +430,12 @@
                 padding: 4px 16px 12px;
                 transition: max-height 0.25s ease-out, opacity 0.2s ease-out, transform 0.2s ease-out, padding 0.25s ease-out;
             }
-            .dueno-content-fade {
-                opacity: 1 !important;
-                transform: translateY(0);
-                transition: opacity 0.2s ease-out, transform 0.2s ease-out, max-height 0.2s ease-out;
-                max-height: 5000px;
-                overflow: hidden;
+            .dueno-search-overlay {
+                animation: overlayFadeIn 0.2s ease-out;
             }
-            .dueno-content-fade.hidden-fade {
-                opacity: 0 !important;
-                transform: translateY(6px);
-                pointer-events: none;
-                max-height: 0;
+            @keyframes overlayFadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
             }
             .dueno-search-slide-filters {
                 max-height: 0;
@@ -6505,10 +6499,64 @@
                             </div>
                         )}
                         <div className="dueno-normal-content">
-                        {activeTab === 'pedidos' && (<div className="pb-20">
+                        {activeTab === 'pedidos' && (<div className="pb-20" style={{position:'relative', minHeight: pedidosSearchOpen ? '60vh' : 'auto'}}>
                             <div className="lg:hidden" style={{height: pedidosSearchOpen ? '100px' : '56px', transition:'height 0.2s ease-out'}}></div>
-                            {/* Normal content - fades out when search open */}
-                            <div className={`dueno-content-fade ${pedidosSearchOpen ? 'hidden-fade' : ''}`}>
+                            
+                            {/* Overlay + search results */}
+                            {pedidosSearchOpen && (
+                                <div className="lg:hidden dueno-search-overlay" style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                    <div style={{height:'100px'}}></div>
+                                    <div style={{padding:'0 4px'}}>
+                                    {pedidosSearchTerm.trim() ? (() => {
+                                        const s = pedidosSearchTerm.toLowerCase();
+                                        const synonyms = [s];
+                                        if (s.includes('felino') || s.includes('felina')) synonyms.push('gato', 'gata');
+                                        if (s.includes('canino') || s.includes('canina')) synonyms.push('perro', 'perra');
+                                        if (s.includes('gato') || s.includes('gata')) synonyms.push('felino', 'felina');
+                                        if (s.includes('perro') || s.includes('perra')) synonyms.push('canino', 'canina');
+                                        const allExams = [...paquetesDuenos, ...perfilesDuenos, ...categoriasDuenos.flatMap(c => c.examenes)];
+                                        const results = allExams.filter(exam => {
+                                            const text = (exam.name + ' ' + (exam.description||'') + ' ' + (exam.subtitle||'') + ' ' + (exam.incluye||[]).join(' ')).toLowerCase();
+                                            return synonyms.some(syn => text.includes(syn));
+                                        });
+                                        return results.length === 0 ? (
+                                            <div className="text-center py-10 text-gray-400">
+                                                <i className="fas fa-search text-3xl mb-2 block text-gray-300"></i>
+                                                <p className="text-sm">No se encontraron exámenes</p>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                {results.map(exam => {
+                                                    const isInCart = cart.find(c => c.exam.id === exam.id);
+                                                    const isPending = pendingExams.find(e => e.id === exam.id);
+                                                    return (
+                                                        <div key={exam.id} onClick={() => handleExamClick(exam)} 
+                                                            className={`bg-white rounded-2xl p-3 cursor-pointer hover:shadow-lg transition-all shadow border-2 ${isInCart ? 'border-emerald-500 bg-emerald-50' : isPending ? 'border-amber-400 bg-amber-50' : 'border-transparent hover:border-cyan-300'} flex items-center gap-3`}>
+                                                            <div className={`w-10 h-10 ${exam.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                                                <i className={`fas ${exam.icon} ${exam.color} text-base`}></i>
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="text-gray-800 font-semibold text-sm leading-tight">{exam.name}</p>
+                                                                {exam.subtitle && <p className="text-gray-500 text-xs truncate">{exam.subtitle}</p>}
+                                                                {exam.description && !exam.subtitle && <p className="text-gray-500 text-xs truncate">{exam.description}</p>}
+                                                            </div>
+                                                            {exam.price && <span className="text-cyan-600 font-bold text-sm flex-shrink-0">S/ {exam.price}</span>}
+                                                            {(isInCart || isPending) && (
+                                                                <div className={`w-6 h-6 ${isInCart ? 'bg-emerald-500' : 'bg-amber-400'} rounded-full flex items-center justify-center flex-shrink-0`}>
+                                                                    <i className={`fas ${isInCart ? 'fa-check' : 'fa-clock'} text-white text-xs`}></i>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        );
+                                    })() : null}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {/* Normal content - untouched */}
                             <div className="mb-6 mt-4 lg:mt-0">
                                 <h2 className="text-xl font-bold text-gray-800 mb-1">¿Qué necesita tu mascota?</h2>
                                 <p className="text-gray-500 text-sm">Selecciona el servicio que mejor se adapte a tu situación</p>
@@ -6631,55 +6679,6 @@
                                     </div>
                                 )}
                             </div>
-                            
-                            {/* Modal de detalles del paquete */}
-                            </div>
-                            {/* Search results - shown when search open */}
-                            {pedidosSearchOpen && pedidosSearchTerm.trim() && (() => {
-                                const s = pedidosSearchTerm.toLowerCase();
-                                const synonyms = [s];
-                                if (s.includes('felino') || s.includes('felina')) synonyms.push('gato', 'gata');
-                                if (s.includes('canino') || s.includes('canina')) synonyms.push('perro', 'perra');
-                                if (s.includes('gato') || s.includes('gata')) synonyms.push('felino', 'felina');
-                                if (s.includes('perro') || s.includes('perra')) synonyms.push('canino', 'canina');
-                                const allExams = [...paquetesDuenos, ...perfilesDuenos, ...categoriasDuenos.flatMap(c => c.examenes)];
-                                const results = allExams.filter(exam => {
-                                    const text = (exam.name + ' ' + (exam.description||'') + ' ' + (exam.subtitle||'') + ' ' + (exam.incluye||[]).join(' ')).toLowerCase();
-                                    return synonyms.some(syn => text.includes(syn));
-                                });
-                                return results.length === 0 ? (
-                                    <div className="text-center py-10 text-gray-400">
-                                        <i className="fas fa-search text-3xl mb-2 block text-gray-300"></i>
-                                        <p className="text-sm">No se encontraron exámenes</p>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-2 mt-2">
-                                        {results.map(exam => {
-                                            const isInCart = cart.find(c => c.exam.id === exam.id);
-                                            const isPending = pendingExams.find(e => e.id === exam.id);
-                                            return (
-                                                <div key={exam.id} onClick={() => handleExamClick(exam)} 
-                                                    className={`bg-white rounded-2xl p-3 cursor-pointer hover:shadow-lg transition-all shadow border-2 ${isInCart ? 'border-emerald-500 bg-emerald-50' : isPending ? 'border-amber-400 bg-amber-50' : 'border-transparent hover:border-cyan-300'} flex items-center gap-3`}>
-                                                    <div className={`w-10 h-10 ${exam.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                                                        <i className={`fas ${exam.icon} ${exam.color} text-base`}></i>
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-gray-800 font-semibold text-sm leading-tight">{exam.name}</p>
-                                                        {exam.subtitle && <p className="text-gray-500 text-xs truncate">{exam.subtitle}</p>}
-                                                        {exam.description && !exam.subtitle && <p className="text-gray-500 text-xs truncate">{exam.description}</p>}
-                                                    </div>
-                                                    {exam.price && <span className="text-cyan-600 font-bold text-sm flex-shrink-0">S/ {exam.price}</span>}
-                                                    {(isInCart || isPending) && (
-                                                        <div className={`w-6 h-6 ${isInCart ? 'bg-emerald-500' : 'bg-amber-400'} rounded-full flex items-center justify-center flex-shrink-0`}>
-                                                            <i className={`fas ${isInCart ? 'fa-check' : 'fa-clock'} text-white text-xs`}></i>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                );
-                            })()}
                             
                             {cart.length > 0 && <div className="hidden lg:block fixed bottom-5 right-4 bg-slate-800 text-white pl-4 pr-3 py-3 rounded-2xl shadow-2xl"><div className="flex items-center gap-4"><div className="w-9 h-9 bg-emerald-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">{cart.length}</div><div className="min-w-0"><p className="font-medium text-sm">Pedido listo</p><p className="text-xs text-gray-400 truncate max-w-[100px]">{cart.map(c => getPetFullName(c.pet)).join(', ')}</p></div><button onClick={() => setShowOrderSummary(true)} className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2.5 rounded-xl font-semibold text-sm whitespace-nowrap flex-shrink-0 ml-2">Solicitar</button></div></div>}
                             {showOrderSummary && <div className="hidden lg:flex modal-overlay items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget) setShowOrderSummary(false); }}><div className="bg-white rounded-3xl w-full max-w-3xl shadow-2xl flex flex-col" style={{height: '680px'}}><div className="px-6 py-4 border-b flex items-center justify-between flex-shrink-0"><h2 className="text-xl font-bold text-gray-800"><i className="fas fa-clipboard-list text-cyan-500 mr-2"></i>Resumen del Pedido</h2><button onClick={() => setShowOrderSummary(false)} className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors"><i className="fas fa-times"></i></button></div><div className="flex-1 flex flex-col lg:flex-row min-h-0"><div className="lg:w-1/2 p-6 lg:border-r overflow-y-auto"><p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3"><i className="fas fa-vials text-cyan-500 mr-2"></i>Exámenes ({cart.length})</p><div className="space-y-3">{cart.map(item => (<div key={item.exam.id} className="bg-gray-50 rounded-xl p-4"><div className="flex items-start justify-between mb-2"><div className="flex items-center gap-3 flex-1 min-w-0"><div className={`w-10 h-10 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}><i className={`fas ${item.exam.icon} ${item.exam.color}`}></i></div><div className="min-w-0"><span className="font-medium text-gray-800 text-sm">{item.exam.name}</span>{item.exam.subtitle && <p className="text-xs text-gray-500 truncate">{item.exam.subtitle}</p>}</div></div><div className="flex items-center gap-3 flex-shrink-0 ml-3">{item.exam.price && <span className="text-cyan-600 font-bold text-sm whitespace-nowrap">S/ {item.exam.price}</span>}<button onClick={() => removeFromCart(item.exam.id)} className="text-red-400 hover:text-red-600"><i className="fas fa-trash text-sm"></i></button></div></div><div className="border-t pt-2 mt-2 space-y-1.5"><div className="flex items-center gap-2"><span className="text-lg">{item.pet.photo}</span><span className="text-sm text-gray-600">{getPetFullName(item.pet)}</span></div><div className="flex items-start gap-2 text-xs text-gray-500"><i className="fas fa-map-marker-alt mt-0.5 text-cyan-500"></i><span>{item.address?.name}: {item.address?.address}, {item.address?.district}</span></div>{item.tomaMuestra && <div className="flex items-center gap-2 text-xs"><i className="fas fa-syringe text-emerald-500"></i><span className="text-emerald-600 font-medium">Toma de muestra a domicilio {(() => { const p = getTomaMuestraPrice(item.address?.district, examTotal); return p !== null ? `(+S/ ${p})` : ''; })()}</span></div>}</div></div>))}</div></div><div className="lg:w-1/2 p-6"><p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3"><i className="fas fa-cog text-gray-400 mr-2"></i>Detalles</p><div className="bg-gray-50 rounded-xl p-4 mb-4"><p className="text-sm font-medium text-gray-700 mb-3"><i className="fas fa-file-invoice-dollar text-amber-600 mr-2"></i>Tipo de comprobante</p><div className="grid grid-cols-2 gap-2"><button onClick={() => setInvoiceType('boleta')} className={`py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:border-cyan-300'}`}><i className="fas fa-receipt mr-1.5"></i>Boleta</button><button onClick={() => setInvoiceType('factura')} className={`py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${invoiceType === 'factura' ? 'bg-amber-500 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:border-amber-300'}`}><i className="fas fa-file-invoice mr-1.5"></i>Factura</button></div></div><div className="bg-gray-50 rounded-xl p-4 mb-4"><p className="text-sm font-medium text-gray-700 mb-3"><i className="fas fa-comment-alt text-cyan-500 mr-2"></i>Comentarios</p><textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Ej: Recoger muestra después de las 10am, tocar timbre 2 veces..." className="w-full px-3 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none text-sm resize-none" rows="3" maxLength="500" /><p className="text-xs text-gray-400 mt-1 text-right">{orderComment.length}/500</p></div>{renderTermsCheckbox()}<button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-3.5 rounded-xl font-semibold transition-all ${termsAccepted ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}><i className="fas fa-paper-plane mr-2"></i>Solicitar Pedido</button></div></div></div></div>}
@@ -6969,69 +6968,74 @@
                                     </div>
                                 </div>
                             </div>
-                            <div className="dueno-normal-content pb-6">
+                            <div className="dueno-normal-content pb-6" style={{position:'relative', minHeight: facDuenoSearchOpen ? '60vh' : 'auto'}}>
                                 <div className="lg:hidden" style={{height: facDuenoSearchOpen ? '120px' : '56px', transition:'height 0.2s ease-out'}}></div>
-                                <div className={`dueno-content-fade ${facDuenoSearchOpen ? 'hidden-fade' : ''}`}>
-                                {userInvoices.length === 0 ? (
-                                        <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
-                                            <i className="fas fa-file-invoice text-5xl text-gray-300 mb-4 block"></i>
-                                            <p className="text-gray-500 font-medium">No tienes comprobantes aún</p>
-                                            <p className="text-gray-400 text-sm mt-1">Tus boletas y facturas aparecerán aquí</p>
-                                        </div>
-                                    ) : (
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                            {userInvoices.map(inv => (
-                                                <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
-                                                            <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-xl`}></i>
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                            <p className="text-sm text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
-                                                            <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
-                                                        </div>
-                                                        <div className="flex items-center gap-2 flex-shrink-0">
-                                                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${inv.documentType === 'boleta' ? 'bg-cyan-100 text-cyan-700' : 'bg-amber-100 text-amber-700'}`}>{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</span>
-                                                            <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                
+                                {/* Overlay + search results */}
                                 {facDuenoSearchOpen && (
-                                    <div>
-                                    {(facDuenoSearchTerm.trim() || facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) ? (
-                                        filteredInvoices.length === 0 ? (
-                                            <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
-                                                <i className="fas fa-search text-4xl text-gray-300 mb-2"></i>
-                                                <p className="text-gray-500 text-sm">No se encontraron comprobantes</p>
-                                            </div>
-                                        ) : (
-                                            <div className="grid grid-cols-1 gap-3">
-                                                {filteredInvoices.map(inv => (
-                                                    <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
-                                                                <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-lg`}></i>
+                                    <div className="lg:hidden dueno-search-overlay" style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                        <div style={{height:'120px'}}></div>
+                                        <div style={{padding:'0 4px'}}>
+                                        {(facDuenoSearchTerm.trim() || facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) ? (
+                                            filteredInvoices.length === 0 ? (
+                                                <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+                                                    <i className="fas fa-search text-4xl text-gray-300 mb-2"></i>
+                                                    <p className="text-gray-500 text-sm">No se encontraron comprobantes</p>
+                                                </div>
+                                            ) : (
+                                                <div className="grid grid-cols-1 gap-3">
+                                                    {filteredInvoices.map(inv => (
+                                                        <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
+                                                                    <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-lg`}></i>
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <p className="font-semibold text-gray-800 text-sm">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                                                    <p className="text-xs text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
+                                                                    <p className="text-xs text-gray-400">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
+                                                                </div>
+                                                                <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
                                                             </div>
-                                                            <div className="flex-1 min-w-0">
-                                                                <p className="font-semibold text-gray-800 text-sm">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                                <p className="text-xs text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
-                                                                <p className="text-xs text-gray-400">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
-                                                            </div>
-                                                            <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
                                                         </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )
-                                    ) : null}
+                                                    ))}
+                                                </div>
+                                            )
+                                        ) : null}
+                                        </div>
                                     </div>
                                 )}
-                                </div>
+                                
+                                {/* Normal content - untouched */}
+                                {userInvoices.length === 0 ? (
+                                    <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
+                                        <i className="fas fa-file-invoice text-5xl text-gray-300 mb-4 block"></i>
+                                        <p className="text-gray-500 font-medium">No tienes comprobantes aún</p>
+                                        <p className="text-gray-400 text-sm mt-1">Tus boletas y facturas aparecerán aquí</p>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        {userInvoices.map(inv => (
+                                            <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
+                                                <div className="flex items-center gap-4">
+                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
+                                                        <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-xl`}></i>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                                        <p className="text-sm text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
+                                                        <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${inv.documentType === 'boleta' ? 'bg-cyan-100 text-cyan-700' : 'bg-amber-100 text-amber-700'}`}>{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</span>
+                                                        <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                             </div>);
                         })()}
 
