@@ -6421,7 +6421,7 @@
                                                     {selectedPaqueteDetail.price && <span className="text-cyan-600 font-bold text-base">S/ {selectedPaqueteDetail.price}</span>}
                                                 </div>
                                             </div>
-                                            <button onClick={() => setSelectedPaqueteDetail(null)} className="w-9 h-9 bg-white/40 hover:bg-white/60 rounded-full flex items-center justify-center text-gray-600 flex-shrink-0 transition-colors">
+                                            <button onClick={() => setSelectedPaqueteDetail(null)} className="w-9 h-9 bg-white rounded-full flex items-center justify-center text-gray-500 flex-shrink-0 shadow-sm">
                                                 <i className="fas fa-times text-base"></i>
                                             </button>
                                         </div>
@@ -6500,7 +6500,7 @@
                             {/* Overlay + search results */}
                             {pedidosSearchOpen && (
                                 <div className="lg:hidden dueno-search-overlay" style={{position:'absolute', top:'-12px', left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
-                                    <div style={{height:'112px'}}></div>
+                                    <div style={{height:'130px'}}></div>
                                     <div style={{padding:'0 20px'}}>
                                     {pedidosSearchTerm.trim() ? (() => {
                                         const s = pedidosSearchTerm.toLowerCase();
@@ -6577,7 +6577,7 @@
                                                             <i className="fas fa-clock"></i> {paquete.tiempo}
                                                         </span>
                                                         <button 
-                                                            onClick={(e) => { e.stopPropagation(); setSelectedPaqueteDetail(paquete); }}
+                                                            onClick={(e) => { e.stopPropagation(); setSelectedPaqueteDetail(paquete); document.querySelector('.app-content-dueno')?.scrollTo(0,0); }}
                                                             className="text-xs text-cyan-600 font-medium flex items-center gap-1 hover:text-cyan-700"
                                                         >
                                                             <i className="fas fa-info-circle"></i> Ver más
@@ -6969,7 +6969,7 @@
                                 {/* Overlay + search results */}
                                 {facDuenoSearchOpen && (
                                     <div className="lg:hidden dueno-search-overlay" style={{position:'absolute', top:'-12px', left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
-                                        <div style={{height:'132px'}}></div>
+                                        <div style={{height:'150px'}}></div>
                                         <div style={{padding:'0 20px'}}>
                                         {(facDuenoSearchTerm.trim() || facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) ? (
                                             filteredInvoices.length === 0 ? (
