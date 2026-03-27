@@ -5963,7 +5963,7 @@
                             </div>
                         </div>
                     ) : (
-                    <div className="app-content-dueno lg:ml-56" style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking || selectedPaqueteDetail) ? 'hidden' : 'auto'}}>
+                    <div className="app-content-dueno lg:ml-56" style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'hidden' : 'auto'}}>
                         <div className="dueno-content-wrapper">
                         
                         {/* === Vista PDF Resultado (inline desktop) === */}
@@ -6412,8 +6412,73 @@
                             </div>);
                         })()}
                         
+                        {/* === Vista detalle paquete (página completa) === */}
+                        {selectedPaqueteDetail && (
+                            <div className="dueno-normal-content">
+                                <div className="pb-20">
+                                    <button onClick={() => setSelectedPaqueteDetail(null)} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-4 mt-2">
+                                        <i className="fas fa-arrow-left text-sm"></i>
+                                        <span className="text-sm font-medium">Volver a pedidos</span>
+                                    </button>
+                                    
+                                    <div className={`${selectedPaqueteDetail.bg} rounded-2xl p-5 mb-4`}>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-14 h-14 bg-white/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                                <i className={`fas ${selectedPaqueteDetail.icon} ${selectedPaqueteDetail.color} text-2xl`}></i>
+                                            </div>
+                                            <div className="flex-1">
+                                                <h1 className="text-lg font-bold text-gray-800">{selectedPaqueteDetail.name}</h1>
+                                                <div className="flex items-center gap-3 mt-1">
+                                                    <span className="text-gray-600 text-xs flex items-center gap-1">
+                                                        <i className="fas fa-clock"></i> {selectedPaqueteDetail.tiempo}
+                                                    </span>
+                                                    {selectedPaqueteDetail.price && <span className="text-cyan-600 font-bold text-base">S/ {selectedPaqueteDetail.price}</span>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <p className="text-gray-600 text-sm mb-5">{selectedPaqueteDetail.description}</p>
+                                    
+                                    <div className="bg-white rounded-2xl shadow-sm p-4 mb-4">
+                                        <h3 className="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2">
+                                            <i className="fas fa-list-check text-cyan-500"></i> Incluye
+                                        </h3>
+                                        <ul className="space-y-2">
+                                            {selectedPaqueteDetail.incluye.map((item, idx) => (
+                                                <li key={idx} className="text-gray-600 text-sm flex items-start gap-2">
+                                                    <i className="fas fa-check text-emerald-500 mt-0.5"></i> {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    
+                                    <div className="bg-white rounded-2xl shadow-sm p-4 mb-6">
+                                        <h3 className="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2">
+                                            <i className="fas fa-microscope text-purple-500"></i> ¿Qué evalúa?
+                                        </h3>
+                                        <div className="space-y-3">
+                                            {selectedPaqueteDetail.evalua.map((item, idx) => (
+                                                <div key={idx} className="border-l-4 border-purple-200 pl-3 py-1">
+                                                    <p className="text-gray-800 font-medium text-sm">{item.nombre}</p>
+                                                    <p className="text-gray-500 text-xs">{item.desc}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    <button 
+                                        onClick={() => { handleExamClick(selectedPaqueteDetail); setSelectedPaqueteDetail(null); }}
+                                        className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg"
+                                    >
+                                        <i className="fas fa-plus-circle"></i> Agregar al pedido
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        
                         {/* === Vistas normales: Pedidos y Resultados === */}
-                        {!viewingOrderTracking && !selectedExam && !viewingInvoice && !(selectedPet && activeTab === 'resultados') && !currentExamForPet && !facturacionInvoice && (
+                        {!viewingOrderTracking && !selectedExam && !viewingInvoice && !(selectedPet && activeTab === 'resultados') && !currentExamForPet && !facturacionInvoice && !selectedPaqueteDetail && (
                         <div>
                         {/* Mobile: Fixed search header for Pedidos */}
                         {activeTab === 'pedidos' && (
@@ -6568,69 +6633,6 @@
                             </div>
                             
                             {/* Modal de detalles del paquete */}
-                            {selectedPaqueteDetail && (
-                                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6" onClick={() => setSelectedPaqueteDetail(null)} style={{overflow:'hidden'}}>
-                                    <div className="bg-white rounded-2xl w-full max-w-sm max-h-[80vh] overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                                        <div className={`${selectedPaqueteDetail.bg} p-4`}>
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                                                        <i className={`fas ${selectedPaqueteDetail.icon} ${selectedPaqueteDetail.color} text-xl`}></i>
-                                                    </div>
-                                                    <div>
-                                                        <h2 className="text-base font-bold text-gray-800">{selectedPaqueteDetail.name}</h2>
-                                                        <div className="flex items-center gap-2 mt-0.5">
-                                                            <p className="text-gray-600 text-xs flex items-center gap-1">
-                                                                <i className="fas fa-clock"></i> {selectedPaqueteDetail.tiempo}
-                                                            </p>
-                                                            {selectedPaqueteDetail.price && <span className="text-cyan-600 font-bold text-sm">S/ {selectedPaqueteDetail.price}</span>}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <button onClick={() => setSelectedPaqueteDetail(null)} className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600 flex-shrink-0">
-                                                    <i className="fas fa-times text-lg"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="p-4 overflow-y-auto max-h-[45vh]">
-                                            <p className="text-gray-600 text-xs mb-3">{selectedPaqueteDetail.description}</p>
-                                            <div className="mb-3">
-                                                <h3 className="font-bold text-gray-800 text-xs mb-1.5 flex items-center gap-1.5">
-                                                    <i className="fas fa-list-check text-cyan-500"></i> Incluye:
-                                                </h3>
-                                                <ul className="space-y-0.5">
-                                                    {selectedPaqueteDetail.incluye.map((item, idx) => (
-                                                        <li key={idx} className="text-gray-600 text-xs flex items-start gap-1.5">
-                                                            <i className="fas fa-check text-emerald-500 mt-0.5 text-xs"></i> {item}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                            <div>
-                                                <h3 className="font-bold text-gray-800 text-xs mb-1.5 flex items-center gap-1.5">
-                                                    <i className="fas fa-microscope text-purple-500"></i> ¿Qué evalúa?
-                                                </h3>
-                                                <div className="space-y-2">
-                                                    {selectedPaqueteDetail.evalua.map((item, idx) => (
-                                                        <div key={idx} className="border-l-3 border-purple-200 pl-3 py-0.5">
-                                                            <p className="text-gray-800 font-medium text-xs">{item.nombre}</p>
-                                                            <p className="text-gray-500" style={{fontSize:'10px'}}>{item.desc}</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="p-3 border-t bg-gray-50">
-                                            <button 
-                                                onClick={() => { handleExamClick(selectedPaqueteDetail); setSelectedPaqueteDetail(null); }}
-                                                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
-                                            >
-                                                <i className="fas fa-plus-circle"></i> Agregar al pedido
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                             </div>
                             {/* Search results - shown when search open */}
                             {pedidosSearchOpen && pedidosSearchTerm.trim() && (() => {
