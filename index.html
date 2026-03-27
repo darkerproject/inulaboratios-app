@@ -6930,28 +6930,27 @@
                                             className="w-full h-8 pl-9 pr-8 border border-gray-200 focus:border-amber-500 focus:outline-none bg-gray-50 text-xs dueno-search-pill" />
                                         {facDuenoSearchTerm && <button onClick={() => setFacDuenoSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times text-sm"></i></button>}
                                     </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="text-xs text-gray-400 flex-shrink-0">Filtrar:</span>
-                                        <div className="relative">
-                                            <select value={facDuenoFilterDay} onChange={(e) => setFacDuenoFilterDay(e.target.value)} className="h-7 w-14 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-amber-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill">
+                                    <div className="flex items-center gap-2">
+                                        <div className="relative flex-1">
+                                            <select value={facDuenoFilterDay} onChange={(e) => setFacDuenoFilterDay(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-amber-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center">
                                                 <option value="">Día</option>
                                                 {[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}
                                             </select>
-                                            <i className="fas fa-chevron-down absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
+                                            <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
                                         </div>
-                                        <div className="relative">
-                                            <select value={facDuenoFilterMonth} onChange={(e) => setFacDuenoFilterMonth(e.target.value)} className="h-7 w-16 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-amber-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill">
+                                        <div className="relative flex-1">
+                                            <select value={facDuenoFilterMonth} onChange={(e) => setFacDuenoFilterMonth(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-amber-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center">
                                                 <option value="">Mes</option>
                                                 {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}
                                             </select>
-                                            <i className="fas fa-chevron-down absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
+                                            <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
                                         </div>
-                                        <div className="relative">
-                                            <select value={facDuenoFilterYear} onChange={(e) => setFacDuenoFilterYear(e.target.value)} className="h-7 w-16 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-amber-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill">
+                                        <div className="relative flex-1">
+                                            <select value={facDuenoFilterYear} onChange={(e) => setFacDuenoFilterYear(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-amber-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center">
                                                 <option value="">Año</option>
                                                 {['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}
                                             </select>
-                                            <i className="fas fa-chevron-down absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
+                                            <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
                                         </div>
                                         {(facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) && (
                                             <button onClick={() => { setFacDuenoFilterDay(''); setFacDuenoFilterMonth(''); setFacDuenoFilterYear(''); }} className="h-7 w-7 rounded-full bg-red-100 text-red-500 flex items-center justify-center flex-shrink-0">
