@@ -6406,12 +6406,8 @@
                         {selectedPaqueteDetail && (
                             <div className="dueno-normal-content">
                                 <div className="pb-20">
-                                    <button onClick={() => setSelectedPaqueteDetail(null)} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-4 mt-2">
-                                        <i className="fas fa-arrow-left text-sm"></i>
-                                        <span className="text-sm font-medium">Volver a pedidos</span>
-                                    </button>
                                     
-                                    <div className={`${selectedPaqueteDetail.bg} rounded-2xl p-5 mb-4`}>
+                                    <div className={`${selectedPaqueteDetail.bg} rounded-2xl p-5 mb-4 mt-2`}>
                                         <div className="flex items-center gap-4">
                                             <div className="w-14 h-14 bg-white/30 rounded-2xl flex items-center justify-center flex-shrink-0">
                                                 <i className={`fas ${selectedPaqueteDetail.icon} ${selectedPaqueteDetail.color} text-2xl`}></i>
@@ -6425,6 +6421,9 @@
                                                     {selectedPaqueteDetail.price && <span className="text-cyan-600 font-bold text-base">S/ {selectedPaqueteDetail.price}</span>}
                                                 </div>
                                             </div>
+                                            <button onClick={() => setSelectedPaqueteDetail(null)} className="w-9 h-9 bg-white/40 hover:bg-white/60 rounded-full flex items-center justify-center text-gray-600 flex-shrink-0 transition-colors">
+                                                <i className="fas fa-times text-base"></i>
+                                            </button>
                                         </div>
                                     </div>
                                     
