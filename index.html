@@ -431,12 +431,12 @@
                 transition: max-height 0.25s ease-out, opacity 0.2s ease-out, transform 0.2s ease-out, padding 0.25s ease-out;
             }
             .dueno-content-fade {
-                opacity: 1;
+                opacity: 1 !important;
                 transform: translateY(0);
                 transition: opacity 0.2s ease-out, transform 0.2s ease-out;
             }
             .dueno-content-fade.hidden-fade {
-                opacity: 0;
+                opacity: 0 !important;
                 transform: translateY(6px);
                 pointer-events: none;
             }
@@ -6438,10 +6438,9 @@
                         )}
                         <div className="dueno-normal-content">
                         {activeTab === 'pedidos' && (<div className="pb-20">
-                            <div className="lg:hidden" style={{height:'56px'}}></div>
+                            <div className="lg:hidden" style={{height: pedidosSearchOpen ? '100px' : '56px', transition:'height 0.2s ease-out'}}></div>
                             {/* Normal content - fades out when search open */}
                             <div className={`dueno-content-fade ${pedidosSearchOpen ? 'hidden-fade' : ''}`}>
-                            {/* Vista para DUEÑOS - Paquetes amigables */}
                             <div className="mb-6 mt-4 lg:mt-0">
                                 <h2 className="text-xl font-bold text-gray-800 mb-1">¿Qué necesita tu mascota?</h2>
                                 <p className="text-gray-500 text-sm">Selecciona el servicio que mejor se adapte a tu situación</p>
@@ -6966,7 +6965,7 @@
                                 </div>
                             </div>
                             <div className="dueno-normal-content pb-6">
-                                <div className="lg:hidden" style={{height:'56px'}}></div>
+                                <div className="lg:hidden" style={{height: facDuenoSearchOpen ? '120px' : '56px', transition:'height 0.2s ease-out'}}></div>
                                 <div className={`dueno-content-fade ${facDuenoSearchOpen ? 'hidden-fade' : ''}`}>
                                 {userInvoices.length === 0 ? (
                                         <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
