@@ -415,6 +415,18 @@
                 border-radius: 500px !important;
                 -webkit-border-radius: 500px !important;
             }
+            .dueno-search-slide {
+                max-height: 0;
+                overflow: hidden;
+                opacity: 0;
+                transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
+                padding: 0 16px;
+            }
+            .dueno-search-slide.open {
+                max-height: 60px;
+                opacity: 1;
+                padding: 8px 16px 12px;
+            }
             .mob-nav-badge {
                 position: absolute;
                 top: 4px;
@@ -1300,6 +1312,7 @@
             const [showTermsModal, setShowTermsModal] = useState(false);
             const [showTechnicalExams, setShowTechnicalExams] = useState(false);
             const [pedidosSearchTerm, setPedidosSearchTerm] = useState('');
+            const [pedidosSearchOpen, setPedidosSearchOpen] = useState(false);
             const [showTomaMuestraStep, setShowTomaMuestraStep] = useState(false);
             const [pendingOrderAddress, setPendingOrderAddress] = useState(null);
 
@@ -2324,7 +2337,7 @@
             const entityName = freshUser.type === 'medico' ? 'paciente' : 'mascota';
             const filteredPets = petSearchTerm.trim() === '' ? petsOrPatients : petsOrPatients.filter(p => p.name.toLowerCase().includes(petSearchTerm.toLowerCase()));
             const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); };
-            const switchDuenoTab = (tab) => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setPedidosSearchTerm(''); setActiveTab(tab); };
+            const switchDuenoTab = (tab) => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setPedidosSearchTerm(''); setPedidosSearchOpen(false); setActiveTab(tab); };
             
             const renderDuenoHeader = () => (
                 <>
@@ -6368,22 +6381,28 @@
                         <div>
                         {/* Mobile: Fixed search header for Pedidos */}
                         {activeTab === 'pedidos' && (
-                            <div className="lg:hidden px-4 py-3" style={{boxShadow:'0 2px 8px rgba(0,0,0,0.12)', position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:100, background:'linear-gradient(135deg, #06b6d4, #0284c7)'}}>
-                                <div className="flex items-center gap-3">
-                                    <h2 className="text-base font-bold text-white flex items-center gap-2 flex-shrink-0"><i className="fas fa-clipboard-list text-white"></i>Pedidos</h2>
-                                    <div className="relative flex-1">
+                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:100, background:'white'}}>
+                                <div className="flex items-center justify-between px-4 py-3">
+                                    <h2 className="text-base font-bold text-gray-800 flex items-center gap-2"><i className="fas fa-clipboard-list text-cyan-500"></i>Pedidos</h2>
+                                    <button onClick={() => { setPedidosSearchOpen(!pedidosSearchOpen); if (pedidosSearchOpen) setPedidosSearchTerm(''); }} className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${pedidosSearchOpen ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+                                        <i className={`fas ${pedidosSearchOpen ? 'fa-times' : 'fa-search'} text-sm`}></i>
+                                    </button>
+                                </div>
+                                <div className={`dueno-search-slide ${pedidosSearchOpen ? 'open' : ''}`} style={{boxShadow: pedidosSearchOpen ? '0 4px 12px rgba(0,0,0,0.1)' : 'none', borderBottom: pedidosSearchOpen ? '1px solid #e5e7eb' : 'none'}}>
+                                    <div className="relative">
                                         <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                                         <input type="text" value={pedidosSearchTerm} onChange={(e) => setPedidosSearchTerm(e.target.value)} 
-                                            placeholder="Buscar examen..." 
-                                            className="w-full h-8 pl-9 pr-8 border border-white/30 focus:border-white focus:outline-none bg-white text-xs dueno-search-pill" />
+                                            placeholder="Buscar examen o servicio..." 
+                                            className="w-full h-9 pl-9 pr-8 border border-gray-300 focus:border-cyan-500 focus:outline-none bg-gray-50 text-xs dueno-search-pill" />
                                         {pedidosSearchTerm && <button onClick={() => setPedidosSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times text-sm"></i></button>}
                                     </div>
                                 </div>
+                                {!pedidosSearchOpen && <div style={{height:'1px', background:'#e5e7eb'}}></div>}
                             </div>
                         )}
                         <div className="dueno-normal-content">
                         {activeTab === 'pedidos' && (<div className="pb-20">
-                            <div className="lg:hidden" style={{height:'52px'}}></div>
+                            <div className="lg:hidden" style={{height:'48px'}}></div>
                             {/* Search results - flat list */}
                             {pedidosSearchTerm.trim() && (() => {
                                 const s = pedidosSearchTerm.toLowerCase();
