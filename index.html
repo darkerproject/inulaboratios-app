@@ -419,8 +419,8 @@
                 max-height: 0;
                 overflow: hidden;
                 opacity: 0;
-                transform: translateY(-8px);
-                transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.3s ease, padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                transform: translateY(-4px);
+                transition: max-height 0.2s ease-out, opacity 0.15s ease-out, transform 0.2s ease-out, padding 0.2s ease-out;
                 padding: 0 16px;
             }
             .dueno-search-slide.open {
@@ -428,6 +428,7 @@
                 opacity: 1;
                 transform: translateY(0);
                 padding: 4px 16px 12px;
+                transition: max-height 0.25s ease-out, opacity 0.2s ease-out, transform 0.2s ease-out, padding 0.25s ease-out;
             }
             .mob-nav-badge {
                 position: absolute;
@@ -6383,7 +6384,7 @@
                         <div>
                         {/* Mobile: Fixed search header for Pedidos */}
                         {activeTab === 'pedidos' && (
-                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:100, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: pedidosSearchOpen ? '14px' : '0', borderBottomRightRadius: pedidosSearchOpen ? '14px' : '0', transition:'border-radius 0.35s cubic-bezier(0.4,0,0.2,1)', overflow:'hidden'}}>
+                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:100, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: pedidosSearchOpen ? '14px' : '0', borderBottomRightRadius: pedidosSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                 <div style={{padding:'10px 16px'}}>
                                     <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl px-3 py-1.5 flex items-center gap-2">
                                         <i className="fas fa-clipboard-list text-white text-sm"></i>
