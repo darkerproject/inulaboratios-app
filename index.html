@@ -433,12 +433,15 @@
             .dueno-content-fade {
                 opacity: 1 !important;
                 transform: translateY(0);
-                transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+                transition: opacity 0.2s ease-out, transform 0.2s ease-out, max-height 0.2s ease-out;
+                max-height: 5000px;
+                overflow: hidden;
             }
             .dueno-content-fade.hidden-fade {
                 opacity: 0 !important;
                 transform: translateY(6px);
                 pointer-events: none;
+                max-height: 0;
             }
             .dueno-search-slide-filters {
                 max-height: 0;
