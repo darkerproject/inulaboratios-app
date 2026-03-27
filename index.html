@@ -6360,7 +6360,8 @@
                         })()}
                         
                         {/* === Vistas normales: Pedidos y Resultados === */}
-                        {!viewingOrderTracking && !selectedExam && !viewingInvoice && !(selectedPet && activeTab === 'resultados') && !currentExamForPet && !facturacionInvoice && (<>
+                        {!viewingOrderTracking && !selectedExam && !viewingInvoice && !(selectedPet && activeTab === 'resultados') && !currentExamForPet && !facturacionInvoice && (
+                        <div>
                         {/* Mobile: Fixed search header for Pedidos */}
                         {activeTab === 'pedidos' && (
                             <div className="lg:hidden bg-gray-100 px-4 pt-3 pb-3" style={{boxShadow:'0 2px 8px rgba(0,0,0,0.08)', position:'relative', zIndex:10}}>
@@ -6880,7 +6881,7 @@
                         })()}
 
                         </div>
-                        </>)}
+                        </div>)}
                         </div>
                     </div>
                     )}
