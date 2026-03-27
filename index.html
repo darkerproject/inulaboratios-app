@@ -423,12 +423,13 @@
                 transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.3s ease, padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
                 padding: 0 16px;
                 background: white;
+                border-radius: 0 0 12px 12px;
             }
             .dueno-search-slide.open {
                 max-height: 60px;
                 opacity: 1;
                 transform: translateY(0);
-                padding: 10px 16px 14px;
+                padding: 6px 16px 12px;
             }
             .mob-nav-badge {
                 position: absolute;
@@ -6386,7 +6387,7 @@
                         {activeTab === 'pedidos' && (
                             <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:100, background:'white', boxShadow:'0 2px 8px rgba(0,0,0,0.08)'}}>
                                 <div style={{padding:'10px 16px'}}>
-                                    <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl px-3 py-2.5 flex items-center gap-2">
+                                    <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl px-3 py-2 flex items-center gap-2">
                                         <i className="fas fa-clipboard-list text-white text-sm"></i>
                                         <span className="text-white font-semibold text-sm">Pedidos</span>
                                         <span className="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">{paquetesDuenos.length + (perfilesDuenos||[]).length + (categoriasDuenos||[]).flatMap(c=>c.examenes).length}</span>
