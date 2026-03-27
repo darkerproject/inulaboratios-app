@@ -430,6 +430,16 @@
                 padding: 4px 16px 12px;
                 transition: max-height 0.25s ease-out, opacity 0.2s ease-out, transform 0.2s ease-out, padding 0.25s ease-out;
             }
+            .dueno-content-fade {
+                opacity: 1;
+                transform: translateY(0);
+                transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+            }
+            .dueno-content-fade.hidden-fade {
+                opacity: 0;
+                transform: translateY(6px);
+                pointer-events: none;
+            }
             .dueno-search-slide-filters {
                 max-height: 0;
                 overflow: hidden;
@@ -6962,20 +6972,16 @@
                             </div>
                             <div className="dueno-normal-content pb-6">
                                 <div className="lg:hidden" style={{height:'56px'}}></div>
+                                <div className={`dueno-content-fade ${facDuenoSearchOpen ? 'hidden-fade' : ''}`}>
                                 {userInvoices.length === 0 ? (
                                         <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
                                             <i className="fas fa-file-invoice text-5xl text-gray-300 mb-4 block"></i>
                                             <p className="text-gray-500 font-medium">No tienes comprobantes aún</p>
                                             <p className="text-gray-400 text-sm mt-1">Tus boletas y facturas aparecerán aquí</p>
                                         </div>
-                                    ) : filteredInvoices.length === 0 ? (
-                                        <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
-                                            <i className="fas fa-search text-4xl text-gray-300 mb-2"></i>
-                                            <p className="text-gray-500">No se encontraron comprobantes</p>
-                                        </div>
                                     ) : (
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                            {filteredInvoices.map(inv => (
+                                            {userInvoices.map(inv => (
                                                 <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
                                                     <div className="flex items-center gap-4">
                                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
@@ -6995,6 +7001,37 @@
                                             ))}
                                         </div>
                                     )}
+                                </div>
+                                {facDuenoSearchOpen && (
+                                    <div>
+                                    {(facDuenoSearchTerm.trim() || facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) ? (
+                                        filteredInvoices.length === 0 ? (
+                                            <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+                                                <i className="fas fa-search text-4xl text-gray-300 mb-2"></i>
+                                                <p className="text-gray-500 text-sm">No se encontraron comprobantes</p>
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-1 gap-3">
+                                                {filteredInvoices.map(inv => (
+                                                    <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
+                                                                <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-lg`}></i>
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="font-semibold text-gray-800 text-sm">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                                                <p className="text-xs text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
+                                                                <p className="text-xs text-gray-400">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
+                                                            </div>
+                                                            <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )
+                                    ) : null}
+                                    </div>
+                                )}
                                 </div>
                             </div>);
                         })()}
