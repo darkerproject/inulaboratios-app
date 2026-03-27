@@ -419,19 +419,17 @@
                 max-height: 0;
                 overflow: hidden;
                 opacity: 0;
-                transform: translateY(-4px);
-                transition: max-height 0.2s ease-out, opacity 0.15s ease-out, transform 0.2s ease-out, padding 0.2s ease-out;
+                transition: max-height 0.2s ease-out, opacity 0.2s ease-out, padding 0.2s ease-out;
                 padding: 0 16px;
+                will-change: max-height, opacity;
             }
             .dueno-search-slide.open {
                 max-height: 60px;
                 opacity: 1;
-                transform: translateY(0);
                 padding: 4px 16px 12px;
-                transition: max-height 0.25s ease-out, opacity 0.2s ease-out, transform 0.2s ease-out, padding 0.25s ease-out;
             }
             .dueno-search-overlay {
-                animation: overlayFadeIn 0.2s ease-out;
+                animation: overlayFadeIn 0.15s ease-out;
             }
             @keyframes overlayFadeIn {
                 from { opacity: 0; }
@@ -441,16 +439,14 @@
                 max-height: 0;
                 overflow: hidden;
                 opacity: 0;
-                transform: translateY(-4px);
-                transition: max-height 0.2s ease-out, opacity 0.15s ease-out, transform 0.2s ease-out, padding 0.2s ease-out;
+                transition: max-height 0.2s ease-out, opacity 0.2s ease-out, padding 0.2s ease-out;
                 padding: 0 16px;
+                will-change: max-height, opacity;
             }
             .dueno-search-slide-filters.open {
                 max-height: 120px;
                 opacity: 1;
-                transform: translateY(0);
                 padding: 4px 16px 12px;
-                transition: max-height 0.25s ease-out, opacity 0.2s ease-out, transform 0.2s ease-out, padding 0.25s ease-out;
             }
             .mob-nav-badge {
                 position: absolute;
@@ -6504,9 +6500,9 @@
                             
                             {/* Overlay + search results */}
                             {pedidosSearchOpen && (
-                                <div className="lg:hidden dueno-search-overlay" style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:5}}>
-                                    <div style={{height:'100px'}}></div>
-                                    <div style={{padding:'0 4px'}}>
+                                <div className="lg:hidden dueno-search-overlay" style={{position:'absolute', top:'-12px', left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                    <div style={{height:'112px'}}></div>
+                                    <div style={{padding:'0 20px'}}>
                                     {pedidosSearchTerm.trim() ? (() => {
                                         const s = pedidosSearchTerm.toLowerCase();
                                         const synonyms = [s];
@@ -6973,9 +6969,9 @@
                                 
                                 {/* Overlay + search results */}
                                 {facDuenoSearchOpen && (
-                                    <div className="lg:hidden dueno-search-overlay" style={{position:'absolute', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:5}}>
-                                        <div style={{height:'120px'}}></div>
-                                        <div style={{padding:'0 4px'}}>
+                                    <div className="lg:hidden dueno-search-overlay" style={{position:'absolute', top:'-12px', left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                        <div style={{height:'132px'}}></div>
+                                        <div style={{padding:'0 20px'}}>
                                         {(facDuenoSearchTerm.trim() || facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) ? (
                                             filteredInvoices.length === 0 ? (
                                                 <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
