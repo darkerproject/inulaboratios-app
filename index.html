@@ -6238,7 +6238,7 @@
                                         <i className="fas fa-arrow-left text-xs"></i>
                                     </button>
                                     <div className="flex-1 min-w-0">
-                                        <p className="font-bold text-gray-800 text-sm truncate">{facturacionInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}{facturacionInvoice.items?.[0] ? ` · ${facturacionInvoice.items[0].exam?.name}` : ''}{facturacionInvoice.items?.[0]?.pet ? ` · ${facturacionInvoice.items[0].pet.name}` : ''}</p>
+                                        <p className="font-bold text-gray-800 text-sm truncate">{facturacionInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
                                         <p className="text-gray-500 text-xs">{new Date(facturacionInvoice.createdAt || facturacionInvoice.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
                                     </div>
                                 </div>
@@ -6269,7 +6269,7 @@
                                         </button>
                                         <div className="flex items-center gap-2 px-2">
                                             <i className={`fas ${facturacionInvoice.documentType === 'boleta' ? 'fa-receipt text-cyan-500' : 'fa-file-invoice-dollar text-amber-500'} text-lg`}></i>
-                                            <span className={`font-semibold ${facturacionInvoice.documentType === 'boleta' ? 'text-cyan-600' : 'text-amber-600'}`}>{facturacionInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}{facturacionInvoice.items?.[0] ? ` · ${facturacionInvoice.items[0].exam?.name}` : ''}{facturacionInvoice.items?.[0]?.pet ? ` · ${facturacionInvoice.items[0].pet.name}` : ''}</span>
+                                            <span className={`font-semibold ${facturacionInvoice.documentType === 'boleta' ? 'text-cyan-600' : 'text-amber-600'}`}>{facturacionInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}</span>
                                         </div>
                                         <span className="text-gray-500 text-sm">{new Date(facturacionInvoice.createdAt || facturacionInvoice.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</span>
                                     </div>
