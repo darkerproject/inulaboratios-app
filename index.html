@@ -1406,7 +1406,7 @@
             };
 
             const renderTermsModal = () => showTermsModal && (
-                <div className="fixed flex flex-col bg-white" style={{zIndex:999999, top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))'}}>
+                <div className="fixed flex flex-col bg-white" style={{zIndex:9998, top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))'}}>
                     {/* Franja cyan header */}
                     <div className="bg-cyan-500 px-4 py-3 flex items-center justify-between flex-shrink-0">
                         <div className="flex items-center gap-2">
@@ -2411,7 +2411,7 @@
             const entityName = freshUser.type === 'medico' ? 'paciente' : 'mascota';
             const filteredPets = petSearchTerm.trim() === '' ? petsOrPatients : petsOrPatients.filter(p => p.name.toLowerCase().includes(petSearchTerm.toLowerCase()));
             const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); };
-            const switchDuenoTab = (tab) => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setPedidosSearchTerm(''); setPedidosSearchOpen(false); setPetResSearchOpen(false); setFacDuenoSearchTerm(''); setFacDuenoSearchOpen(false); setFacDuenoFilterDay(''); setFacDuenoFilterMonth(''); setFacDuenoFilterYear(''); setActiveTab(tab); };
+            const switchDuenoTab = (tab) => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setShowTermsModal(false); setPedidosSearchTerm(''); setPedidosSearchOpen(false); setPetResSearchOpen(false); setFacDuenoSearchTerm(''); setFacDuenoSearchOpen(false); setFacDuenoFilterDay(''); setFacDuenoFilterMonth(''); setFacDuenoFilterYear(''); setActiveTab(tab); };
             
             const renderDuenoHeader = () => (
                 <>
@@ -7119,7 +7119,7 @@
                     )}
 
                     {/* ── Bottom Navigation Bar (Dueño) - Mobile only ── */}
-                    <div className="mob-bottom-nav lg:hidden">
+                    <div className="mob-bottom-nav lg:hidden" style={{zIndex:99999}}>
                         <div className="mob-bottom-nav-inner">
                             <button className={`mob-nav-btn ${activeTab === 'pedidos' && duenoView !== 'config' ? 'active' : ''}`}
                                 onClick={() => switchDuenoTab('pedidos')}>
