@@ -6213,8 +6213,8 @@
                             {/* Mobile: Fixed header */}
                             <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:100, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: petResSearchOpen ? '14px' : '0', borderBottomRightRadius: petResSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                 <div style={{padding:'10px 16px'}}>
-                                    <div className="rounded-xl px-3 py-1.5 flex items-center gap-2" style={{background:'#e8e8ec'}}>
-                                        <button onClick={() => { setSelectedPet(null); setPetResSearchOpen(false); setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="dueno-circle-btn flex items-center justify-center bg-white/40 text-gray-600 flex-shrink-0 active:bg-white/60">
+                                    <div className="bg-gray-100 rounded-xl px-3 py-1.5 flex items-center gap-2">
+                                        <button onClick={() => { setSelectedPet(null); setPetResSearchOpen(false); setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="dueno-circle-btn flex items-center justify-center bg-white/70 text-gray-600 flex-shrink-0 active:bg-white/90">
                                             <i className="fas fa-arrow-left text-xs"></i>
                                         </button>
                                         <span className="text-lg">{currentPet.photo}</span>
@@ -6223,7 +6223,7 @@
                                             <p className="text-cyan-600 truncate" style={{fontSize:'10px'}}>{currentPet.breed} · {formatAge(currentPet)} · {currentPet.sex}</p>
                                         </div>
                                         <span className="bg-cyan-500 text-white text-xs px-2 py-0.5 rounded-full flex-shrink-0">{currentPet.exams.length}</span>
-                                        <button onClick={() => { setPetResSearchOpen(!petResSearchOpen); if (petResSearchOpen) { setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); } }} className="dueno-circle-btn flex items-center justify-center bg-white/40 text-gray-600 flex-shrink-0 active:bg-white/60">
+                                        <button onClick={() => { setPetResSearchOpen(!petResSearchOpen); if (petResSearchOpen) { setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); } }} className="dueno-circle-btn flex items-center justify-center bg-white/70 text-gray-600 flex-shrink-0 active:bg-white/90">
                                             <i className={`fas ${petResSearchOpen ? 'fa-times' : 'fa-search'} text-xs`}></i>
                                         </button>
                                     </div>
