@@ -1325,6 +1325,7 @@
             const [examFilterDay, setExamFilterDay] = useState('');
             const [examFilterMonth, setExamFilterMonth] = useState('');
             const [examFilterYear, setExamFilterYear] = useState('');
+            const [petResSearchOpen, setPetResSearchOpen] = useState(false);
             const [menuOpen, setMenuOpen] = useState(false);
             const [duenoMenuOpen, setDuenoMenuOpen] = useState(false);
             const [duenoView, setDuenoView] = useState('main'); // 'main' o 'config'
@@ -2363,7 +2364,7 @@
             const entityName = freshUser.type === 'medico' ? 'paciente' : 'mascota';
             const filteredPets = petSearchTerm.trim() === '' ? petsOrPatients : petsOrPatients.filter(p => p.name.toLowerCase().includes(petSearchTerm.toLowerCase()));
             const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); };
-            const switchDuenoTab = (tab) => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setPedidosSearchTerm(''); setPedidosSearchOpen(false); setFacDuenoSearchTerm(''); setFacDuenoSearchOpen(false); setFacDuenoFilterDay(''); setFacDuenoFilterMonth(''); setFacDuenoFilterYear(''); setActiveTab(tab); };
+            const switchDuenoTab = (tab) => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setPedidosSearchTerm(''); setPedidosSearchOpen(false); setPetResSearchOpen(false); setFacDuenoSearchTerm(''); setFacDuenoSearchOpen(false); setFacDuenoFilterDay(''); setFacDuenoFilterMonth(''); setFacDuenoFilterYear(''); setActiveTab(tab); };
             
             const renderDuenoHeader = () => (
                 <>
@@ -6199,11 +6200,136 @@
                         {/* === Vista Perfil de Mascota (inline) === */}
                         {!viewingOrderTracking && !selectedExam && !viewingInvoice && selectedPet && activeTab === 'resultados' && (() => {
                             const currentPet = petsOrPatients.find(p => p.id === selectedPet.id) || selectedPet;
+                            const mobileFilteredExams = filterExams(currentPet.exams);
                             return (
-                            <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
-                                {/* Sección 1: Header fijo con info de mascota */}
+                            <div>
+                            {/* ===== MOBILE: Fixed header with gray strip ===== */}
+                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:100, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: petResSearchOpen ? '14px' : '0', borderBottomRightRadius: petResSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
+                                <div style={{padding:'10px 16px'}}>
+                                    <div className="bg-gray-200 rounded-xl px-3 py-1.5 flex items-center gap-2">
+                                        <button onClick={() => { setSelectedPet(null); setPetResSearchOpen(false); setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="w-7 h-7 rounded-full flex items-center justify-center bg-white text-gray-500 flex-shrink-0">
+                                            <i className="fas fa-arrow-left text-xs"></i>
+                                        </button>
+                                        <span className="text-lg">{currentPet.photo}</span>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-gray-800 font-semibold text-sm leading-tight truncate">{getPetFullName(currentPet)}</p>
+                                            <p className="text-gray-500 truncate" style={{fontSize:'10px'}}>{currentPet.breed} · {formatAge(currentPet)} · {currentPet.sex}</p>
+                                        </div>
+                                        <span className="bg-gray-400 text-white text-xs px-2 py-0.5 rounded-full flex-shrink-0">{currentPet.exams.length}</span>
+                                        <button onClick={() => { setPetResSearchOpen(!petResSearchOpen); if (petResSearchOpen) { setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); } }} className="w-7 h-7 rounded-full flex items-center justify-center bg-white text-gray-500 flex-shrink-0">
+                                            <i className={`fas ${petResSearchOpen ? 'fa-times' : 'fa-search'} text-xs`}></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className={`dueno-search-slide-filters ${petResSearchOpen ? 'open' : ''}`}>
+                                    <div className="relative mb-2">
+                                        <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                        <input type="text" value={examSearchTerm} onChange={(e) => setExamSearchTerm(e.target.value)} 
+                                            placeholder="Buscar examen..." 
+                                            className="w-full h-8 pl-9 pr-8 border border-gray-200 focus:border-purple-500 focus:outline-none bg-gray-50 text-xs dueno-search-pill" />
+                                        {examSearchTerm && <button onClick={() => setExamSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times text-sm"></i></button>}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="relative flex-1">
+                                            <select value={examFilterDay} onChange={(e) => setExamFilterDay(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-purple-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center">
+                                                <option value="">Día</option>
+                                                {[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
+                                        </div>
+                                        <div className="relative flex-1">
+                                            <select value={examFilterMonth} onChange={(e) => setExamFilterMonth(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-purple-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center">
+                                                <option value="">Mes</option>
+                                                {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
+                                        </div>
+                                        <div className="relative flex-1">
+                                            <select value={examFilterYear} onChange={(e) => setExamFilterYear(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-purple-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center">
+                                                <option value="">Año</option>
+                                                {['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}
+                                            </select>
+                                            <i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i>
+                                        </div>
+                                        {(examFilterDay || examFilterMonth || examFilterYear) && (
+                                            <button onClick={() => { setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="h-7 w-7 rounded-full bg-red-100 text-red-500 flex items-center justify-center flex-shrink-0">
+                                                <i className="fas fa-times" style={{fontSize:'8px'}}></i>
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* ===== MOBILE: Content area ===== */}
+                            <div className="lg:hidden dueno-normal-content pb-20" style={{position:'relative', minHeight: petResSearchOpen ? '60vh' : 'auto'}}>
+                                <div style={{height: petResSearchOpen ? '120px' : '56px', transition:'height 0.2s ease-out'}}></div>
+                                
+                                {/* Overlay */}
+                                {petResSearchOpen && (
+                                    <div className="dueno-search-overlay" style={{position:'absolute', top:'-12px', left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                        <div style={{height:'150px'}}></div>
+                                        <div style={{padding:'0 20px'}}>
+                                        {(examSearchTerm.trim() || examFilterDay || examFilterMonth || examFilterYear) ? (
+                                            mobileFilteredExams.length === 0 ? (
+                                                <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+                                                    <i className="fas fa-search text-4xl text-gray-300 mb-2"></i>
+                                                    <p className="text-gray-500 text-sm">No se encontraron exámenes</p>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    {mobileFilteredExams.sort((a, b) => new Date(b.date) - new Date(a.date)).map(exam => (
+                                                        <div key={exam.id} onClick={() => markExamAsSeen(exam, currentPet)} className={`bg-white rounded-2xl p-3 shadow-sm cursor-pointer hover:shadow-md transition-all ${exam.seen === false ? 'border-l-4 border-red-500' : ''}`}>
+                                                            <div className="flex items-center gap-3">
+                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${exam.seen === false ? 'bg-red-100' : 'bg-purple-100'}`}>
+                                                                    <i className={`fas fa-file-pdf ${exam.seen === false ? 'text-red-600' : 'text-purple-600'}`}></i>
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <p className="font-semibold text-gray-800 text-sm">{exam.type}</p>
+                                                                    <p className="text-xs text-gray-500">{new Date(exam.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
+                                                                </div>
+                                                                {exam.seen === false && <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">NUEVO</span>}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )
+                                        ) : null}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Normal content */}
+                                {currentPet.exams.length === 0 ? (
+                                    <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+                                        <i className="fas fa-folder-open text-4xl text-gray-300 mb-2"></i>
+                                        <p className="text-gray-500">No hay resultados disponibles</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {currentPet.exams.sort((a, b) => new Date(b.date) - new Date(a.date)).map(exam => (
+                                            <div key={exam.id} onClick={() => markExamAsSeen(exam, currentPet)} className={`bg-white rounded-2xl p-3 shadow-sm cursor-pointer hover:shadow-md transition-all ${exam.seen === false ? 'border-l-4 border-red-500' : ''}`}>
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${exam.seen === false ? 'bg-red-100' : 'bg-purple-100'}`}>
+                                                        <i className={`fas fa-file-pdf ${exam.seen === false ? 'text-red-600' : 'text-purple-600'}`}></i>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-semibold text-gray-800 text-sm">{exam.type}</p>
+                                                        <p className="text-xs text-gray-500">{new Date(exam.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
+                                                    </div>
+                                                    {exam.seen === false && <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">NUEVO</span>}
+                                                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                                        <i className="fas fa-eye text-purple-600 text-sm"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* ===== DESKTOP: Original layout ===== */}
+                            <div className="hidden lg:flex flex-col" style={{height:'calc(100vh - 70px)'}}>
                                 <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300">
-                                    {/* Fila 1: Info de la mascota */}
                                     <div className="p-4 border-b border-gray-200">
                                         <div className="flex items-center gap-4">
                                             <button onClick={() => setSelectedPet(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
@@ -6223,8 +6349,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    {/* Fila 2: Buscador y filtros */}
                                     <div className="p-4 flex items-center gap-3">
                                         <div className="relative flex-1">
                                             <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -6233,7 +6357,6 @@
                                                 className="w-full h-10 pl-11 pr-10 rounded-full border border-gray-300 focus:border-cyan-500 focus:outline-none bg-white text-sm" />
                                             {examSearchTerm && <button onClick={() => setExamSearchTerm('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times"></i></button>}
                                         </div>
-                                        
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs text-gray-500">Filtrar por:</span>
                                             <div className="relative">
@@ -6265,8 +6388,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                {/* Sección 2: Contenido scrolleable */}
                                 <div className="flex-1 overflow-y-auto p-6">
                                     {currentPet.exams.length === 0 ? (
                                         <div className="bg-white rounded-xl p-8 text-center shadow">
@@ -6305,6 +6426,7 @@
                                         </div>
                                     )}
                                 </div>
+                            </div>
                             </div>
                             );
                         })()}
