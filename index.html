@@ -5997,7 +5997,38 @@
                         
                         {/* === Vista PDF Resultado (inline desktop) === */}
                         {selectedExam && !viewingOrderTracking && (
-                            <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
+                            <div>
+                            {/* Mobile PDF viewer */}
+                            <div className="lg:hidden dueno-normal-content" style={{paddingBottom:'20px'}}>
+                                <div className="flex items-center gap-3 mb-3 mt-1">
+                                    <button onClick={() => setSelectedExam(null)} className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 shadow-sm flex-shrink-0">
+                                        <i className="fas fa-arrow-left text-sm"></i>
+                                    </button>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-bold text-gray-800 text-sm truncate">{selectedExam.type}</p>
+                                        <p className="text-gray-500 text-xs">{new Date(selectedExam.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
+                                    </div>
+                                </div>
+                                <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{height:'calc(100vh - 240px)'}}>
+                                    {selectedExam.pdfData ? (
+                                        <iframe src={selectedExam.pdfData} className="w-full h-full" title="PDF" />
+                                    ) : (
+                                        <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                                            <i className="fas fa-file-pdf text-4xl mb-2"></i>
+                                            <p className="text-sm">PDF no disponible</p>
+                                        </div>
+                                    )}
+                                </div>
+                                {selectedExam.pdfData && (
+                                    <div className="mt-3 flex justify-center">
+                                        <button onClick={() => { const a=document.createElement('a'); a.href=selectedExam.pdfData; a.download=`${selectedExam.type.replace(/[^a-zA-Z0-9]/g,'_')}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg">
+                                            <i className="fas fa-download"></i> Descargar PDF
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            {/* Desktop PDF viewer */}
+                            <div className="hidden lg:flex flex-col" style={{height:'calc(100vh - 70px)'}}>
                                 <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                     <div className="flex items-center gap-3">
                                         <button onClick={() => setSelectedExam(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
@@ -6021,7 +6052,7 @@
                                                 <div className="flex-1 flex flex-col min-h-0">
                                                     <iframe src={selectedExam.pdfData} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" title="PDF" />
                                                     <div className="mt-3 flex justify-center flex-shrink-0">
-                                                        <button onClick={() => { const a=document.createElement('a'); a.href=selectedExam.pdfData; a.download=`${selectedExam.type.replace(/[^a-zA-Z0-9]/g,'_')}_${selectedExam.date}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-xl font-semibold text-sm shadow-lg">
+                                                        <button onClick={() => { const a=document.createElement('a'); a.href=selectedExam.pdfData; a.download=`${selectedExam.type.replace(/[^a-zA-Z0-9]/g,'_')}_${selectedExam.date}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg">
                                                             <i className="fas fa-download"></i> Descargar PDF
                                                         </button>
                                                     </div>
@@ -6035,6 +6066,7 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             </div>
                         )}
 
@@ -6198,7 +6230,38 @@
                         
                         {/* === Vista Comprobante Facturación (inline desktop) === */}
                         {facturacionInvoice && !viewingOrderTracking && (
-                            <div className="flex flex-col" style={{height:'calc(100vh - 70px)'}}>
+                            <div>
+                            {/* Mobile factura viewer */}
+                            <div className="lg:hidden dueno-normal-content" style={{paddingBottom:'20px'}}>
+                                <div className="flex items-center gap-3 mb-3 mt-1">
+                                    <button onClick={() => setFacturacionInvoice(null)} className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 shadow-sm flex-shrink-0">
+                                        <i className="fas fa-arrow-left text-sm"></i>
+                                    </button>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-bold text-gray-800 text-sm">{facturacionInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                        <p className="text-gray-500 text-xs">{new Date(facturacionInvoice.createdAt || facturacionInvoice.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
+                                    </div>
+                                </div>
+                                <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{height:'calc(100vh - 240px)'}}>
+                                    {facturacionInvoice.invoicePdf ? (
+                                        <iframe src={facturacionInvoice.invoicePdf} className="w-full h-full" title="PDF" />
+                                    ) : (
+                                        <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                                            <i className="fas fa-file-invoice text-4xl mb-2"></i>
+                                            <p className="text-sm">Comprobante no disponible</p>
+                                        </div>
+                                    )}
+                                </div>
+                                {facturacionInvoice.invoicePdf && (
+                                    <div className="mt-3 flex justify-center">
+                                        <button onClick={() => { const a=document.createElement('a');a.href=facturacionInvoice.invoicePdf;a.download='comprobante.pdf';document.body.appendChild(a);a.click();document.body.removeChild(a); }} className={`flex items-center gap-2 px-5 py-2.5 ${facturacionInvoice.documentType==='boleta'?'bg-gradient-to-r from-cyan-500 to-blue-600':'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold text-sm shadow-lg`}>
+                                            <i className="fas fa-download"></i> Descargar PDF
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            {/* Desktop factura viewer */}
+                            <div className="hidden lg:flex flex-col" style={{height:'calc(100vh - 70px)'}}>
                                 <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 py-3 px-4">
                                     <div className="flex items-center gap-3">
                                         <button onClick={() => setFacturacionInvoice(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
@@ -6232,6 +6295,7 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             </div>
                         )}
 
@@ -6907,7 +6971,7 @@
                                                         </div>
                                                         <div className="flex-1 min-w-0">
                                                             <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                            <p className="text-sm text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
+                                                            <p className="text-sm text-gray-500">{inv.items?.map(it => `${it.pet?.name} - ${it.exam?.name}`).filter(Boolean).join(', ')}</p>
                                                             <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt || inv.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
                                                         </div>
                                                         <div className="flex items-center gap-2">
@@ -7017,7 +7081,7 @@
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
                                                                     <p className="font-semibold text-gray-800 text-sm">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                                    <p className="text-xs text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
+                                                                    <p className="text-xs text-gray-500">{inv.items?.map(it => `${it.pet?.name} - ${it.exam?.name}`).filter(Boolean).join(', ')}</p>
                                                                     <p className="text-xs text-gray-400">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
                                                                 </div>
                                                                 <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
@@ -7048,7 +7112,7 @@
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                        <p className="text-sm text-gray-500">{inv.items?.map(it => it.pet?.name).filter(Boolean).join(', ')}</p>
+                                                        <p className="text-sm text-gray-500">{inv.items?.map(it => `${it.pet?.name} - ${it.exam?.name}`).filter(Boolean).join(', ')}</p>
                                                         <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
                                                     </div>
                                                     <div className="flex items-center gap-2 flex-shrink-0">
