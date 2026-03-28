@@ -6971,7 +6971,7 @@
                                                         </div>
                                                         <div className="flex-1 min-w-0">
                                                             <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                            <p className="text-sm text-gray-500">{inv.items?.map(it => `${it.pet?.name} - ${it.exam?.name}`).filter(Boolean).join(', ')}</p>
+                                                            <div className="text-sm text-gray-500">{inv.items?.map((it, idx) => <div key={idx}>{it.pet?.name} - {it.exam?.name}</div>)}</div>
                                                             <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt || inv.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
                                                         </div>
                                                         <div className="flex items-center pr-1">
@@ -7080,7 +7080,7 @@
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
                                                                     <p className="font-semibold text-gray-800 text-sm">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                                    <p className="text-xs text-gray-500">{inv.items?.map(it => `${it.pet?.name} - ${it.exam?.name}`).filter(Boolean).join(', ')}</p>
+                                                                    <div className="text-xs text-gray-500">{inv.items?.map((it, idx) => <div key={idx}>{it.pet?.name} - {it.exam?.name}</div>)}</div>
                                                                     <p className="text-xs text-gray-400">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
                                                                 </div>
                                                                 <i className="fas fa-chevron-right text-gray-400 text-sm"></i>
@@ -7111,7 +7111,7 @@
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                        <p className="text-sm text-gray-500">{inv.items?.map(it => `${it.pet?.name} - ${it.exam?.name}`).filter(Boolean).join(', ')}</p>
+                                                        <div className="text-sm text-gray-500">{inv.items?.map((it, idx) => <div key={idx}>{it.pet?.name} - {it.exam?.name}</div>)}</div>
                                                         <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
                                                     </div>
                                                     <div className="flex items-center pr-1 flex-shrink-0">
