@@ -2126,8 +2126,8 @@
             // Definir usuario fresco para todo el render
             const freshUser = database.users.find(u => u.id === currentUser.id) || currentUser;
 
-            // Vista PDF (solo móvil o usuarios no médicos)
-            if (selectedExam && freshUser.type !== 'medico' && window.innerWidth < 768) {
+            // Vista PDF (solo móvil, usuarios no médicos ni dueños)
+            if (selectedExam && freshUser.type !== 'medico' && freshUser.type !== 'dueño' && window.innerWidth < 768) {
                 const downloadPdf = () => {
                     if (selectedExam.pdfData) {
                         const link = document.createElement('a');
@@ -2177,8 +2177,8 @@
                 );
             }
 
-            // Visor de Comprobante (solo móvil o usuarios no médicos)
-            if (viewingInvoice && freshUser.type !== 'medico' && window.innerWidth < 768) {
+            // Visor de Comprobante (solo móvil, usuarios no médicos ni dueños)
+            if (viewingInvoice && freshUser.type !== 'medico' && freshUser.type !== 'dueño' && window.innerWidth < 768) {
                 const docType = viewingInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura';
                 const downloadInvoice = () => {
                     if (viewingInvoice.invoicePdf) {
@@ -5999,7 +5999,7 @@
                         {selectedExam && !viewingOrderTracking && (
                             <div>
                             {/* Mobile PDF viewer - fixed in content area */}
-                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))', zIndex:99, background:'#f3f4f6', display:'flex', flexDirection:'column', padding:'12px 16px'}}>
+                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))', zIndex:99, background:'#f3f4f6', display:'flex', flexDirection:'column', padding:'12px 16px 16px'}}>
                                 <div className="flex items-center gap-3 mb-3 flex-shrink-0">
                                     <button onClick={() => setSelectedExam(null)} className="dueno-circle-btn flex items-center justify-center bg-white text-gray-500 shadow-sm flex-shrink-0">
                                         <i className="fas fa-arrow-left text-xs"></i>
@@ -6009,7 +6009,7 @@
                                         <p className="text-gray-500 text-xs">{new Date(selectedExam.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
                                     </div>
                                 </div>
-                                <div className="bg-white rounded-2xl shadow-sm overflow-hidden flex-1 min-h-0">
+                                <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
                                     {selectedExam.pdfData ? (
                                         <iframe src={selectedExam.pdfData} className="w-full h-full" title="PDF" style={{border:'none'}} />
                                     ) : (
@@ -6020,7 +6020,7 @@
                                     )}
                                 </div>
                                 {selectedExam.pdfData && (
-                                    <div className="mt-3 flex justify-center flex-shrink-0">
+                                    <div className="flex justify-center flex-shrink-0">
                                         <button onClick={() => { const a=document.createElement('a'); a.href=selectedExam.pdfData; a.download=`${selectedExam.type.replace(/[^a-zA-Z0-9]/g,'_')}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg">
                                             <i className="fas fa-download"></i> Descargar PDF
                                         </button>
@@ -6232,7 +6232,7 @@
                         {facturacionInvoice && !viewingOrderTracking && (
                             <div>
                             {/* Mobile factura viewer - fixed in content area */}
-                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))', zIndex:99, background:'#f3f4f6', display:'flex', flexDirection:'column', padding:'12px 16px'}}>
+                            <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))', zIndex:99, background:'#f3f4f6', display:'flex', flexDirection:'column', padding:'12px 16px 16px'}}>
                                 <div className="flex items-center gap-3 mb-3 flex-shrink-0">
                                     <button onClick={() => setFacturacionInvoice(null)} className="dueno-circle-btn flex items-center justify-center bg-white text-gray-500 shadow-sm flex-shrink-0">
                                         <i className="fas fa-arrow-left text-xs"></i>
@@ -6242,7 +6242,7 @@
                                         <p className="text-gray-500 text-xs">{new Date(facturacionInvoice.createdAt || facturacionInvoice.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
                                     </div>
                                 </div>
-                                <div className="bg-white rounded-2xl shadow-sm overflow-hidden flex-1 min-h-0">
+                                <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
                                     {facturacionInvoice.invoicePdf ? (
                                         <iframe src={facturacionInvoice.invoicePdf} className="w-full h-full" title="PDF" style={{border:'none'}} />
                                     ) : (
@@ -6253,7 +6253,7 @@
                                     )}
                                 </div>
                                 {facturacionInvoice.invoicePdf && (
-                                    <div className="mt-3 flex justify-center flex-shrink-0">
+                                    <div className="flex justify-center flex-shrink-0">
                                         <button onClick={() => { const a=document.createElement('a');a.href=facturacionInvoice.invoicePdf;a.download='comprobante.pdf';document.body.appendChild(a);a.click();document.body.removeChild(a); }} className={`flex items-center gap-2 px-5 py-2.5 ${facturacionInvoice.documentType==='boleta'?'bg-gradient-to-r from-cyan-500 to-blue-600':'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold text-sm shadow-lg`}>
                                             <i className="fas fa-download"></i> Descargar PDF
                                         </button>
