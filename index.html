@@ -7072,6 +7072,7 @@
                                         <div className="flex-1 min-w-0">
                                             <p className="font-semibold text-gray-800 text-xs leading-tight truncate">{item.exam.name}</p>
                                             <p className="text-xs text-gray-400 truncate mt-0.5">{item.pet.photo} {getPetFullName(item.pet)} · <i className="fas fa-map-marker-alt text-cyan-400 text-xs"></i> {item.address?.district}</p>
+                                            {item.tomaMuestra && <p className="text-xs text-emerald-600 mt-0.5 flex items-center gap-1"><i className="fas fa-syringe text-emerald-500" style={{fontSize:'9px'}}></i>Toma de muestra {(() => { const p = getTomaMuestraPrice(item.address?.district, examTotal); return p !== null ? (p > 0 ? `(+S/ ${p})` : '(Gratis)') : ''; })()}</p>}
                                         </div>
                                         <div className="flex items-center gap-2 flex-shrink-0">
                                             {item.exam.price && <span className="text-cyan-600 font-bold text-xs">S/ {item.exam.price}</span>}
@@ -7096,9 +7097,12 @@
                                     </div>
                                     <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none resize-none dueno-cart-comment" rows="1" maxLength="500" />
                                     {cart.some(i => i.exam.price) && (
-                                        <div className="flex items-center justify-between py-1.5 border-t border-gray-100">
-                                            <span className="text-xs text-gray-600 font-semibold">Total estimado</span>
-                                            <span className="text-sm font-bold text-cyan-600">S/ {cart.reduce((sum, i) => sum + (parseFloat(i.exam.price) || 0), 0).toFixed(2)}</span>
+                                        <div className="py-1.5 border-t border-gray-100">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-xs text-gray-600 font-semibold">Total estimado</span>
+                                                <span className="text-sm font-bold text-cyan-600">S/ {cartTotal.toFixed(2)}</span>
+                                            </div>
+                                            {tomaMuestraFees > 0 && <p className="text-xs text-emerald-600 mt-0.5"><i className="fas fa-syringe mr-1" style={{fontSize:'9px'}}></i>Incluye toma de muestra: S/ {tomaMuestraFees}</p>}
                                         </div>
                                     )}
                                     <div className="border-t border-gray-100 pt-2 pb-1">
