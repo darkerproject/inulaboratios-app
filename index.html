@@ -1706,6 +1706,29 @@
                 return lastName ? `${pet.name} ${lastName}` : pet.name;
             };
 
+            const filterExams = (exams) => {
+                let filtered = [...exams];
+                if (examSearchTerm) {
+                    filtered = filtered.filter(e => e.type.toLowerCase().includes(examSearchTerm.toLowerCase()));
+                }
+                if (examFilterType) {
+                    filtered = filtered.filter(e => e.type.toLowerCase().includes(examFilterType.toLowerCase()));
+                }
+                if (examFilterDay || examFilterMonth || examFilterYear) {
+                    filtered = filtered.filter(e => {
+                        const examDate = new Date(e.date);
+                        const day = String(examDate.getDate()).padStart(2, '0');
+                        const month = String(examDate.getMonth() + 1).padStart(2, '0');
+                        const year = String(examDate.getFullYear());
+                        if (examFilterDay && day !== examFilterDay) return false;
+                        if (examFilterMonth && month !== examFilterMonth) return false;
+                        if (examFilterYear && year !== examFilterYear) return false;
+                        return true;
+                    });
+                }
+                return filtered;
+            };
+
             const handleLogout = () => {
                 localStorage.removeItem('inulab_token');
                 setIsAuthenticated(false); setUserType(null); setCurrentUser(null); setSelectedPet(null); setSelectedExam(null);
@@ -2926,30 +2949,6 @@
                         p.name.toLowerCase().includes(mascotaSearchTerm.toLowerCase()) ||
                         (p.owner && p.owner.toLowerCase().includes(mascotaSearchTerm.toLowerCase()))
                     );
-                
-                // Filtrar exámenes de una mascota según filtros
-                const filterExams = (exams) => {
-                    let filtered = [...exams];
-                    if (examSearchTerm) {
-                        filtered = filtered.filter(e => e.type.toLowerCase().includes(examSearchTerm.toLowerCase()));
-                    }
-                    if (examFilterType) {
-                        filtered = filtered.filter(e => e.type.toLowerCase().includes(examFilterType.toLowerCase()));
-                    }
-                    if (examFilterDay || examFilterMonth || examFilterYear) {
-                        filtered = filtered.filter(e => {
-                            const examDate = new Date(e.date);
-                            const day = String(examDate.getDate()).padStart(2, '0');
-                            const month = String(examDate.getMonth() + 1).padStart(2, '0');
-                            const year = String(examDate.getFullYear());
-                            if (examFilterDay && day !== examFilterDay) return false;
-                            if (examFilterMonth && month !== examFilterMonth) return false;
-                            if (examFilterYear && year !== examFilterYear) return false;
-                            return true;
-                        });
-                    }
-                    return filtered;
-                };
                 
                 // Obtener todos los pedidos completados para historial
                 const completedOrders = (database.orders || [])
