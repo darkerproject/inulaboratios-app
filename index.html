@@ -6681,9 +6681,10 @@
                         {activeTab === 'resultados' && (
                             <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:100, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)'}}>
                                 <div style={{padding:'10px 16px'}}>
-                                    <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl px-3 py-1.5 flex items-center gap-2">
+                                    <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl px-3 py-1.5 flex items-center gap-2" style={{minHeight:'36px'}}>
                                         <i className="fas fa-file-medical text-white text-sm"></i>
                                         <span className="text-white font-semibold text-sm">Resultados</span>
+                                        <span className="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">{petsOrPatients.reduce((sum, p) => sum + (p.exams?.length || 0), 0)}</span>
                                     </div>
                                 </div>
                             </div>
