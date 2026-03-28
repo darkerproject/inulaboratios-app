@@ -2353,7 +2353,7 @@
                                     <i className="fas fa-arrow-left text-sm"></i>
                                 </button>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-bold text-gray-800 leading-tight truncate">{selectedExam.type}</p>
+                                    <p className="text-sm font-bold text-gray-800 leading-tight truncate">{selectedExam.type}{selectedPet ? ` - ${getPetFullName(selectedPet)}` : ''}</p>
                                     <p className="text-gray-400 text-xs">{new Date(selectedExam.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                                 </div>
                             </div>
@@ -4744,7 +4744,7 @@
                                                 <div className="max-w-4xl mx-auto h-full">
                                                     <div className="bg-white rounded-2xl shadow-lg p-5 h-full flex flex-col">
                                                         <div className="mb-3">
-                                                            <h1 className="text-xl font-bold text-gray-800 mb-1">{selectedExam.type}</h1>
+                                                            <h1 className="text-xl font-bold text-gray-800 mb-1">{selectedExam.type}{selectedPet ? ` - ${getPetFullName(selectedPet)}` : ''}</h1>
                                                             <p className="text-gray-500 text-sm">
                                                                 <i className="fas fa-calendar mr-1"></i>
                                                                 {new Date(selectedExam.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -6005,7 +6005,7 @@
                                         <i className="fas fa-arrow-left text-xs"></i>
                                     </button>
                                     <div className="flex-1 min-w-0">
-                                        <p className="font-bold text-gray-800 text-sm truncate">{selectedExam.type}</p>
+                                        <p className="font-bold text-gray-800 text-sm truncate">{selectedExam.type}{selectedPet ? ` - ${selectedPet.name}` : ''}</p>
                                         <p className="text-gray-500 text-xs">{new Date(selectedExam.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
                                     </div>
                                 </div>
@@ -6038,14 +6038,14 @@
                                             <i className="fas fa-file-medical text-purple-500 text-lg"></i>
                                             <span className="text-purple-600 font-semibold">Resultado</span>
                                         </div>
-                                        <span className="text-gray-600 font-medium">{selectedExam.type}</span>
+                                        <span className="text-gray-600 font-medium">{selectedExam.type}{selectedPet ? ` - ${selectedPet.name}` : ''}</span>
                                     </div>
                                 </div>
                                 <div className="flex-1 overflow-hidden py-8 px-5 flex flex-col min-h-0">
                                     <div className="max-w-4xl mx-auto w-full h-full flex flex-col">
                                         <div className="bg-white rounded-2xl shadow-lg p-4 flex-1 flex flex-col min-h-0">
                                             <div className="mb-3 flex-shrink-0">
-                                                <h1 className="text-xl font-bold text-gray-800 mb-1">{selectedExam.type}</h1>
+                                                <h1 className="text-xl font-bold text-gray-800 mb-1">{selectedExam.type}{selectedPet ? ` - ${selectedPet.name}` : ''}</h1>
                                                 <p className="text-gray-500 text-sm"><i className="fas fa-calendar mr-1"></i>{new Date(selectedExam.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                             </div>
                                             {selectedExam.pdfData ? (
