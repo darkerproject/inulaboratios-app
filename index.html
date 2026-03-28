@@ -1406,65 +1406,65 @@
             };
 
             const renderTermsModal = () => showTermsModal && (
-                <div className="fixed inset-0 flex flex-col bg-white" style={{zIndex:999999}}>
+                <div className="fixed flex flex-col bg-white" style={{zIndex:999999, top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))'}}>
                     {/* Franja cyan header */}
-                    <div className="bg-cyan-500 px-6 py-4 flex items-center justify-between flex-shrink-0">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i className="fas fa-file-contract text-white text-lg"></i></div>
-                            <h2 className="text-lg font-bold text-white">Términos y Condiciones</h2>
+                    <div className="bg-cyan-500 px-4 py-3 flex items-center justify-between flex-shrink-0">
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center"><i className="fas fa-file-contract text-white text-sm"></i></div>
+                            <h2 className="text-sm font-bold text-white">Términos y Condiciones</h2>
                         </div>
-                        <button onClick={() => setShowTermsModal(false)} className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"><i className="fas fa-times text-lg"></i></button>
+                        <button onClick={() => setShowTermsModal(false)} className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"><i className="fas fa-times text-sm"></i></button>
                     </div>
-                    {/* Contenido blanco */}
-                    <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col">
+                    {/* Contenido */}
+                    <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col">
                         <div className="max-w-2xl mx-auto my-auto">
                             {freshUser?.type === 'dueño' && (
-                                <div className="mb-8">
-                                    <div className="mb-4">
-                                        <div className="flex items-center gap-2 mb-4"><div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center"><i className="fas fa-syringe text-emerald-600 text-sm"></i></div><h3 className="font-bold text-gray-800 text-lg">Para el caso de toma de muestra a domicilio</h3></div>
-                                        <p className="text-sm text-gray-500 mb-3">Cuando necesitas que un profesional vaya a tu domicilio a tomar la muestra de tu mascota.</p>
+                                <div className="mb-6">
+                                    <div className="mb-3">
+                                        <div className="flex items-center gap-2 mb-3"><div className="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center"><i className="fas fa-syringe text-emerald-600" style={{fontSize:'11px'}}></i></div><h3 className="font-bold text-gray-800 text-sm">Para el caso de toma de muestra a domicilio</h3></div>
+                                        <p className="text-xs text-gray-500 mb-2">Cuando necesitas que un profesional vaya a tu domicilio a tomar la muestra de tu mascota.</p>
                                     </div>
-                                    <div className="flex flex-col justify-between flex-1 min-h-0">
+                                    <div className="space-y-2">
                                         {termsContent.tomaMuestra.map((item, i) => (
-                                            <div key={i} className="flex gap-3"><span className="w-6 h-6 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i+1}</span><p className="text-sm text-gray-600 leading-relaxed text-justify" dangerouslySetInnerHTML={{__html: item}}></p></div>
+                                            <div key={i} className="flex gap-2"><span className="w-5 h-5 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{fontSize:'10px', fontWeight:'bold'}}>{i+1}</span><p className="text-xs text-gray-600 leading-relaxed text-justify" dangerouslySetInnerHTML={{__html: item}}></p></div>
                                         ))}
                                     </div>
                                 </div>
                             )}
                             {freshUser?.type === 'dueño' && (
-                                <div className="mb-6">
-                                    <div className="border-t-2 border-cyan-200 pt-6">
-                                        <div className="flex items-center gap-2 mb-4"><div className="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center"><i className="fas fa-truck text-cyan-600 text-sm"></i></div><h3 className="font-bold text-gray-800 text-lg">Para el caso de recojo de muestras</h3></div>
-                                        <p className="text-sm text-gray-500 mb-3">Cuando ya tienes la muestra lista y solo necesitas que la recojamos.</p>
+                                <div className="mb-4">
+                                    <div className="border-t-2 border-cyan-200 pt-4">
+                                        <div className="flex items-center gap-2 mb-3"><div className="w-7 h-7 bg-cyan-100 rounded-lg flex items-center justify-center"><i className="fas fa-truck text-cyan-600" style={{fontSize:'11px'}}></i></div><h3 className="font-bold text-gray-800 text-sm">Para el caso de recojo de muestras</h3></div>
+                                        <p className="text-xs text-gray-500 mb-2">Cuando ya tienes la muestra lista y solo necesitas que la recojamos.</p>
                                     </div>
                                 </div>
                             )}
-                            <div className="mb-8">
-                                <div className="flex items-center gap-2 mb-4"><div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center"><i className="fas fa-clipboard-list text-blue-600 text-sm"></i></div><h3 className="font-bold text-gray-800 text-lg">Condiciones del Servicio</h3></div>
-                                <div className="space-y-3">
+                            <div className="mb-6">
+                                <div className="flex items-center gap-2 mb-3"><div className="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center"><i className="fas fa-clipboard-list text-blue-600" style={{fontSize:'11px'}}></i></div><h3 className="font-bold text-gray-800 text-sm">Condiciones del Servicio</h3></div>
+                                <div className="space-y-2">
                                     {termsContent.notas.map((nota, i) => (
-                                        <div key={i} className="flex gap-3"><span className="w-6 h-6 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i+1}</span><p className="text-sm text-gray-600 leading-relaxed text-justify">{nota}</p></div>
+                                        <div key={i} className="flex gap-2"><span className="w-5 h-5 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{fontSize:'10px', fontWeight:'bold'}}>{i+1}</span><p className="text-xs text-gray-600 leading-relaxed text-justify">{nota}</p></div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="mb-8">
-                                <div className="flex items-center gap-2 mb-4"><div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center"><i className="fas fa-exclamation-triangle text-amber-600 text-sm"></i></div><h3 className="font-bold text-gray-800 text-lg">Tener en Cuenta</h3></div>
-                                <div className="space-y-3">
+                            <div className="mb-6">
+                                <div className="flex items-center gap-2 mb-3"><div className="w-7 h-7 bg-amber-100 rounded-lg flex items-center justify-center"><i className="fas fa-exclamation-triangle text-amber-600" style={{fontSize:'11px'}}></i></div><h3 className="font-bold text-gray-800 text-sm">Tener en Cuenta</h3></div>
+                                <div className="space-y-2">
                                     {termsContent.tenerEnCuenta.map((item, i) => (
-                                        <div key={i} className="flex gap-3"><span className="w-6 h-6 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5"><i className="fas fa-info text-xs"></i></span><p className="text-sm text-gray-600 leading-relaxed text-justify">{item}</p></div>
+                                        <div key={i} className="flex gap-2"><span className="w-5 h-5 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"><i className="fas fa-info" style={{fontSize:'8px'}}></i></span><p className="text-xs text-gray-600 leading-relaxed text-justify">{item}</p></div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="bg-gray-50 rounded-xl p-4 text-center">
-                                <p className="text-xs text-gray-500 mb-1"><i className="fas fa-map-marker-alt text-cyan-500 mr-1"></i>Alameda del Sereno 495, La Alborada - Santiago de Surco, Lima</p>
-                                <p className="text-xs text-gray-500"><i className="fas fa-phone text-cyan-500 mr-1"></i>954 904 248 · <i className="fas fa-envelope text-cyan-500 ml-2 mr-1"></i>lab@inulaboratorios.com</p>
+                            <div className="bg-gray-50 rounded-xl p-3 text-center">
+                                <p style={{fontSize:'10px'}} className="text-gray-500 mb-0.5"><i className="fas fa-map-marker-alt text-cyan-500 mr-1"></i>Alameda del Sereno 495, La Alborada - Santiago de Surco, Lima</p>
+                                <p style={{fontSize:'10px'}} className="text-gray-500"><i className="fas fa-phone text-cyan-500 mr-1"></i>954 904 248 · <i className="fas fa-envelope text-cyan-500 ml-2 mr-1"></i>lab@inulaboratorios.com</p>
                             </div>
                         </div>
                     </div>
                     {/* Footer */}
-                    <div className="px-6 py-4 border-t bg-white flex-shrink-0">
+                    <div className="px-4 py-3 border-t bg-white flex-shrink-0">
                         <div className="max-w-2xl mx-auto">
-                            <button onClick={() => { setTermsAccepted(true); setShowTermsModal(false); }} className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3.5 rounded-xl font-semibold shadow-lg"><i className="fas fa-check-circle mr-2"></i>He leído y acepto</button>
+                            <button onClick={() => { setTermsAccepted(true); setShowTermsModal(false); }} className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3 rounded-xl font-semibold text-sm shadow-lg"><i className="fas fa-check-circle mr-2"></i>He leído y acepto</button>
                         </div>
                     </div>
                 </div>
@@ -7097,12 +7097,9 @@
                                     </div>
                                     <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none resize-none dueno-cart-comment" rows="1" maxLength="500" />
                                     {cart.some(i => i.exam.price) && (
-                                        <div className="py-1.5 border-t border-gray-100">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-xs text-gray-600 font-semibold">Total estimado</span>
-                                                <span className="text-sm font-bold text-cyan-600">S/ {cartTotal.toFixed(2)}</span>
-                                            </div>
-                                            {tomaMuestraFees > 0 && <p className="text-xs text-emerald-600 mt-0.5"><i className="fas fa-syringe mr-1" style={{fontSize:'9px'}}></i>Incluye toma de muestra: S/ {tomaMuestraFees}</p>}
+                                        <div className="flex items-center justify-between py-1.5 border-t border-gray-100">
+                                            <span className="text-xs text-gray-600 font-semibold">Total estimado</span>
+                                            <span className="text-sm font-bold text-cyan-600">S/ {cartTotal.toFixed(2)}</span>
                                         </div>
                                     )}
                                     <div className="border-t border-gray-100 pt-2 pb-1">
