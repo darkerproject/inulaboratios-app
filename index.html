@@ -2446,7 +2446,7 @@
                         </div>
                         <span className="mob-header-title">{freshUser.name}</span>
                         <div className="mob-header-actions">
-                            <button onClick={() => cart.length > 0 && setShowOrderSummary(true)} className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${cart.length > 0 ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-300 cursor-default'}`}>
+                            <button onClick={() => { if (showOrderSummary) { setShowOrderSummary(false); setShowTermsModal(false); } else if (cart.length > 0) { setShowOrderSummary(true); } }} className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${cart.length > 0 ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-300 cursor-default'}`}>
                                 <i className="fas fa-shopping-cart text-base"></i>
                                 {cart.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">{cart.length}</span>}
                             </button>
@@ -3024,7 +3024,7 @@
                                     </div>
                                     <span className="mob-header-title">{freshUser.name}</span>
                                     <div className="mob-header-actions">
-                                        <button onClick={() => cart.length > 0 && setShowOrderSummary(true)} className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${cart.length > 0 ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-300 cursor-default'}`}>
+                                        <button onClick={() => { if (showOrderSummary) { setShowOrderSummary(false); setShowTermsModal(false); } else if (cart.length > 0) { setShowOrderSummary(true); } }} className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${cart.length > 0 ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-300 cursor-default'}`}>
                                             <i className="fas fa-shopping-cart text-base"></i>
                                             {cart.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">{cart.length}</span>}
                                         </button>
