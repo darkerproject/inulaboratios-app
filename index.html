@@ -3515,7 +3515,9 @@
                             
                             {/* ==================== EDITAR PERFIL (Mobile) ==================== */}
                             {!selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'configuracion' && showEditProfile && (
-                                <div className="max-w-md mx-auto py-2">
+                                <div style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', bottom:'calc(60px + env(safe-area-inset-bottom,0px))', left:0, right:0, zIndex:98, background:'#f3f4f6', display:'flex', flexDirection:'column'}}>
+                                    <div style={{flex:1, overflowY:'auto', padding:'12px 16px'}}>
+                                    <div className="max-w-md mx-auto">
                                     <div className="bg-white rounded-2xl shadow-lg p-4">
                                         <div className="flex items-center justify-between mb-3">
                                             <h1 className="text-base font-bold text-gray-800">Mi Perfil</h1>
@@ -3523,14 +3525,9 @@
                                                 <i className="fas fa-times text-gray-500 text-xs"></i>
                                             </button>
                                         </div>
-                                        
-                                        {/* Formulario */}
                                         <div className="space-y-2.5">
                                             <div>
-                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">
-                                                    Nombre de la Clínica
-                                                    <span className="text-xs text-amber-600 ml-2">{getNameChangeText()}</span>
-                                                </label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre de la Clínica <span className="text-xs text-amber-600 ml-2">{getNameChangeText()}</span></label>
                                                 <input type="text" value={editProfile.name} onChange={(e) => setEditProfile({...editProfile, name: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none text-sm" placeholder="Nombre de tu clínica" />
                                             </div>
                                             <div>
@@ -3558,12 +3555,15 @@
                                                 <input type="text" value={editProfile.district} onChange={(e) => setEditProfile({...editProfile, district: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none text-sm" placeholder="Miraflores" />
                                             </div>
                                         </div>
-                                        
                                         <div className="mt-4">
                                             <button onClick={() => saveProfile(editProfile.name !== freshUser.name)} className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2">
                                                 <i className="fas fa-save"></i> Guardar Cambios
                                             </button>
                                         </div>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>
                                     </div>
                                 </div>
                             )}
@@ -5961,6 +5961,9 @@
                                         </button>
                                     </div>
                                 ) : (
+                                    <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', bottom:'calc(60px + env(safe-area-inset-bottom,0px))', left:0, right:0, zIndex:98, background:'#f3f4f6', display:'flex', flexDirection:'column'}}>
+                                    <div style={{flex:1, overflowY:'auto', padding:'12px 16px'}}>
+                                    <div className="max-w-md mx-auto">
                                     <div className="bg-white rounded-2xl shadow-lg p-4">
                                         <div className="flex items-center justify-between mb-3">
                                             <h1 className="text-base font-bold text-gray-800">Mi Perfil</h1>
@@ -5970,10 +5973,7 @@
                                         </div>
                                         <div className="space-y-2.5">
                                             <div>
-                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">
-                                                    Nombre
-                                                    <span className="text-xs text-amber-600 ml-2">{getNameChangeText()}</span>
-                                                </label>
+                                                <label className="block text-xs font-medium text-gray-600 mb-0.5">Nombre <span className="text-xs text-amber-600 ml-2">{getNameChangeText()}</span></label>
                                                 <input type="text" value={editProfile.name} onChange={(e) => setEditProfile({...editProfile, name: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:border-cyan-500 focus:outline-none text-sm" placeholder="Tu nombre" />
                                             </div>
                                             <div>
@@ -5996,6 +5996,9 @@
                                                 <i className="fas fa-save mr-2"></i>Guardar Cambios
                                             </button>
                                         </div>
+                                    </div>
+                                    </div>
+                                    </div>
                                     </div>
                                 )}
                             </div>
