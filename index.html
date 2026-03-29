@@ -2351,7 +2351,7 @@
             }
 
             // Vista PDF médico — early return para evitar el transform de mob-content
-            if (selectedExam && freshUser.type === 'medico' && window.innerWidth < 768) {
+            if (selectedExam && freshUser.type !== 'medico' && freshUser.type !== 'dueño' && window.innerWidth < 768) {
                 return (
                     <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:10000, display:'flex', flexDirection:'column'}}>
                         <div style={{flexShrink:0, background:'white', borderBottom:'1px solid #e5e7eb', paddingTop:'env(safe-area-inset-top, 0px)'}}>
@@ -2390,7 +2390,7 @@
             }
 
             // Vista Comprobante médico — early return
-            if (viewingInvoice && freshUser.type === 'medico' && window.innerWidth < 768) {
+            if (viewingInvoice && freshUser.type !== 'medico' && freshUser.type !== 'dueño' && window.innerWidth < 768) {
                 return (
                     <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'#f3f4f6', zIndex:10000, display:'flex', flexDirection:'column'}}>
                         <div style={{flexShrink:0, background:'white', borderBottom:'1px solid #e5e7eb', paddingTop:'env(safe-area-inset-top, 0px)'}}>
@@ -3088,7 +3088,40 @@
 
                             {/* ── Contenido scrolleable ── */}
                             <div className="mob-content" style={viewingOrderTracking ? {overflow:'hidden', minHeight:'unset', height:'calc(100vh - 56px - 64px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))', paddingTop:0, paddingBottom:0} : medicoView === 'inicio' && !selectedExam && !viewingInvoice && !currentExamForPet && !showOrderSummary ? {overflow:'hidden', minHeight:'unset', height:'calc(100vh - 56px - 64px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))'} : {}}>
-                                <div className={viewingOrderTracking ? "" : "max-w-4xl mx-auto px-4 py-5"}>
+
+                            {/* PDF Viewer Examen - content area (clínica) */}
+                            {selectedExam && (
+                                <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', bottom:'calc(60px + env(safe-area-inset-bottom,0px))', left:0, right:0, zIndex:99, background:'#f3f4f6', display:'flex', flexDirection:'column', padding:'12px 16px 16px'}}>
+                                    <div className="flex items-center gap-3 mb-3 flex-shrink-0">
+                                        <button onClick={() => setSelectedExam(null)} className="dueno-circle-btn flex items-center justify-center bg-white text-gray-500 shadow-sm flex-shrink-0"><i className="fas fa-arrow-left text-xs"></i></button>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-bold text-gray-800 text-sm truncate">{selectedExam.type}{selectedPet ? ` · ${getPetFullName(selectedPet)}` : ''}</p>
+                                            <p className="text-gray-500 text-xs">{new Date(selectedExam.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
+                                        {selectedExam.pdfData ? (<iframe src={selectedExam.pdfData} className="w-full h-full" title="PDF" style={{border:'none'}} />) : (<div className="h-full flex flex-col items-center justify-center text-gray-400"><i className="fas fa-file-pdf text-4xl mb-2"></i><p className="text-sm">PDF no disponible</p></div>)}
+                                    </div>
+                                    {selectedExam.pdfData && (<div className="flex justify-center flex-shrink-0"><button onClick={() => { const l=document.createElement('a'); l.href=selectedExam.pdfData; l.download=`${selectedExam.type.replace(/[^a-zA-Z0-9]/g,'_')}.pdf`; document.body.appendChild(l); l.click(); document.body.removeChild(l); }} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg"><i className="fas fa-download"></i> Descargar PDF</button></div>)}
+                                </div>
+                            )}
+
+                            {/* PDF Viewer Comprobante - content area (clínica) */}
+                            {viewingInvoice && (
+                                <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', bottom:'calc(60px + env(safe-area-inset-bottom,0px))', left:0, right:0, zIndex:99, background:'#f3f4f6', display:'flex', flexDirection:'column', padding:'12px 16px 16px'}}>
+                                    <div className="flex items-center gap-3 mb-3 flex-shrink-0">
+                                        <button onClick={() => setViewingInvoice(null)} className="dueno-circle-btn flex items-center justify-center bg-white text-gray-500 shadow-sm flex-shrink-0"><i className="fas fa-arrow-left text-xs"></i></button>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-bold text-gray-800 text-sm">{viewingInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                            <p className="text-gray-500 text-xs">{new Date(viewingInvoice.completedAt || viewingInvoice.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
+                                        {viewingInvoice.invoicePdf ? (<iframe src={viewingInvoice.invoicePdf} className="w-full h-full" title="Comprobante" style={{border:'none'}} />) : (<div className="h-full flex flex-col items-center justify-center text-gray-400"><i className={`fas ${viewingInvoice.documentType==='boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-4xl mb-2`}></i><p className="text-sm">Comprobante no disponible</p></div>)}
+                                    </div>
+                                    {viewingInvoice.invoicePdf && (<div className="flex justify-center flex-shrink-0"><button onClick={() => { const l=document.createElement('a'); l.href=viewingInvoice.invoicePdf; l.download=`${viewingInvoice.documentType==='boleta'?'Boleta':'Factura'}_${viewingInvoice.id}.pdf`; document.body.appendChild(l); l.click(); document.body.removeChild(l); }} className={`flex items-center gap-2 px-5 py-2.5 ${viewingInvoice.documentType==='boleta' ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold text-sm shadow-lg`}><i className="fas fa-download"></i> Descargar PDF</button></div>)}
+                                </div>
+                            )}                                <div className={viewingOrderTracking ? "" : "max-w-4xl mx-auto px-4 py-5"}>
                             
                             {/* Mensaje de éxito */}
                             {successMessage && (
@@ -3611,34 +3644,35 @@
                             
                                     {/* Carrito como vista de contenido completa (no modal) - accesible desde cualquier sección */}
                                     {showOrderSummary && !currentExamForPet && (
-                                        <div style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', left:0, right:0, bottom:'calc(64px + env(safe-area-inset-bottom,0px))', display:'flex', flexDirection:'column', background:'#f3f4f6', zIndex:50}}>
+                                        <div style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top,0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom,0px))', display:'flex', flexDirection:'column', background:'#f3f4f6', zIndex:9998}}>
 
                                             {/* ── Static top header - cyan gradient ── */}
                                             <div style={{background:'linear-gradient(135deg, #06b6d4, #0284c7)', boxShadow:'0 3px 12px rgba(6,182,212,0.35)', position:'relative', zIndex:2}}>
-                                                <div className="px-4 flex items-center gap-3" style={{minHeight:'56px', paddingTop:'12px', paddingBottom:'12px'}}>
-                                                    <button onClick={() => setShowOrderSummary(false)} className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white flex-shrink-0">
+                                                <div className="px-4 flex items-center gap-3" style={{minHeight:'48px', paddingTop:'10px', paddingBottom:'10px'}}>
+                                                    <button onClick={() => setShowOrderSummary(false)} className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white flex-shrink-0">
                                                         <i className="fas fa-arrow-left text-sm"></i>
                                                     </button>
-                                                    <h2 className="text-sm font-bold text-white flex-1">Resumen del Pedido</h2>
-                                                    <span className="text-xs text-cyan-100">{cart.length} examen{cart.length !== 1 ? 'es' : ''}</span>
+                                                    <h2 className="text-xs font-bold text-white flex-1">Resumen del Pedido</h2>
+                                                    <span className="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">{cart.length}</span>
                                                 </div>
                                             </div>
 
                                             {/* ── Scrollable cart list ── */}
-                                            <div style={{flex:1, overflowY:'auto', padding:'12px 16px'}}>
+                                            <div style={{flex:1, overflowY:'auto', padding:'10px 14px'}}>
                                                 {cart.map(item => (
-                                                    <div key={item.exam.id} className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 mb-2 flex items-center gap-3">
-                                                        <div className={`w-9 h-9 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                                            <i className={`fas ${item.exam.icon} ${item.exam.color} text-sm`}></i>
+                                                    <div key={item.exam.id} className="bg-white rounded-lg p-2.5 shadow-sm border border-gray-100 mb-1.5 flex items-center gap-2.5">
+                                                        <div className={`w-8 h-8 ${item.exam.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                                            <i className={`fas ${item.exam.icon} ${item.exam.color} text-xs`}></i>
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="font-semibold text-gray-800 text-sm leading-tight truncate">{item.exam.name}</p>
+                                                            <p className="font-semibold text-gray-800 text-xs leading-tight truncate">{item.exam.name}</p>
                                                             <p className="text-xs text-gray-400 truncate mt-0.5">{item.pet.photo} {getPetFullName(item.pet)} · <i className="fas fa-map-marker-alt text-cyan-400 text-xs"></i> {item.address?.district}</p>
+                                                            {item.tomaMuestra && <p className="text-xs text-emerald-600 mt-0.5"><i className="fas fa-syringe text-emerald-500" style={{fontSize:'9px'}}></i> Toma de muestra {(() => { const p = getTomaMuestraPrice(item.address?.district, examTotal); return p ? `(+S/ ${p})` : '(Gratis)'; })()}</p>}
                                                         </div>
-                                                        <div className="flex items-center gap-2.5 flex-shrink-0">
-                                                            {item.exam.price && <span className="text-cyan-600 font-bold text-sm">S/ {item.exam.price}</span>}
+                                                        <div className="flex items-center gap-2 flex-shrink-0">
+                                                            {item.exam.price && <span className="text-cyan-600 font-bold text-xs">S/ {item.exam.price}</span>}
                                                             <button onClick={() => removeFromCart(item.exam.id)} className="p-1 active:opacity-50">
-                                                                <i className="fas fa-trash-alt text-gray-300 text-sm"></i>
+                                                                <i className="fas fa-trash-alt text-gray-300 text-xs"></i>
                                                             </button>
                                                         </div>
                                                     </div>
@@ -3653,32 +3687,27 @@
 
                                             {/* ── Static bottom panel ── */}
                                             <div style={{background:'white', boxShadow:'0 -4px 16px rgba(0,0,0,0.10)', borderTop:'1px solid #e5e7eb', position:'relative', zIndex:2}}>
-                                                <div className="px-4 pt-3 pb-3 space-y-2.5">
-                                                    {/* Comprobante - solo botones */}
+                                                <div className="px-4 pt-3 pb-6 space-y-2.5">
                                                     <div className="flex gap-2">
                                                         <button onClick={() => setInvoiceType('boleta')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'boleta' ? 'bg-cyan-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-receipt mr-1.5"></i>Boleta</button>
                                                         <button onClick={() => setInvoiceType('factura')} className={`flex-1 py-2 rounded-lg text-sm font-medium ${invoiceType === 'factura' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'}`}><i className="fas fa-file-invoice mr-1.5"></i>Factura</button>
                                                     </div>
-                                                    {/* Comentarios */}
-                                                    <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none text-xs resize-none" rows="2" maxLength="500" />
-                                                    {/* Total estimado */}
+                                                    <textarea value={orderComment} onChange={(e) => setOrderComment(e.target.value)} placeholder="Deja un comentario..." className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-cyan-500 focus:outline-none dueno-cart-comment resize-none" rows="1" maxLength="500" />
                                                     {cart.some(i => i.exam.price) && (
                                                         <div className="flex items-center justify-between py-2 border-t border-gray-100">
                                                             <span className="text-sm text-gray-600 font-semibold">Total estimado</span>
-                                                            <span className="text-base font-bold text-cyan-600">S/ {cart.reduce((sum, i) => sum + (parseFloat(i.exam.price) || 0), 0).toFixed(2)}</span>
+                                                            <span className="text-base font-bold text-cyan-600">S/ {cartTotal.toFixed(2)}</span>
                                                         </div>
                                                     )}
-                                                    {/* Términos */}
                                                     <div className="border-t border-gray-100 pt-2 pb-1">
                                                         <label className="flex items-start gap-2 cursor-pointer" onClick={(e) => e.stopPropagation()}>
                                                             <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-cyan-500 cursor-pointer flex-shrink-0 mt-0.5" />
-                                                            <span className="text-xs text-gray-500 leading-relaxed">
+                                                            <span style={{fontSize:'11px'}} className="text-gray-500 leading-relaxed">
                                                                 He leído y acepto los <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }} className="text-cyan-600 font-semibold underline">términos y condiciones</button> de entrega y procesamiento de muestras.
                                                             </span>
                                                         </label>
                                                     </div>
-                                                    {/* Botón solicitar */}
-                                                    <button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-2.5 rounded-xl font-semibold text-sm ${termsAccepted ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
+                                                    <button onClick={submitOrder} disabled={!termsAccepted} className={`w-full py-2.5 rounded-xl font-semibold text-xs ${termsAccepted ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
                                                         <i className="fas fa-paper-plane mr-2"></i>Solicitar Pedido
                                                     </button>
                                                 </div>
@@ -3961,7 +3990,7 @@
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'pedidos' && (
                                 <div style={{position:'relative', minHeight: clinPedidosSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Pedidos */}
-                                    <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinPedidosSearchOpen ? '14px' : '0', borderBottomRightRadius: clinPedidosSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
+                                    <div style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinPedidosSearchOpen ? '14px' : '0', borderBottomRightRadius: clinPedidosSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
                                             <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl px-3 py-1.5 flex items-center gap-2">
                                                 <i className="fas fa-clipboard-list text-white text-sm"></i>
@@ -4080,7 +4109,7 @@
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'mascotas' && !selectedMascota && (
                                 <div style={{position:'relative', minHeight: clinMascSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Mascotas */}
-                                    <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinMascSearchOpen ? '14px' : '0', borderBottomRightRadius: clinMascSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
+                                    <div style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinMascSearchOpen ? '14px' : '0', borderBottomRightRadius: clinMascSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
                                             <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl px-3 py-1.5 flex items-center gap-2">
                                                 <i className="fas fa-paw text-white text-sm"></i>
@@ -4163,7 +4192,7 @@
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'mascotas' && selectedMascota && (
                                 <div style={{position:'relative', minHeight: clinMascDetailSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed gray header with pet info */}
-                                    <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinMascDetailSearchOpen ? '14px' : '0', borderBottomRightRadius: clinMascDetailSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
+                                    <div style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinMascDetailSearchOpen ? '14px' : '0', borderBottomRightRadius: clinMascDetailSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
                                             <div className="bg-gray-100 rounded-xl px-3 py-1.5 flex items-center gap-2">
                                                 <button onClick={() => { setSelectedMascota(null); setClinMascDetailSearchOpen(false); setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="dueno-circle-btn flex items-center justify-center bg-white/95 text-gray-600 flex-shrink-0">
@@ -4246,7 +4275,7 @@
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'resultados' && (
                                 <div style={{position:'relative', minHeight: clinResSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Resultados */}
-                                    <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinResSearchOpen ? '14px' : '0', borderBottomRightRadius: clinResSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
+                                    <div style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinResSearchOpen ? '14px' : '0', borderBottomRightRadius: clinResSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
                                             <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl px-3 py-1.5 flex items-center gap-2">
                                                 <i className="fas fa-file-medical text-white text-sm"></i>
@@ -4365,7 +4394,7 @@
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'facturacion' && (
                                 <div style={{position:'relative', minHeight: clinFacSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Facturación */}
-                                    <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinFacSearchOpen ? '14px' : '0', borderBottomRightRadius: clinFacSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
+                                    <div style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinFacSearchOpen ? '14px' : '0', borderBottomRightRadius: clinFacSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
                                             <div className="bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl px-3 py-1.5 flex items-center gap-2">
                                                 <i className="fas fa-file-invoice-dollar text-white text-sm"></i>
@@ -4493,42 +4522,18 @@
                                                     </div>
                                                 ) : (
                                                     <div className="space-y-3">
-                                                        {filteredFacturas.map((order, index) => (
-                                                            <div 
-                                                                key={order.id} 
-                                                                onClick={() => order.invoicePdf ? setViewingInvoice(order) : alert('Este comprobante aún no está disponible')}
-                                                                className="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg hover:bg-amber-50 transition-all"
-                                                            >
-                                                                <div className="flex items-center justify-between mb-3">
-                                                                    <div className="flex items-center gap-3">
-                                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${order.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
-                                                                            <i className={`fas ${order.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice text-amber-600'}`}></i>
-                                                                        </div>
-                                                                        <div>
-                                                                            <p className="font-semibold text-gray-800">{order.documentType === 'boleta' ? 'Boleta' : 'Factura'} #{String(completedOrders.indexOf(order) + 1).padStart(4, '0')}</p>
-                                                                            <p className="text-xs text-gray-500">
-                                                                                {new Date(order.completedAt || order.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
-                                                                            </p>
-                                                                        </div>
+                                                        {filteredFacturas.map(order => (
+                                                            <div key={order.id} onClick={() => order.invoicePdf ? setViewingInvoice(order) : null} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${order.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
+                                                                        <i className={`fas ${order.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-lg`}></i>
                                                                     </div>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${order.invoicePdf ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-400'}`}>
-                                                                            <i className="fas fa-eye text-sm"></i>
-                                                                        </div>
-                                                                        <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full text-xs font-medium">
-                                                                            Pagado
-                                                                        </span>
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <p className="font-semibold text-gray-800 text-sm">{order.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                                                        <div className="text-xs text-gray-500">{order.items.map((it, idx) => (<div key={idx}>{getPetFullName(it.pet)} - {it.exam.name}</div>))}</div>
+                                                                        <p className="text-xs text-gray-400 mt-1">{new Date(order.completedAt || order.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
                                                                     </div>
-                                                                </div>
-                                                                <div className="border-t pt-3 space-y-2">
-                                                                    {order.items.map((item, idx) => (
-                                                                        <div key={idx} className="flex items-center gap-2 text-sm">
-                                                                            <span>{item.pet.photo}</span>
-                                                                            <span className="font-medium text-gray-800">{getPetFullName(item.pet)}</span>
-                                                                            <span className="text-gray-300">•</span>
-                                                                            <span className="text-gray-600">{item.exam.name}</span>
-                                                                        </div>
-                                                                    ))}
+                                                                    <div className="flex items-center pr-1 flex-shrink-0"><i className="fas fa-chevron-right text-gray-400"></i></div>
                                                                 </div>
                                                             </div>
                                                         ))}
