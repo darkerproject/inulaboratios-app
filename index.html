@@ -2498,7 +2498,7 @@
                                 </div>
                             </div>
                             <div className="px-4 py-3 space-y-1">
-                                <button onClick={() => { setDuenoMenuOpen(false); resetDuenoState(); setDuenoView('config'); setShowEditProfile(true); }} className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors">
+                                <button onClick={() => { setDuenoMenuOpen(false); setShowTermsModal(false); setShowOrderSummary(false); setSelectedPet(null); setSelectedExam(null); setViewingInvoice(null); setFacturacionInvoice(null); setCurrentExamForPet(null); setViewingOrderTracking(null); setSelectedPaqueteDetail(null); openEditProfile(); setDuenoView('config'); }} className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors">
                                     <div className="w-9 h-9 bg-cyan-100 rounded-xl flex items-center justify-center"><i className="fas fa-user-edit text-cyan-600"></i></div>
                                     <span className="font-medium">Editar Perfil</span>
                                     <i className="fas fa-chevron-right text-gray-300 ml-auto text-xs"></i>
