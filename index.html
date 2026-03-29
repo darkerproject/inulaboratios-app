@@ -1524,6 +1524,7 @@
             const [clinMascSearchOpen, setClinMascSearchOpen] = useState(false);
             const [clinResSearchOpen, setClinResSearchOpen] = useState(false);
             const [clinFacSearchOpen, setClinFacSearchOpen] = useState(false);
+            const [clinMascDetailSearchOpen, setClinMascDetailSearchOpen] = useState(false);
             
             // DEMO: Funciones de persistencia localStorage
             const saveDatabase = (newDbOrFn) => {
@@ -2325,19 +2326,19 @@
                         {/* Nav bar — dentro del early return para que se muestre */}
                         <div className="mob-bottom-nav" style={{position:'relative',zIndex:1}}>
                             <div className="mob-bottom-nav-inner">
-                                <button className={`mob-nav-btn ${medicoView === 'inicio' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setMedicoView('inicio'); }}>
+                                <button className={`mob-nav-btn ${medicoView === 'inicio' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); setMedicoView('inicio'); }}>
                                     <i className="fas fa-home"></i><span>Inicio</span>
                                 </button>
-                                <button className={`mob-nav-btn ${medicoView === 'pedidos' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setMedicoView('pedidos'); }}>
+                                <button className={`mob-nav-btn ${medicoView === 'pedidos' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); setMedicoView('pedidos'); }}>
                                     <i className="fas fa-clipboard-list"></i><span>Pedidos</span>
                                 </button>
-                                <button className={`mob-nav-btn ${medicoView === 'mascotas' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setMedicoView('mascotas'); }}>
+                                <button className={`mob-nav-btn ${medicoView === 'mascotas' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); setMedicoView('mascotas'); }}>
                                     <i className="fas fa-paw"></i><span>Pacientes</span>
                                 </button>
-                                <button className={`mob-nav-btn ${medicoView === 'resultados' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setMedicoView('resultados'); }}>
+                                <button className={`mob-nav-btn ${medicoView === 'resultados' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); setMedicoView('resultados'); }}>
                                     <i className="fas fa-file-medical"></i><span>Resultados</span>
                                 </button>
-                                <button className={`mob-nav-btn ${medicoView === 'facturacion' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setMedicoView('facturacion'); }}>
+                                <button className={`mob-nav-btn ${medicoView === 'facturacion' ? 'active' : ''}`} onClick={() => { setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); setMedicoView('facturacion'); }}>
                                     <i className="fas fa-file-invoice-dollar"></i><span>Facturas</span>
                                 </button>
                             </div>
@@ -3015,7 +3016,7 @@
                             {/* ── Header fijo: Logo | Nombre | Hamburger ── */}
                             <div className="mob-header">
                                 <div className="mob-header-inner">
-                                    <div className="mob-header-logo cursor-pointer" onClick={() => { setMedicoView('inicio'); setShowAllPending(false); setSelectedMascota(null); setMenuOpen(false); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); }}>
+                                    <div className="mob-header-logo cursor-pointer" onClick={() => { setMedicoView('inicio'); setShowAllPending(false); setSelectedMascota(null); setMenuOpen(false); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); }}>
                                         <img src="logo_inulaboratorios.jpg" alt="INULAB" className="h-8" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }} />
                                         <div className="hidden w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg items-center justify-center text-white font-bold text-sm">I</div>
                                     </div>
@@ -3956,7 +3957,7 @@
                             
                             {/* ==================== PEDIDOS ==================== */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'pedidos' && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinPedidosSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Pedidos */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinPedidosSearchOpen ? '14px' : '0', borderBottomRightRadius: clinPedidosSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -3977,6 +3978,8 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinPedidosSearchOpen ? '100px' : '56px', transition:'height 0.2s ease-out'}}></div>
+                                    {clinPedidosSearchOpen && <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:0}}></div>}
+                                    <div style={{position:'relative', zIndex:1}}>
                                     
                                     {(cart.length > 0 || pendingExams.length > 0) && (
                                         <div className="flex items-center gap-4 mb-4 text-xs text-gray-500">
@@ -4048,13 +4051,13 @@
                                             ))}
                                         </div>
                                     )}
-                                    
+                                    </div>
                                 </div>
                             )}
                             
                             {/* ==================== MASCOTAS/PACIENTES ==================== */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'mascotas' && !selectedMascota && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinMascSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Mascotas */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinMascSearchOpen ? '14px' : '0', borderBottomRightRadius: clinMascSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -4076,6 +4079,8 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinMascSearchOpen ? '100px' : '56px', transition:'height 0.2s ease-out'}}></div>
+                                    {clinMascSearchOpen && <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:0}}></div>}
+                                    <div style={{position:'relative', zIndex:1}}>
                                     
                                     {/* Lista */}
                                     {filteredMascotas.length === 0 ? (
@@ -4110,71 +4115,48 @@
                                             ))}
                                         </div>
                                     )}
+                                    </div>
                                 </div>
                             )}
                             
                             {/* Detalle de mascota */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'mascotas' && selectedMascota && (
-                                <>
-                                    {/* Panel fijo con info + filtros */}
-                                    <div className="filters-panel">
-                                        <div className="filters-panel-inner">
-                                            {/* Info compacta de la mascota con color */}
-                                            <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl px-3 py-2 flex items-center gap-2 mb-2">
-                                                <span className="text-xl">{selectedMascota.photo}</span>
-                                                <div className="flex-1">
-                                                    <span className="text-white font-semibold text-sm">{getPetFullName(selectedMascota)}</span>
-                                                    <span className="text-white/70 text-xs ml-2">{selectedMascota.breed}</span>
-                                                    {selectedMascota.owner && <span className="text-white/70 text-xs ml-2">• {selectedMascota.owner}</span>}
+                                <div>
+                                    {/* Fixed gray header with pet info */}
+                                    <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinMascDetailSearchOpen ? '14px' : '0', borderBottomRightRadius: clinMascDetailSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
+                                        <div style={{padding:'10px 16px'}}>
+                                            <div className="bg-gray-100 rounded-xl px-3 py-1.5 flex items-center gap-2">
+                                                <button onClick={() => { setSelectedMascota(null); setClinMascDetailSearchOpen(false); setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="dueno-circle-btn flex items-center justify-center bg-white/95 text-gray-600 flex-shrink-0">
+                                                    <i className="fas fa-arrow-left text-xs"></i>
+                                                </button>
+                                                <span className="text-lg">{selectedMascota.photo}</span>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-gray-800 font-semibold text-sm leading-tight truncate">{getPetFullName(selectedMascota)}</p>
+                                                    <p className="text-cyan-600 truncate" style={{fontSize:'10px'}}>{selectedMascota.breed} · {formatAge(selectedMascota)} · {selectedMascota.sex}{selectedMascota.owner ? ` · ${selectedMascota.owner}` : ''}</p>
                                                 </div>
-                                                <span className="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">{selectedMascota.exams.length} exám.</span>
+                                                <span className="bg-cyan-500 text-white text-xs px-2 py-0.5 rounded-full flex-shrink-0">{selectedMascota.exams.length}</span>
+                                                <button onClick={() => { setClinMascDetailSearchOpen(!clinMascDetailSearchOpen); if (clinMascDetailSearchOpen) { setExamSearchTerm(''); setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); } }} className="dueno-circle-btn flex items-center justify-center bg-white/95 text-gray-600 flex-shrink-0">
+                                                    <i className={`fas ${clinMascDetailSearchOpen ? 'fa-times' : 'fa-search'} text-xs`}></i>
+                                                </button>
                                             </div>
-                                            {/* Buscador */}
+                                        </div>
+                                        <div className={`dueno-search-slide-filters ${clinMascDetailSearchOpen ? 'open' : ''}`}>
                                             <div className="relative mb-2">
                                                 <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                                                <input 
-                                                    type="text" 
-                                                    value={examSearchTerm} 
-                                                    onChange={(e) => setExamSearchTerm(e.target.value)}
-                                                    placeholder="Buscar examen..." 
-                                                    className="w-full pl-9 pr-8 py-2 rounded-lg border border-gray-200 focus:border-emerald-500 focus:outline-none bg-gray-50 text-sm" 
-                                                />
+                                                <input type="text" value={examSearchTerm} onChange={(e) => setExamSearchTerm(e.target.value)} placeholder="Buscar examen..." className="w-full h-8 pl-9 pr-8 border border-gray-200 focus:border-purple-500 focus:outline-none bg-gray-50 text-xs dueno-search-pill" />
+                                                {examSearchTerm && <button onClick={() => setExamSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times text-sm"></i></button>}
                                             </div>
-                                            {/* Filtros compactos */}
-                                            <div className="grid grid-cols-4 gap-2">
-                                                <select value={examFilterType} onChange={(e) => setExamFilterType(e.target.value)} className="p-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs">
-                                                    <option value="">Tipo</option>
-                                                    {[...new Set(selectedMascota.exams.map(e => e.type))].map(type => <option key={type} value={type}>{type}</option>)}
-                                                </select>
-                                                <select value={examFilterDay} onChange={(e) => setExamFilterDay(e.target.value)} className="p-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs">
-                                                    <option value="">Día</option>
-                                                    {Array.from({length: 31}, (_, i) => String(i + 1).padStart(2, '0')).map(d => <option key={d} value={d}>{d}</option>)}
-                                                </select>
-                                                <select value={examFilterMonth} onChange={(e) => setExamFilterMonth(e.target.value)} className="p-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs">
-                                                    <option value="">Mes</option>
-                                                    {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i + 1).padStart(2, '0')}>{m}</option>)}
-                                                </select>
-                                                <select value={examFilterYear} onChange={(e) => setExamFilterYear(e.target.value)} className="p-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs">
-                                                    <option value="">Año</option>
-                                                    {Array.from({length: 5}, (_, i) => String(new Date().getFullYear() - i)).map(y => <option key={y} value={y}>{y}</option>)}
-                                                </select>
+                                            <div className="flex items-center gap-2">
+                                                <div className="relative flex-1"><select value={examFilterDay} onChange={(e) => setExamFilterDay(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-purple-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center"><option value="">Día</option>{[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}</select><i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i></div>
+                                                <div className="relative flex-1"><select value={examFilterMonth} onChange={(e) => setExamFilterMonth(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-purple-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center"><option value="">Mes</option>{['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}</select><i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i></div>
+                                                <div className="relative flex-1"><select value={examFilterYear} onChange={(e) => setExamFilterYear(e.target.value)} className="w-full h-7 pl-2 pr-4 bg-white border border-gray-200 text-xs focus:border-purple-500 appearance-none cursor-pointer focus:outline-none dueno-search-pill text-center"><option value="">Año</option>{['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}</select><i className="fas fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style={{fontSize:'7px'}}></i></div>
+                                                {(examFilterDay || examFilterMonth || examFilterYear) && <button onClick={() => { setExamFilterDay(''); setExamFilterMonth(''); setExamFilterYear(''); }} className="h-7 w-7 rounded-full bg-red-100 text-red-500 flex items-center justify-center flex-shrink-0"><i className="fas fa-times" style={{fontSize:'8px'}}></i></button>}
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    {/* Espaciador */}
-                                    <div className="list-spacer-medium"></div>
+                                    <div style={{height: clinMascDetailSearchOpen ? '130px' : '70px', transition:'height 0.2s ease-out'}}></div>
                                     
                                     {/* Lista de exámenes */}
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h2 className="text-base font-bold text-gray-800">
-                                            Historial de Exámenes
-                                        </h2>
-                                        <span className="text-sm text-gray-500">
-                                            {filterExams(selectedMascota.exams).length} resultados
-                                        </span>
-                                    </div>
-                                    
                                     {filterExams(selectedMascota.exams).length === 0 ? (
                                         <div className="bg-white rounded-2xl p-10 text-center shadow">
                                             <i className="fas fa-folder-open text-4xl text-gray-300 mb-2"></i>
@@ -4182,43 +4164,29 @@
                                         </div>
                                     ) : (
                                         <div className="space-y-3">
-                                            {filterExams(selectedMascota.exams).map(exam => (
-                                                <div 
-                                                    key={exam.id} 
-                                                    onClick={() => markExamAsSeen(exam, selectedMascota)}
-                                                    className={`bg-white rounded-xl p-4 shadow cursor-pointer hover:shadow-lg flex items-center justify-between ${exam.seen === false ? 'border-l-4 border-red-500' : ''}`}
-                                                >
+                                            {filterExams(selectedMascota.exams).sort((a, b) => new Date(b.date) - new Date(a.date)).map(exam => (
+                                                <div key={exam.id} onClick={() => markExamAsSeen(exam, selectedMascota)} className={`bg-white rounded-xl p-4 shadow cursor-pointer hover:shadow-lg flex items-center justify-between ${exam.seen === false ? 'border-l-4 border-red-500' : ''}`}>
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${exam.seen === false ? 'bg-red-100' : 'bg-emerald-100'}`}>
-                                                            <i className={`fas fa-file-pdf ${exam.seen === false ? 'text-red-600' : 'text-emerald-600'}`}></i>
+                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${exam.seen === false ? 'bg-red-100' : 'bg-purple-100'}`}>
+                                                            <i className={`fas fa-file-pdf ${exam.seen === false ? 'text-red-600' : 'text-purple-600'}`}></i>
                                                         </div>
                                                         <div>
                                                             <p className="font-semibold text-gray-800">{exam.type}</p>
                                                             <p className="text-xs text-gray-500">{new Date(exam.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                                                         </div>
-                                                        {exam.seen === false && (
-                                                            <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold ml-2">NUEVO</span>
-                                                        )}
+                                                        {exam.seen === false && <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold ml-2">NUEVO</span>}
                                                     </div>
                                                     <i className="fas fa-chevron-right text-gray-400"></i>
                                                 </div>
                                             ))}
                                         </div>
                                     )}
-                                    
-                                    {/* Botón volver */}
-                                    <button 
-                                        onClick={() => setSelectedMascota(null)}
-                                        className="mt-6 w-full py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-medium hover:bg-gray-50"
-                                    >
-                                        <i className="fas fa-arrow-left mr-2"></i>Volver a pacientes
-                                    </button>
-                                </>
+                                </div>
                             )}
                             
                             {/* ==================== RESULTADOS (Historial de pedidos) ==================== */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'resultados' && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinResSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Resultados */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinResSearchOpen ? '14px' : '0', borderBottomRightRadius: clinResSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -4246,6 +4214,8 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinResSearchOpen ? '120px' : '56px', transition:'height 0.2s ease-out'}}></div>
+                                    {clinResSearchOpen && <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:0}}></div>}
+                                    <div style={{position:'relative', zIndex:1}}>
                                     
                                     {/* Lista */}
                                     {(() => {
@@ -4313,12 +4283,13 @@
                                             </div>
                                         );
                                     })()}
+                                    </div>
                                 </div>
                             )}
                             
                             {/* ==================== FACTURACIÓN ==================== */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'facturacion' && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinFacSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Facturación */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinFacSearchOpen ? '14px' : '0', borderBottomRightRadius: clinFacSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -4346,6 +4317,8 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinFacSearchOpen ? '120px' : '56px', transition:'height 0.2s ease-out'}}></div>
+                                    {clinFacSearchOpen && <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:0}}></div>}
+                                    <div style={{position:'relative', zIndex:1}}>
                                     
                                     {/* Comprobantes Pendientes */}
                                     {(() => {
@@ -4475,6 +4448,7 @@
                                             </div>
                                         );
                                     })()}
+                                    </div>
                                 </div>
                             )}
                             </div>
@@ -4484,27 +4458,27 @@
                             <div className="mob-bottom-nav">
                                 <div className="mob-bottom-nav-inner">
                                     <button className={`mob-nav-btn ${medicoView === 'inicio' && !currentExamForPet && !viewingOrderTracking ? 'active' : ''}`}
-                                        onClick={() => { setMedicoView('inicio'); setSelectedMascota(null); setMenuOpen(false); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); }}>
+                                        onClick={() => { setMedicoView('inicio'); setSelectedMascota(null); setMenuOpen(false); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); }}>
                                         <i className="fas fa-home"></i>
                                         <span>Inicio</span>
                                     </button>
                                     <button className={`mob-nav-btn ${medicoView === 'pedidos' && !currentExamForPet && !viewingOrderTracking ? 'active' : ''}`}
-                                        onClick={() => { setMedicoView('pedidos'); setMenuOpen(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); }}>
+                                        onClick={() => { setMedicoView('pedidos'); setMenuOpen(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); }}>
                                         <i className="fas fa-clipboard-list"></i>
                                         <span>Pedidos</span>
                                     </button>
                                     <button className={`mob-nav-btn ${medicoView === 'mascotas' && !currentExamForPet ? 'active' : ''}`}
-                                        onClick={() => { setMedicoView('mascotas'); setMenuOpen(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); }}>
+                                        onClick={() => { setMedicoView('mascotas'); setMenuOpen(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); }}>
                                         <i className="fas fa-paw"></i>
                                         <span>Pacientes</span>
                                     </button>
                                     <button className={`mob-nav-btn ${medicoView === 'resultados' && !currentExamForPet ? 'active' : ''}`}
-                                        onClick={() => { setMedicoView('resultados'); setMenuOpen(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); }}>
+                                        onClick={() => { setMedicoView('resultados'); setMenuOpen(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); }}>
                                         <i className="fas fa-file-medical"></i>
                                         <span>Resultados</span>
                                     </button>
                                     <button className={`mob-nav-btn ${medicoView === 'facturacion' && !currentExamForPet ? 'active' : ''}`}
-                                        onClick={() => { setMedicoView('facturacion'); setMenuOpen(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); }}>
+                                        onClick={() => { setMedicoView('facturacion'); setMenuOpen(false); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setShowOrderSummary(false); setClinPedidosSearchOpen(false); setClinMascSearchOpen(false); setClinResSearchOpen(false); setClinFacSearchOpen(false); setClinMascDetailSearchOpen(false); }}>
                                         <i className="fas fa-file-invoice-dollar"></i>
                                         <span>Facturas</span>
                                     </button>
