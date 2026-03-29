@@ -3957,7 +3957,7 @@
                             
                             {/* ==================== PEDIDOS ==================== */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'pedidos' && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinPedidosSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Pedidos */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinPedidosSearchOpen ? '14px' : '0', borderBottomRightRadius: clinPedidosSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -3978,7 +3978,27 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinPedidosSearchOpen ? '110px' : '70px', transition:'height 0.2s ease-out'}}></div>
-                                    <div className={clinPedidosSearchOpen ? 'dueno-search-overlay' : ''} style={clinPedidosSearchOpen ? {background:'#f3f4f6', margin:'0 -16px', padding:'0 16px', minHeight:'50vh'} : {}}>
+                                    {/* Overlay */}
+                                    {clinPedidosSearchOpen && (
+                                        <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                            <div style={{height:'130px'}}></div>
+                                            <div style={{padding:'0 16px'}}>
+                                            {searchTerm.trim() ? (() => {
+                                                const allFlat = [...filteredPerfiles, ...filteredCategorias.flatMap(c => c.examenes)];
+                                                return allFlat.length === 0 ? (
+                                                    <div className="text-center py-10 text-gray-400"><i className="fas fa-search text-3xl mb-2 block text-gray-300"></i><p className="text-sm">No se encontraron exámenes</p></div>
+                                                ) : (
+                                                    <div className="space-y-2">{allFlat.map(exam => {
+                                                        const isInCart = cart.find(c => c.exam.id === exam.id);
+                                                        const isPending = pendingExams.find(e => e.id === exam.id);
+                                                        return (<div key={exam.id} onClick={() => handleExamClick(exam)} className={`bg-white rounded-2xl p-3 cursor-pointer shadow-sm border-2 ${isInCart ? 'border-emerald-500 bg-emerald-50' : isPending ? 'border-amber-400 bg-amber-50' : 'border-transparent'} flex items-center gap-3`}><div className={`w-10 h-10 ${exam.bg} rounded-xl flex items-center justify-center flex-shrink-0`}><i className={`fas ${exam.icon} ${exam.color}`}></i></div><div className="flex-1 min-w-0"><p className="text-gray-800 font-semibold text-sm">{exam.name}</p>{exam.subtitle && <p className="text-gray-500 text-xs truncate">{exam.subtitle}</p>}</div>{exam.price && <span className="text-cyan-600 font-bold text-sm flex-shrink-0">S/ {exam.price}</span>}</div>);
+                                                    })}</div>
+                                                );
+                                            })() : null}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div>
                                     
                                     {(cart.length > 0 || pendingExams.length > 0) && (
                                         <div className="flex items-center gap-4 mb-4 text-xs text-gray-500">
@@ -4056,7 +4076,7 @@
                             
                             {/* ==================== MASCOTAS/PACIENTES ==================== */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'mascotas' && !selectedMascota && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinMascSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Mascotas */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinMascSearchOpen ? '14px' : '0', borderBottomRightRadius: clinMascSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -4078,7 +4098,27 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinMascSearchOpen ? '110px' : '70px', transition:'height 0.2s ease-out'}}></div>
-                                    <div className={clinMascSearchOpen ? 'dueno-search-overlay' : ''} style={clinMascSearchOpen ? {background:'#f3f4f6', margin:'0 -16px', padding:'0 16px', minHeight:'50vh'} : {}}>
+                                    {clinMascSearchOpen && (
+                                        <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                            <div style={{height:'130px'}}></div>
+                                            <div style={{padding:'0 16px'}}>
+                                            {mascotaSearchTerm.trim() ? (
+                                                filteredMascotas.length === 0 ? (
+                                                    <div className="text-center py-10 text-gray-400"><i className="fas fa-search text-3xl mb-2 block text-gray-300"></i><p className="text-sm">No se encontraron pacientes</p></div>
+                                                ) : (
+                                                    <div className="space-y-2">{filteredMascotas.map(pet => (
+                                                        <div key={pet.id} onClick={() => setSelectedMascota(pet)} className="bg-white rounded-2xl p-3 shadow-sm cursor-pointer border-2 border-transparent hover:border-emerald-300 flex items-center gap-3">
+                                                            <span className="text-2xl">{pet.photo}</span>
+                                                            <div className="flex-1 min-w-0"><p className="font-bold text-gray-800 text-sm">{getPetFullName(pet)}</p><p className="text-gray-500 text-xs">{pet.breed} · {formatAge(pet)} · {pet.sex}</p>{pet.owner && <p className="text-gray-400 text-xs">{pet.owner}</p>}</div>
+                                                            <span className="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">{pet.exams.length}</span>
+                                                        </div>
+                                                    ))}</div>
+                                                )
+                                            ) : null}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div>
                                     
                                     {/* Lista */}
                                     {filteredMascotas.length === 0 ? (
@@ -4184,7 +4224,7 @@
                             
                             {/* ==================== RESULTADOS (Historial de pedidos) ==================== */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'resultados' && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinResSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Resultados */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinResSearchOpen ? '14px' : '0', borderBottomRightRadius: clinResSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -4212,7 +4252,24 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinResSearchOpen ? '140px' : '70px', transition:'height 0.2s ease-out'}}></div>
-                                    <div className={clinResSearchOpen ? 'dueno-search-overlay' : ''} style={clinResSearchOpen ? {background:'#f3f4f6', margin:'0 -16px', padding:'0 16px', minHeight:'50vh'} : {}}>
+                                    {clinResSearchOpen && (
+                                        <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                            <div style={{height:'160px'}}></div>
+                                            <div style={{padding:'0 16px'}}>
+                                            {(resultadosSearch.trim() || resultadosFilterDay || resultadosFilterMonth || resultadosFilterYear) ? (() => {
+                                                const fOrders = completedOrders.filter(o => {
+                                                    if (resultadosSearch) { if (!o.items.some(it => it.pet.name.toLowerCase().includes(resultadosSearch.toLowerCase()))) return false; }
+                                                    const d = new Date(o.completedAt || o.date); const dd = String(d.getDate()).padStart(2,'0'); const mm = String(d.getMonth()+1).padStart(2,'0'); const yy = String(d.getFullYear());
+                                                    if (resultadosFilterDay && dd !== resultadosFilterDay) return false; if (resultadosFilterMonth && mm !== resultadosFilterMonth) return false; if (resultadosFilterYear && yy !== resultadosFilterYear) return false; return true;
+                                                });
+                                                return fOrders.length === 0 ? (<div className="text-center py-10 text-gray-400"><i className="fas fa-search text-3xl mb-2 block text-gray-300"></i><p className="text-sm">No se encontraron resultados</p></div>) : (
+                                                    <div className="space-y-2">{fOrders.map(order => (<div key={order.id} className="bg-white rounded-2xl p-3 shadow-sm"><p className="text-xs text-gray-400 mb-1">{new Date(order.completedAt||order.date).toLocaleDateString('es-PE',{day:'numeric',month:'short',year:'numeric'})}</p>{order.items.map((it,i) => (<div key={i} className="flex items-center gap-2 mb-1"><span className="text-lg">{it.pet.photo}</span><div className="flex-1 min-w-0"><p className="text-sm font-medium text-gray-800">{it.exam.name}</p><p className="text-xs text-gray-500">{getPetFullName(it.pet)}</p></div></div>))}</div>))}</div>
+                                                );
+                                            })() : null}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div>
                                     
                                     {/* Lista */}
                                     {(() => {
@@ -4286,7 +4343,7 @@
                             
                             {/* ==================== FACTURACIÓN ==================== */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'facturacion' && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinFacSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed header - Facturación */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinFacSearchOpen ? '14px' : '0', borderBottomRightRadius: clinFacSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -4314,7 +4371,23 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinFacSearchOpen ? '140px' : '70px', transition:'height 0.2s ease-out'}}></div>
-                                    <div className={clinFacSearchOpen ? 'dueno-search-overlay' : ''} style={clinFacSearchOpen ? {background:'#f3f4f6', margin:'0 -16px', padding:'0 16px', minHeight:'50vh'} : {}}>
+                                    {clinFacSearchOpen && (
+                                        <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                            <div style={{height:'160px'}}></div>
+                                            <div style={{padding:'0 16px'}}>
+                                            {(facturacionSearch.trim() || facturacionFilterDay || facturacionFilterMonth || facturacionFilterYear) ? (() => {
+                                                const fInvoices = completedOrders.filter(o => o.invoicePdf).filter(inv => {
+                                                    if (facturacionSearch.trim()) { const s = facturacionSearch.toLowerCase(); if (!inv.items.some(it => it.pet.name.toLowerCase().includes(s)) && !(inv.documentType||'').includes(s)) return false; }
+                                                    const d = new Date(inv.completedAt||inv.date); if (facturacionFilterDay && String(d.getDate()).padStart(2,'0') !== facturacionFilterDay) return false; if (facturacionFilterMonth && String(d.getMonth()+1).padStart(2,'0') !== facturacionFilterMonth) return false; if (facturacionFilterYear && String(d.getFullYear()) !== facturacionFilterYear) return false; return true;
+                                                });
+                                                return fInvoices.length === 0 ? (<div className="text-center py-10 text-gray-400"><i className="fas fa-search text-3xl mb-2 block text-gray-300"></i><p className="text-sm">No se encontraron comprobantes</p></div>) : (
+                                                    <div className="space-y-2">{fInvoices.map(inv => (<div key={inv.id} onClick={() => setViewingInvoice(inv)} className="bg-white rounded-2xl p-3 shadow-sm cursor-pointer"><div className="flex items-center gap-3"><div className={`w-10 h-10 rounded-xl flex items-center justify-center ${inv.documentType==='boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}><i className={`fas ${inv.documentType==='boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'}`}></i></div><div className="flex-1 min-w-0"><p className="font-semibold text-gray-800 text-sm">{inv.documentType==='boleta' ? 'Boleta' : 'Factura'}</p><p className="text-xs text-gray-500">{inv.items.map(it => it.pet.name).join(', ')}</p><p className="text-xs text-gray-400">{new Date(inv.completedAt||inv.date).toLocaleDateString('es-PE',{day:'numeric',month:'short',year:'numeric'})}</p></div></div></div>))}</div>
+                                                );
+                                            })() : null}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div>
                                     
                                     {/* Comprobantes Pendientes */}
                                     {(() => {
