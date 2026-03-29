@@ -53,7 +53,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior: none;
+            overscroll-behavior: contain;
         }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -252,6 +252,8 @@
                 padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
                 min-height: 100vh;
                 overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior-y: auto;
             }
             /* When filters panel is shown, extra top padding */
             .mob-content-filters {
@@ -4159,7 +4161,7 @@
                             
                             {/* Detalle de mascota */}
                             {!showOrderSummary && !selectedExam && !viewingInvoice && !viewingOrderTracking && medicoView === 'mascotas' && selectedMascota && (
-                                <div>
+                                <div style={{position:'relative', minHeight: clinMascDetailSearchOpen ? '60vh' : 'auto'}}>
                                     {/* Fixed gray header with pet info */}
                                     <div style={{position:'fixed', top:'calc(58px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)', borderBottomLeftRadius: clinMascDetailSearchOpen ? '14px' : '0', borderBottomRightRadius: clinMascDetailSearchOpen ? '14px' : '0', transition:'border-radius 0.2s ease-out', overflow:'hidden'}}>
                                         <div style={{padding:'10px 16px'}}>
@@ -4193,6 +4195,24 @@
                                         </div>
                                     </div>
                                     <div style={{height: clinMascDetailSearchOpen ? '130px' : '70px', transition:'height 0.2s ease-out'}}></div>
+                                    {clinMascDetailSearchOpen && (
+                                        <div className="dueno-search-overlay" style={{position:'absolute', top:0, left:'-16px', right:'-16px', bottom:0, background:'#f3f4f6', zIndex:5}}>
+                                            <div style={{height:'150px'}}></div>
+                                            <div style={{padding:'0 16px'}}>
+                                            {(examSearchTerm.trim() || examFilterDay || examFilterMonth || examFilterYear) ? (() => {
+                                                const fExams = filterExams(selectedMascota.exams).sort((a, b) => new Date(b.date) - new Date(a.date));
+                                                return fExams.length === 0 ? (<div className="text-center py-10 text-gray-400"><i className="fas fa-search text-3xl mb-2 block text-gray-300"></i><p className="text-sm">No se encontraron exámenes</p></div>) : (
+                                                    <div className="space-y-2">{fExams.map(exam => (
+                                                        <div key={exam.id} onClick={() => markExamAsSeen(exam, selectedMascota)} className={`bg-white rounded-xl p-3 shadow-sm cursor-pointer flex items-center justify-between ${exam.seen === false ? 'border-l-4 border-red-500' : ''}`}>
+                                                            <div className="flex items-center gap-3"><div className={`w-10 h-10 rounded-xl flex items-center justify-center ${exam.seen === false ? 'bg-red-100' : 'bg-purple-100'}`}><i className={`fas fa-file-pdf ${exam.seen === false ? 'text-red-600' : 'text-purple-600'}`}></i></div><div><p className="font-semibold text-gray-800 text-sm">{exam.type}</p><p className="text-xs text-gray-500">{new Date(exam.date).toLocaleDateString('es-ES', {day:'numeric', month:'long', year:'numeric'})}</p></div>{exam.seen === false && <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold ml-2">NUEVO</span>}</div>
+                                                            <i className="fas fa-chevron-right text-gray-400"></i>
+                                                        </div>
+                                                    ))}</div>
+                                                );
+                                            })() : null}
+                                            </div>
+                                        </div>
+                                    )}
                                     
                                     {/* Lista de exámenes */}
                                     {filterExams(selectedMascota.exams).length === 0 ? (
