@@ -53,7 +53,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
+            overscroll-behavior: none;
         }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -1423,7 +1423,7 @@
             };
 
             const renderTermsModal = () => showTermsModal && (
-                <div className="fixed flex flex-col bg-white" style={{zIndex:9997, top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))'}}>
+                <div className="fixed flex flex-col bg-white" style={{zIndex:9999, top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))'}}>
                     {/* Franja cyan header */}
                     <div className="bg-cyan-500 px-4 py-3 flex items-center justify-between flex-shrink-0">
                         <div className="flex items-center gap-2">
@@ -2432,7 +2432,7 @@
             const petsOrPatients = freshUser.type === 'medico' ? (freshUser.patients || []) : (freshUser.pets || []);
             const entityName = freshUser.type === 'medico' ? 'paciente' : 'mascota';
             const filteredPets = petSearchTerm.trim() === '' ? petsOrPatients : petsOrPatients.filter(p => p.name.toLowerCase().includes(petSearchTerm.toLowerCase()));
-            const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); };
+            const resetDuenoState = () => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setShowTermsModal(false); };
             const switchDuenoTab = (tab) => { setSelectedPet(null); setDuenoView('main'); setShowEditProfile(false); setSelectedPaqueteDetail(null); setViewingOrderTracking(null); setSelectedExam(null); setViewingInvoice(null); setShowAllPending(false); setFacturacionInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowTomaMuestraStep(false); setPendingOrderAddress(null); setShowOrderSummary(false); setShowTermsModal(false); setPedidosSearchTerm(''); setPedidosSearchOpen(false); setPetResSearchOpen(false); setFacDuenoSearchTerm(''); setFacDuenoSearchOpen(false); setFacDuenoFilterDay(''); setFacDuenoFilterMonth(''); setFacDuenoFilterYear(''); setSelSearchTerm(''); setSelSearchOpen(false); setActiveTab(tab); };
             
             const renderDuenoHeader = () => (
@@ -3058,7 +3058,7 @@
                                             </div>
                                         </div>
                                         <div className="px-4 py-3 space-y-1">
-                                            <button onClick={() => { setMedicoView('configuracion'); setShowEditProfile(true); setMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors">
+                                            <button onClick={() => { setMedicoView('configuracion'); setShowEditProfile(true); setMenuOpen(false); setShowTermsModal(false); setShowOrderSummary(false); }} className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors">
                                                 <div className="w-9 h-9 bg-cyan-100 rounded-xl flex items-center justify-center"><i className="fas fa-user-edit text-cyan-600"></i></div>
                                                 <span className="font-medium">Editar Perfil</span>
                                                 <i className="fas fa-chevron-right text-gray-300 ml-auto text-xs"></i>
