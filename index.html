@@ -522,7 +522,6 @@
         }
 
         /* Landscape block - Safari phones only (orientation API not supported) */
-        .safari-no-lock #landscape-block { display: none; }
         @media screen and (orientation: landscape) and (max-height: 500px) {
             .safari-no-lock #landscape-block {
                 display: flex !important;
@@ -542,7 +541,7 @@
     </style>
 </head>
 <body>
-    <div id="landscape-block">
+    <div id="landscape-block" style="display:none">
         <i class="fas fa-mobile-alt" style="font-size:40px; color:#06b6d4"></i>
         <p style="font-size:16px; font-weight:700; color:#1f2937">Gira tu dispositivo</p>
         <p style="font-size:13px; color:#6b7280">Esta aplicación funciona en modo vertical</p>
