@@ -521,31 +521,9 @@
             }
         }
 
-        /* Landscape block - phones only */
-        @media screen and (orientation: landscape) and (max-height: 500px) {
-            #landscape-block {
-                display: flex !important;
-                position: fixed;
-                inset: 0;
-                z-index: 9999999;
-                background: white;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 12px;
-                text-align: center;
-                padding: 24px;
-            }
-            #root { display: none !important; }
-        }
     </style>
 </head>
 <body>
-    <div id="landscape-block" style="display:none">
-        <i class="fas fa-mobile-alt" style="font-size:40px; color:#06b6d4"></i>
-        <p style="font-size:16px; font-weight:700; color:#1f2937">Gira tu dispositivo</p>
-        <p style="font-size:13px; color:#6b7280">Esta aplicación funciona en modo vertical</p>
-    </div>
     <div id="root"></div>
     <script type="text/babel">
         const { useState, useEffect } = React;
@@ -1391,6 +1369,7 @@
             const [petResSearchOpen, setPetResSearchOpen] = useState(false);
             const [menuOpen, setMenuOpen] = useState(false);
             const [duenoMenuOpen, setDuenoMenuOpen] = useState(false);
+            const [isLandscapePhone, setIsLandscapePhone] = useState(false);
             const [duenoView, setDuenoView] = useState('main'); // 'main' o 'config'
             const [orderComment, setOrderComment] = useState('');
             const [termsAccepted, setTermsAccepted] = useState(false);
@@ -1662,6 +1641,17 @@
             // Componente de Mapa de Tracking para Admin (incluye ruta de regreso)
 
             useEffect(() => { loadDatabase(); }, []);
+
+            useEffect(() => {
+                const checkLandscape = () => {
+                    const isPhone = window.innerHeight <= 500 && window.innerWidth > window.innerHeight;
+                    setIsLandscapePhone(isPhone);
+                };
+                checkLandscape();
+                window.addEventListener('resize', checkLandscape);
+                window.addEventListener('orientationchange', () => setTimeout(checkLandscape, 100));
+                return () => { window.removeEventListener('resize', checkLandscape); };
+            }, []);
             
             useEffect(() => {
                 // Solicitar permisos de notificación al cargar
@@ -2121,6 +2111,14 @@
             const hayResultados = filteredPerfiles.length > 0 || filteredCategorias.length > 0;
 
             if (loading) return <div className="min-h-screen bg-gray-100 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-4 border-cyan-500 border-t-transparent"></div></div>;
+
+            if (isLandscapePhone) return (
+                <div style={{position:'fixed', inset:0, background:'white', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'12px', textAlign:'center', padding:'24px', zIndex:9999999}}>
+                    <i className="fas fa-mobile-alt" style={{fontSize:'40px', color:'#06b6d4'}}></i>
+                    <p style={{fontSize:'16px', fontWeight:700, color:'#1f2937'}}>Gira tu dispositivo</p>
+                    <p style={{fontSize:'13px', color:'#6b7280'}}>Esta aplicación funciona en modo vertical</p>
+                </div>
+            );
 
             // LOGIN
             if (!isAuthenticated) {
@@ -7213,11 +7211,9 @@
         root.render(<App />);
     </script>
 
-    <!-- Lock portrait orientation where supported, flag Safari fallback -->
+    <!-- Lock portrait orientation where supported -->
     <script>
-    try {
-        screen.orientation.lock('portrait-primary').catch(function(){ document.body.classList.add('safari-no-lock'); });
-    } catch(e) { document.body.classList.add('safari-no-lock'); }
+    try { screen.orientation.lock('portrait-primary').catch(function(){}); } catch(e) {}
     </script>
 
     <!-- Keyboard stability: prevent layout jump / zoom when keyboard opens on iOS/Android -->
