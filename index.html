@@ -316,10 +316,12 @@
         @media (max-width: 767px) {
             .login-wrapper {
                 height: 100%;
+                min-height: 0 !important;
                 position: fixed;
                 top: 0; left: 0; right: 0; bottom: 0;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
+                background: white;
             }
         }
 
@@ -1796,7 +1798,7 @@
                 setNewPet({ name: '', owner: '', animalType: '', breed: '', ageValue: '', ageUnit: 'años', sex: '' });
                 setSelectedPetForOrder(null); setShowAddressSelection(false); setShowNewAddressForm(false);
                 setNewAddress({ name: '', address: '', district: '', reference: '' });
-                setShowEditProfile(false); setDuenoMenuOpen(false); setDuenoView('main'); setOrderComment('');
+                setShowEditProfile(false); setDuenoMenuOpen(false); setDuenoView('main'); setOrderComment(''); setMedicoView('inicio');
             };
             
             // Funciones para editar perfil
@@ -6963,7 +6965,7 @@
                             );
                         })()}
 
-                        </div>)}
+                        </div>
 
                         {activeTab === 'facturacion' && !facturacionInvoice && (() => {
                             const userInvoices = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoicePdf);
