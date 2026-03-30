@@ -54,6 +54,7 @@
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
+            background: #f3f4f6;
             background: white;
         }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -6962,7 +6963,7 @@
                             );
                         })()}
 
-                        </div>
+                        </div>)}
 
                         {activeTab === 'facturacion' && !facturacionInvoice && (() => {
                             const userInvoices = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoicePdf);
