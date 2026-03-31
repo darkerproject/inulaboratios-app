@@ -2188,7 +2188,7 @@
                         <div style={{flex:1, overflow:'hidden', display:'flex', flexDirection:'column', padding:'12px', gap:'10px'}}>
                             <div style={{flex:1, overflow:'hidden', background:'white', borderRadius:'16px', boxShadow:'0 2px 12px rgba(0,0,0,0.10)', border:'1px solid #e5e7eb'}}>
                                 {selectedExam.pdfData ? (
-                                    <iframe src={selectedExam.pdfData} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px', margin:'8px 0'}} title="PDF" />
+                                    <iframe src={selectedExam.pdfData + '#toolbar=0&navpanes=0'} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px', margin:'8px 0'}} title="PDF" />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
                                         <i className="fas fa-file-pdf text-5xl mb-3 text-gray-300"></i>
@@ -2239,7 +2239,7 @@
                         <div style={{flex:1, overflow:'hidden', display:'flex', flexDirection:'column', padding:'12px', gap:'10px'}}>
                             <div style={{flex:1, overflow:'hidden', background:'white', borderRadius:'16px', boxShadow:'0 2px 12px rgba(0,0,0,0.10)', border:'1px solid #e5e7eb'}}>
                                 {viewingInvoice.invoicePdf ? (
-                                    <iframe src={viewingInvoice.invoicePdf} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px'}} title={`${docType} PDF`} />
+                                    <iframe src={viewingInvoice.invoicePdf + '#toolbar=0&navpanes=0'} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px'}} title={`${docType} PDF`} />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
                                         <i className={`fas ${viewingInvoice.documentType === 'boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-5xl mb-3 text-gray-300`}></i>
@@ -2392,7 +2392,7 @@
                         <div style={{flex:1, overflow:'hidden', display:'flex', flexDirection:'column', padding:'12px', gap:'10px'}}>
                             <div style={{flex:1, overflow:'hidden', background:'white', borderRadius:'16px', boxShadow:'0 2px 12px rgba(0,0,0,0.10)', border:'1px solid #e5e7eb'}}>
                                 {selectedExam.pdfData ? (
-                                    <iframe src={selectedExam.pdfData} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px'}} title="PDF" />
+                                    <iframe src={selectedExam.pdfData + '#toolbar=0&navpanes=0'} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px'}} title="PDF" />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
                                         <i className="fas fa-file-pdf text-5xl mb-3 text-gray-300"></i>
@@ -2431,7 +2431,7 @@
                         <div style={{flex:1, overflow:'hidden', display:'flex', flexDirection:'column', padding:'12px', gap:'10px'}}>
                             <div style={{flex:1, overflow:'hidden', background:'white', borderRadius:'16px', boxShadow:'0 2px 12px rgba(0,0,0,0.10)', border:'1px solid #e5e7eb'}}>
                                 {viewingInvoice.invoicePdf ? (
-                                    <iframe src={viewingInvoice.invoicePdf} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px'}} title="Comprobante PDF" />
+                                    <iframe src={viewingInvoice.invoicePdf + '#toolbar=0&navpanes=0'} style={{width:'100%', height:'100%', display:'block', border:'none', borderRadius:'16px'}} title="Comprobante PDF" />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
                                         <i className={`fas ${viewingInvoice.documentType === 'boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-5xl mb-3 text-gray-300`}></i>
@@ -3118,7 +3118,7 @@
                                         </div>
                                     </div>
                                     <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
-                                        {selectedExam.pdfData ? (<iframe src={selectedExam.pdfData} className="w-full h-full" title="PDF" style={{border:'none'}} />) : (<div className="h-full flex flex-col items-center justify-center text-gray-400"><i className="fas fa-file-pdf text-4xl mb-2"></i><p className="text-sm">PDF no disponible</p></div>)}
+                                        {selectedExam.pdfData ? (<iframe src={selectedExam.pdfData + '#toolbar=0&navpanes=0'} className="w-full h-full" title="PDF" style={{border:'none'}} />) : (<div className="h-full flex flex-col items-center justify-center text-gray-400"><i className="fas fa-file-pdf text-4xl mb-2"></i><p className="text-sm">PDF no disponible</p></div>)}
                                     </div>
                                     {selectedExam.pdfData && (<div className="flex justify-center flex-shrink-0"><button onClick={() => { const l=document.createElement('a'); l.href=selectedExam.pdfData; l.download=`${selectedExam.type.replace(/[^a-zA-Z0-9]/g,'_')}.pdf`; document.body.appendChild(l); l.click(); document.body.removeChild(l); }} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg"><i className="fas fa-download"></i> Descargar PDF</button></div>)}
                                 </div>
@@ -3135,7 +3135,7 @@
                                         </div>
                                     </div>
                                     <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
-                                        {viewingInvoice.invoicePdf ? (<iframe src={viewingInvoice.invoicePdf} className="w-full h-full" title="Comprobante" style={{border:'none'}} />) : (<div className="h-full flex flex-col items-center justify-center text-gray-400"><i className={`fas ${viewingInvoice.documentType==='boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-4xl mb-2`}></i><p className="text-sm">Comprobante no disponible</p></div>)}
+                                        {viewingInvoice.invoicePdf ? (<iframe src={viewingInvoice.invoicePdf + '#toolbar=0&navpanes=0'} className="w-full h-full" title="Comprobante" style={{border:'none'}} />) : (<div className="h-full flex flex-col items-center justify-center text-gray-400"><i className={`fas ${viewingInvoice.documentType==='boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-4xl mb-2`}></i><p className="text-sm">Comprobante no disponible</p></div>)}
                                     </div>
                                     {viewingInvoice.invoicePdf && (<div className="flex justify-center flex-shrink-0"><button onClick={() => { const l=document.createElement('a'); l.href=viewingInvoice.invoicePdf; l.download=`${viewingInvoice.documentType==='boleta'?'Boleta':'Factura'}_${viewingInvoice.id}.pdf`; document.body.appendChild(l); l.click(); document.body.removeChild(l); }} className={`flex items-center gap-2 px-5 py-2.5 ${viewingInvoice.documentType==='boleta' ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold text-sm shadow-lg`}><i className="fas fa-download"></i> Descargar PDF</button></div>)}
                                 </div>
@@ -4757,7 +4757,7 @@
                                                         {selectedExam.pdfData ? (
                                                             <div className="flex-1 flex flex-col min-h-0">
                                                                 <iframe 
-                                                                    src={selectedExam.pdfData} 
+                                                                    src={selectedExam.pdfData + '#toolbar=0&navpanes=0'} 
                                                                     className="flex-1 w-full rounded-xl border border-gray-200" 
                                                                     title="PDF" 
                                                                 />
@@ -4821,7 +4821,7 @@
                                                         {viewingInvoice.invoicePdf ? (
                                                             <div className="flex-1 flex flex-col min-h-0">
                                                                 <iframe 
-                                                                    src={viewingInvoice.invoicePdf} 
+                                                                    src={viewingInvoice.invoicePdf + '#toolbar=0&navpanes=0'} 
                                                                     className="flex-1 w-full rounded-xl border border-gray-200" 
                                                                     title="Comprobante PDF"
                                                                 />
@@ -5992,7 +5992,7 @@
                                 </div>
                                 <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
                                     {selectedExam.pdfData ? (
-                                        <iframe src={selectedExam.pdfData} className="w-full h-full" title="PDF" style={{border:'none'}} />
+                                        <iframe src={selectedExam.pdfData + '#toolbar=0&navpanes=0'} className="w-full h-full" title="PDF" style={{border:'none'}} />
                                     ) : (
                                         <div className="h-full flex flex-col items-center justify-center text-gray-400">
                                             <i className="fas fa-file-pdf text-4xl mb-2"></i>
@@ -6022,16 +6022,16 @@
                                         <span className="text-gray-600 font-medium">{selectedExam.type}{selectedPet ? ` · ${selectedPet.name}` : ''}</span>
                                     </div>
                                 </div>
-                                <div className="flex-1 overflow-hidden py-8 px-5 flex flex-col min-h-0">
+                                <div className="flex-1 overflow-hidden p-6 flex flex-col min-h-0">
                                     <div className="max-w-4xl mx-auto w-full h-full flex flex-col">
-                                        <div className="bg-white rounded-2xl shadow-lg p-4 flex-1 flex flex-col min-h-0">
+                                        <div className="bg-white rounded-2xl shadow-lg p-5 flex-1 flex flex-col min-h-0">
                                             <div className="mb-3 flex-shrink-0">
                                                 <h1 className="text-xl font-bold text-gray-800 mb-1">{selectedExam.type}{selectedPet ? ` · ${selectedPet.name}` : ''}</h1>
                                                 <p className="text-gray-500 text-sm"><i className="fas fa-calendar mr-1"></i>{new Date(selectedExam.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                             </div>
                                             {selectedExam.pdfData ? (
                                                 <div className="flex-1 flex flex-col min-h-0">
-                                                    <iframe src={selectedExam.pdfData} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" title="PDF" />
+                                                    <iframe src={selectedExam.pdfData + '#toolbar=0&navpanes=0'} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" title="PDF" />
                                                     <div className="mt-3 flex justify-center flex-shrink-0">
                                                         <button onClick={() => { const a=document.createElement('a'); a.href=selectedExam.pdfData; a.download=`${selectedExam.type.replace(/[^a-zA-Z0-9]/g,'_')}_${selectedExam.date}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-semibold text-sm shadow-lg">
                                                             <i className="fas fa-download"></i> Descargar PDF
@@ -6073,7 +6073,7 @@
                                             <div className="bg-white rounded-2xl shadow-lg p-5 flex-1 flex flex-col min-h-0">
                                                 {viewingInvoice.invoicePdf ? (
                                                     <div className="flex-1 flex flex-col min-h-0">
-                                                        <iframe src={viewingInvoice.invoicePdf} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" title={`${docType} PDF`} />
+                                                        <iframe src={viewingInvoice.invoicePdf + '#toolbar=0&navpanes=0'} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" title={`${docType} PDF`} />
                                                         <div className="mt-3 flex justify-center flex-shrink-0">
                                                             <button onClick={() => { const a=document.createElement('a'); a.href=viewingInvoice.invoicePdf; a.download=`${docType}_${viewingInvoice.id}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className={`flex items-center gap-2 px-6 py-2.5 ${viewingInvoice.documentType === 'boleta' ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold text-sm shadow-lg`}>
                                                                 <i className="fas fa-download"></i> Descargar {docType}
@@ -6225,7 +6225,7 @@
                                 </div>
                                 <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
                                     {facturacionInvoice.invoicePdf ? (
-                                        <iframe src={facturacionInvoice.invoicePdf} className="w-full h-full" title="PDF" style={{border:'none'}} />
+                                        <iframe src={facturacionInvoice.invoicePdf + '#toolbar=0&navpanes=0'} className="w-full h-full" title="PDF" style={{border:'none'}} />
                                     ) : (
                                         <div className="h-full flex flex-col items-center justify-center text-gray-400">
                                             <i className="fas fa-file-invoice text-4xl mb-2"></i>
@@ -6260,7 +6260,7 @@
                                         <div className="bg-white rounded-2xl shadow-lg p-4 flex-1 flex flex-col min-h-0">
                                             {facturacionInvoice.invoicePdf ? (
                                                 <div className="flex-1 flex flex-col min-h-0">
-                                                    <iframe src={facturacionInvoice.invoicePdf} className="flex-1 w-full rounded-xl border border-gray-200 my-2" style={{minHeight:'100px'}}></iframe>
+                                                    <iframe src={facturacionInvoice.invoicePdf + '#toolbar=0&navpanes=0'} className="flex-1 w-full rounded-xl border border-gray-200 my-2" style={{minHeight:'100px'}}></iframe>
                                                     <div className="mt-3 flex justify-center flex-shrink-0">
                                                         <button onClick={() => { const a=document.createElement('a');a.href=facturacionInvoice.invoicePdf;a.download='comprobante.pdf';document.body.appendChild(a);a.click();document.body.removeChild(a); }} className={`flex items-center gap-2 px-6 py-2.5 ${facturacionInvoice.documentType==='boleta'?'bg-gradient-to-r from-cyan-500 to-blue-600':'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold shadow-lg text-sm`}>
                                                             <i className="fas fa-download"></i> Descargar PDF
@@ -6906,7 +6906,7 @@
                                                 <div className="bg-white rounded-2xl shadow-lg p-5 flex-1 flex flex-col min-h-0">
                                                     {facInvoice.invoicePdf ? (
                                                         <div className="flex-1 flex flex-col min-h-0">
-                                                            <iframe src={facInvoice.invoicePdf} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" style={{minHeight:'400px'}}></iframe>
+                                                            <iframe src={facInvoice.invoicePdf + '#toolbar=0&navpanes=0'} className="flex-1 w-full rounded-xl border border-gray-200 min-h-0" style={{minHeight:'400px'}}></iframe>
                                                             <div className="mt-3 flex justify-center flex-shrink-0">
                                                                 <button onClick={() => { const a=document.createElement('a'); a.href=facInvoice.invoicePdf; a.download=`comprobante-${facInvoice.id}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className={`flex items-center gap-2 px-6 py-2.5 ${facInvoice.documentType === 'boleta' ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold transition-colors shadow-lg text-sm`}>
                                                                     <i className="fas fa-download"></i> Descargar PDF
