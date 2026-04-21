@@ -1,0 +1,195 @@
+================================================================================
+IMPORTANTE LEER — ACTUALIZACIÓN FRONTEND INULABORATORIOS
+Fecha: 21 de abril 2026 (segunda ronda + limpieza)
+================================================================================
+
+
+INSTRUCCIONES
+================================================================================
+
+Reemplaza estos 4 archivos en tu carpeta:
+
+    index.html              ← SIN CAMBIOS (idéntico a la versión anterior)
+    css/styles.css          ← SIN CAMBIOS (idéntico a la versión anterior)
+    js/app.js               ← ACTUALIZADO (441 KB, antes 457 KB)
+    js/keyboard-fix.js      ← SIN CAMBIOS (idéntico a la versión anterior)
+
+NO tocar la carpeta assets/.
+
+El backend, API, conexiones, credenciales, crear cuenta, PdfViewer con JWT,
+cargarFacturas, loadAddresses, getPetFullName, safeText, y toda la lógica de
+datos NO se tocó.
+
+
+================================================================================
+CAMBIOS DE ESTA RONDA (21 abril 2026)
+================================================================================
+
+1. DETALLE DE PAQUETE — modal → full-page
+   • ANTES: Se mostraba como MODAL flotante (fixed inset-0 con overlay negro)
+   • AHORA: Se muestra como VISTA FULL-PAGE que reemplaza el contenido de
+            pedidos (misma estructura que el GitHub de referencia).
+
+   Estructura:
+     1. Card del color del paquete arriba, con:
+        - Icono en contenedor bg-white/40
+        - Nombre del paquete
+        - Tiempo de resultado + precio
+        - Botón X (cerrar) arriba a la derecha
+     2. Descripción
+     3. Card blanco "Incluye" con lista con checkmarks verdes
+     4. Card blanco "¿Qué evalúa?" con items con borde izquierdo púrpura
+     5. Botón "Agregar al pedido" con gradiente cyan → azul, shadow-lg
+
+2. LIMPIEZA DE CÓDIGO MUERTO DE VERSIÓN DEMO
+   Se eliminaron 3 bloques de código legacy de la versión sin backend:
+
+   a) localStorage.setItem('inulab_db_v25', ...) en saveDatabase()
+      Ya no se escribe la "base de datos" fake al localStorage del navegador.
+      saveDatabase() sigue funcionando como wrapper de setDatabase() para
+      no romper los 3 callsites que la usaban.
+
+   b) localStorage.getItem('inulab_db_v25') en getCurrentNightMode()
+      Simplificado a: return database?.nightMode || false;
+      Lee del estado React, no del localStorage.
+
+   c) Const initialDatabase (42 líneas de datos hardcodeados):
+      Eliminado por completo. Contenía:
+        - 2 usuarios fake con contraseñas hardcodeadas (carlos.rodriguez/cliente123,
+          vetplanet/vp2025)
+        - 3 PDFs base64 embebidos de ~1KB cada uno
+        - 6 pacientes fake, 3 órdenes fake, 2 mascotas fake
+      Estaba definido pero NUNCA se usaba en ningún lado del código.
+
+   Resultado: app.js pasó de 457 KB a 441 KB (16 KB más liviano).
+
+
+================================================================================
+LOCALSTORAGE: QUÉ SE MANTUVO Y POR QUÉ
+================================================================================
+
+Se mantienen los 10 usos de localStorage relacionados con inulab_token:
+
+    localStorage.setItem('inulab_token', data.token);   -> al hacer login
+    localStorage.getItem('inulab_token');                -> antes de cada fetch
+    localStorage.removeItem('inulab_token');             -> al hacer logout
+
+ESTO NO ES ALMACENAMIENTO DE DATOS DE LA APP. Es el JWT token que mantiene
+la sesión viva entre recargas del navegador. Si lo quitamos:
+
+    X El usuario se desloguea cada vez que recarga la página
+    X El PdfViewer no puede autenticar peticiones a PDFs protegidos
+    X Se rompe la integración con el backend
+
+El JWT debe vivir en algún lado del navegador (localStorage, sessionStorage
+o cookie). localStorage es el estándar para SPAs. Esto es correcto.
+
+
+================================================================================
+ESTADO GENERAL (recopilación de rondas anteriores)
+================================================================================
+
+LOGIN
+    - Formulario centrado verticalmente (max-w-sm)
+    - Tabs Ingresar / Crear cuenta INTACTOS
+
+SIDEBAR DUEÑO (desktop)
+    - Orden: Pedidos -> Resultados -> Facturación
+
+HEADERS DESKTOP DUEÑO
+    - Pedidos: header gris con buscador
+    - Resultados: header gris con buscador + filtros Día/Mes/Año
+    - Facturación: header gris con buscador + filtros Día/Mes/Año
+
+FRANJAS MOBILE DUEÑO (3 categorías)
+    - Pedidos: cyan con animación slide + overlay oscuro
+    - Resultados: purple (estática, sin buscador)
+    - Facturación: amber con slide + filtros + overlay
+
+FRANJAS MOBILE CLÍNICA (5 categorías)
+    - Pedidos: cyan con slide + overlay
+    - Mascotas: emerald con slide + overlay
+    - Detalle Mascota: emerald con slide filtros + overlay
+    - Resultados: purple con slide filtros + overlay
+    - Facturación: amber con slide filtros + overlay
+
+CLÍNICA DESKTOP
+    - Sin footer gris (h-screen overflow-hidden)
+    - Contenido ocupa ancho completo
+    - Inicio: padding lateral amplio (px-20 pt-10)
+
+NUEVO PEDIDO (clínica desktop)
+    - Padding lateral 5rem, sin max-width limitante
+    - Lista mascotas: max-h-72 con fade gradient inferior
+    - Lista direcciones: max-h-96 con fade gradient inferior
+
+DUEÑO DESKTOP
+    - Content area: max-width none, padding 1.75rem 5rem
+    - Sin footer gris
+
+PDF VIEWER
+    - Componente PdfViewer con JWT + blob URL
+    - Barra de herramientas Chrome oculta (#toolbar=0&navpanes=0)
+
+LANDSCAPE (móviles)
+    - Overlay "Gira tu dispositivo" en horizontal
+    - screen.orientation.lock('portrait-primary') en keyboard-fix.js
+
+CSS
+    - Background #f3f4f6 en body/html/root
+    - Animaciones: dueno-search-slide, overlayFadeIn, slideInPanel
+
+
+================================================================================
+CÓMO EDITAR EN EL FUTURO
+================================================================================
+
+El archivo js/app.js está PRE-COMPILADO (ya no es JSX, es JavaScript puro de
+441 KB). El navegador lo ejecuta directo sin Babel, por eso no hay spinner
+infinito.
+
+FLUJO PARA HACER NUEVOS CAMBIOS:
+
+    1. Editar el archivo fuente app.jsx.backup (tiene JSX legible)
+    2. Compilar con:
+
+       npx babel app.jsx.backup --presets=@babel/preset-react -o js/app.js
+
+    3. Verificar que js/app.js quede por debajo de 500 KB
+    4. Subir js/app.js al servidor
+
+REQUISITO (una sola vez): tener Node.js e instalar Babel:
+
+    npm install --save-dev @babel/cli @babel/core @babel/preset-react
+
+NUNCA editar js/app.js directamente — está compilado/minificado, ilegible.
+Siempre editar app.jsx.backup y recompilar.
+
+Babel emitirá un warning:
+    [BABEL] The code generator has deoptimised the styling ... exceeds 500KB
+Esto es NORMAL (el código fuente pesa ~659 KB). El output sigue siendo
+funcional y pesa ~441 KB (por debajo del límite que necesita el navegador).
+
+
+================================================================================
+LO QUE NO SE TOCÓ
+================================================================================
+
+    - API_BASE = Railway URL (https://inulab-backend-production.up.railway.app/api)
+    - Las 20 llamadas fetch (Auth/login, Auth/me, Auth/register, Users/profile,
+      Pets, Addresses, Orders, Exams/{id}/seen, Config, Facturas, Precios)
+    - PdfViewer con autenticación JWT y creación de blob URL
+    - Crear cuenta (authMode/setAuthMode + regData + handleRegister)
+    - cargarPreciosDesdeAPI()
+    - loadAddresses()
+    - cargarFacturas()
+    - checkAuth()
+    - submitOrder
+    - Catálogo de precios dinámico
+    - getPetFullName (incluye apellido de familia)
+    - safeText() y safeImage()
+    - Tokens JWT en localStorage (inulab_token)
+    - api._headers() helper
+
+
+================================================================================
