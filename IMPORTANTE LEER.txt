@@ -1,195 +1,92 @@
-================================================================================
-IMPORTANTE LEER — ACTUALIZACIÓN FRONTEND INULABORATORIOS
-Fecha: 21 de abril 2026 (segunda ronda + limpieza)
-================================================================================
+═══════════════════════════════════════════════════════════════════════
+INULABORATORIOS - VERSIÓN DEMO (sin backend)
+═══════════════════════════════════════════════════════════════════════
 
+⚠️ ESTA NO ES LA VERSIÓN PARA JOSÉ ⚠️
 
-INSTRUCCIONES
-================================================================================
+Esta carpeta es SOLO para tus pruebas en tu repo de GitHub o local.
+Funciona SIN backend, usando localStorage del navegador.
+La versión real (con backend de José) está en otro ZIP aparte.
 
-Reemplaza estos 4 archivos en tu carpeta:
+═══════════════════════════════════════════════════════════════════════
 
-    index.html              ← SIN CAMBIOS (idéntico a la versión anterior)
-    css/styles.css          ← SIN CAMBIOS (idéntico a la versión anterior)
-    js/app.js               ← ACTUALIZADO (441 KB, antes 457 KB)
-    js/keyboard-fix.js      ← SIN CAMBIOS (idéntico a la versión anterior)
+USUARIOS DE PRUEBA
+──────────────────
 
-NO tocar la carpeta assets/.
+DUEÑO:
+  Usuario:    darker
+  Contraseña: 123
 
-El backend, API, conexiones, credenciales, crear cuenta, PdfViewer con JWT,
-cargarFacturas, loadAddresses, getPetFullName, safeText, y toda la lógica de
-datos NO se tocó.
+CLÍNICA:
+  Usuario:    clinica
+  Contraseña: 123
 
+═══════════════════════════════════════════════════════════════════════
 
-================================================================================
-CAMBIOS DE ESTA RONDA (21 abril 2026)
-================================================================================
+CÓMO PROBAR LOCAL EN TU MAC
+────────────────────────────
 
-1. DETALLE DE PAQUETE — modal → full-page
-   • ANTES: Se mostraba como MODAL flotante (fixed inset-0 con overlay negro)
-   • AHORA: Se muestra como VISTA FULL-PAGE que reemplaza el contenido de
-            pedidos (misma estructura que el GitHub de referencia).
+OPCIÓN A — SERVIDOR LOCAL (recomendado):
 
-   Estructura:
-     1. Card del color del paquete arriba, con:
-        - Icono en contenedor bg-white/40
-        - Nombre del paquete
-        - Tiempo de resultado + precio
-        - Botón X (cerrar) arriba a la derecha
-     2. Descripción
-     3. Card blanco "Incluye" con lista con checkmarks verdes
-     4. Card blanco "¿Qué evalúa?" con items con borde izquierdo púrpura
-     5. Botón "Agregar al pedido" con gradiente cyan → azul, shadow-lg
+  1. Abre Terminal en tu Mac
+  2. Navega hasta la carpeta inulab-client:
+       cd "/ruta/a/inulab-client"
+  3. Corre un servidor local:
+       python3 -m http.server 8000
+  4. Abre en el navegador:
+       http://localhost:8000
 
-2. LIMPIEZA DE CÓDIGO MUERTO DE VERSIÓN DEMO
-   Se eliminaron 3 bloques de código legacy de la versión sin backend:
+OPCIÓN B — DOBLE CLICK:
 
-   a) localStorage.setItem('inulab_db_v25', ...) en saveDatabase()
-      Ya no se escribe la "base de datos" fake al localStorage del navegador.
-      saveDatabase() sigue funcionando como wrapper de setDatabase() para
-      no romper los 3 callsites que la usaban.
+  Abre el archivo index.html con doble click. Funciona pero algunas 
+  cosas (especialmente PDFs) pueden no renderizar bien.
 
-   b) localStorage.getItem('inulab_db_v25') en getCurrentNightMode()
-      Simplificado a: return database?.nightMode || false;
-      Lee del estado React, no del localStorage.
+═══════════════════════════════════════════════════════════════════════
 
-   c) Const initialDatabase (42 líneas de datos hardcodeados):
-      Eliminado por completo. Contenía:
-        - 2 usuarios fake con contraseñas hardcodeadas (carlos.rodriguez/cliente123,
-          vetplanet/vp2025)
-        - 3 PDFs base64 embebidos de ~1KB cada uno
-        - 6 pacientes fake, 3 órdenes fake, 2 mascotas fake
-      Estaba definido pero NUNCA se usaba en ningún lado del código.
+CÓMO SUBIR A TU REPO DE GITHUB
+───────────────────────────────
 
-   Resultado: app.js pasó de 457 KB a 441 KB (16 KB más liviano).
+Si tu repo es darkerproject/inulaboratios-app:
 
+  1. Reemplaza la carpeta inulab-client/ de tu repo con esta
+  2. git add -A
+  3. git commit -m "demo update"
+  4. git push
+  5. Vercel auto-despliega en inulaboratorios-app.vercel.app
 
-================================================================================
-LOCALSTORAGE: QUÉ SE MANTUVO Y POR QUÉ
-================================================================================
+═══════════════════════════════════════════════════════════════════════
 
-Se mantienen los 10 usos de localStorage relacionados con inulab_token:
+QUÉ LE FALTA A LA VERSIÓN DEMO (vs la real)
+─────────────────────────────────────────────
 
-    localStorage.setItem('inulab_token', data.token);   -> al hacer login
-    localStorage.getItem('inulab_token');                -> antes de cada fetch
-    localStorage.removeItem('inulab_token');             -> al hacer logout
+- No hay backend. Todos los datos viven en localStorage del navegador.
+- Si limpias localStorage o cambias de navegador, los datos demo se 
+  resetean al estado inicial.
+- El registro está deshabilitado (solo se puede usar darker/123 o 
+  clinica/123).
+- Los PDFs son URLs de prueba (un PDF dummy genérico).
+- No hay polling automático de pedidos.
 
-ESTO NO ES ALMACENAMIENTO DE DATOS DE LA APP. Es el JWT token que mantiene
-la sesión viva entre recargas del navegador. Si lo quitamos:
+═══════════════════════════════════════════════════════════════════════
 
-    X El usuario se desloguea cada vez que recarga la página
-    X El PdfViewer no puede autenticar peticiones a PDFs protegidos
-    X Se rompe la integración con el backend
+QUÉ ES IDÉNTICO A LA VERSIÓN REAL
+──────────────────────────────────
 
-El JWT debe vivir en algún lado del navegador (localStorage, sessionStorage
-o cookie). localStorage es el estándar para SPAs. Esto es correcto.
+- TODO el visual (dashboard cliente, dashboard clínica, formularios,
+  modales, listas, mapas, navegación, responsive PC/móvil)
+- TODA la lógica de UI (búsquedas, filtros, transiciones, navegación)
+- El componente PdfViewer
+- La estructura de carpetas y archivos
 
+═══════════════════════════════════════════════════════════════════════
 
-================================================================================
-ESTADO GENERAL (recopilación de rondas anteriores)
-================================================================================
+PARA RESETEAR LOS DATOS DEMO
+─────────────────────────────
 
-LOGIN
-    - Formulario centrado verticalmente (max-w-sm)
-    - Tabs Ingresar / Crear cuenta INTACTOS
+Abre la consola del navegador (F12 o Cmd+Option+I), pega:
 
-SIDEBAR DUEÑO (desktop)
-    - Orden: Pedidos -> Resultados -> Facturación
+  localStorage.removeItem('inulab_demo_db');
+  localStorage.removeItem('inulab_token');
+  location.reload();
 
-HEADERS DESKTOP DUEÑO
-    - Pedidos: header gris con buscador
-    - Resultados: header gris con buscador + filtros Día/Mes/Año
-    - Facturación: header gris con buscador + filtros Día/Mes/Año
-
-FRANJAS MOBILE DUEÑO (3 categorías)
-    - Pedidos: cyan con animación slide + overlay oscuro
-    - Resultados: purple (estática, sin buscador)
-    - Facturación: amber con slide + filtros + overlay
-
-FRANJAS MOBILE CLÍNICA (5 categorías)
-    - Pedidos: cyan con slide + overlay
-    - Mascotas: emerald con slide + overlay
-    - Detalle Mascota: emerald con slide filtros + overlay
-    - Resultados: purple con slide filtros + overlay
-    - Facturación: amber con slide filtros + overlay
-
-CLÍNICA DESKTOP
-    - Sin footer gris (h-screen overflow-hidden)
-    - Contenido ocupa ancho completo
-    - Inicio: padding lateral amplio (px-20 pt-10)
-
-NUEVO PEDIDO (clínica desktop)
-    - Padding lateral 5rem, sin max-width limitante
-    - Lista mascotas: max-h-72 con fade gradient inferior
-    - Lista direcciones: max-h-96 con fade gradient inferior
-
-DUEÑO DESKTOP
-    - Content area: max-width none, padding 1.75rem 5rem
-    - Sin footer gris
-
-PDF VIEWER
-    - Componente PdfViewer con JWT + blob URL
-    - Barra de herramientas Chrome oculta (#toolbar=0&navpanes=0)
-
-LANDSCAPE (móviles)
-    - Overlay "Gira tu dispositivo" en horizontal
-    - screen.orientation.lock('portrait-primary') en keyboard-fix.js
-
-CSS
-    - Background #f3f4f6 en body/html/root
-    - Animaciones: dueno-search-slide, overlayFadeIn, slideInPanel
-
-
-================================================================================
-CÓMO EDITAR EN EL FUTURO
-================================================================================
-
-El archivo js/app.js está PRE-COMPILADO (ya no es JSX, es JavaScript puro de
-441 KB). El navegador lo ejecuta directo sin Babel, por eso no hay spinner
-infinito.
-
-FLUJO PARA HACER NUEVOS CAMBIOS:
-
-    1. Editar el archivo fuente app.jsx.backup (tiene JSX legible)
-    2. Compilar con:
-
-       npx babel app.jsx.backup --presets=@babel/preset-react -o js/app.js
-
-    3. Verificar que js/app.js quede por debajo de 500 KB
-    4. Subir js/app.js al servidor
-
-REQUISITO (una sola vez): tener Node.js e instalar Babel:
-
-    npm install --save-dev @babel/cli @babel/core @babel/preset-react
-
-NUNCA editar js/app.js directamente — está compilado/minificado, ilegible.
-Siempre editar app.jsx.backup y recompilar.
-
-Babel emitirá un warning:
-    [BABEL] The code generator has deoptimised the styling ... exceeds 500KB
-Esto es NORMAL (el código fuente pesa ~659 KB). El output sigue siendo
-funcional y pesa ~441 KB (por debajo del límite que necesita el navegador).
-
-
-================================================================================
-LO QUE NO SE TOCÓ
-================================================================================
-
-    - API_BASE = Railway URL (https://inulab-backend-production.up.railway.app/api)
-    - Las 20 llamadas fetch (Auth/login, Auth/me, Auth/register, Users/profile,
-      Pets, Addresses, Orders, Exams/{id}/seen, Config, Facturas, Precios)
-    - PdfViewer con autenticación JWT y creación de blob URL
-    - Crear cuenta (authMode/setAuthMode + regData + handleRegister)
-    - cargarPreciosDesdeAPI()
-    - loadAddresses()
-    - cargarFacturas()
-    - checkAuth()
-    - submitOrder
-    - Catálogo de precios dinámico
-    - getPetFullName (incluye apellido de familia)
-    - safeText() y safeImage()
-    - Tokens JWT en localStorage (inulab_token)
-    - api._headers() helper
-
-
-================================================================================
+═══════════════════════════════════════════════════════════════════════
