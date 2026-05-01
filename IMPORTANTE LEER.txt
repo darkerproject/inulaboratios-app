@@ -2,33 +2,10 @@
 INULABORATORIOS - VERSIÓN DEMO (sin backend)
 ═══════════════════════════════════════════════════════════════════════
 
-⚠️ ESTA NO ES LA VERSIÓN PARA JOSÉ ⚠️
+USUARIOS:
+  Dueño:    darker / 123
+  Clínica:  clinica / 123
 
-Esta es SOLO para tus pruebas en tu repo de GitHub.
-Funciona SIN backend, usando localStorage del navegador.
-La versión real (con backend de José) está en otro ZIP aparte.
-
-═══════════════════════════════════════════════════════════════════════
-
-USUARIOS DE PRUEBA
-──────────────────
-
-DUEÑO:
-  Usuario:    darker
-  Contraseña: 123
-
-CLÍNICA:
-  Usuario:    clinica
-  Contraseña: 123
-
-═══════════════════════════════════════════════════════════════════════
-
-PARA RESETEAR LOS DATOS DEMO
-─────────────────────────────
-
-Abre la consola del navegador (F12 o Cmd+Option+I), pega:
-
-  localStorage.clear();
-  location.reload();
-
+Para resetear datos demo:
+  localStorage.clear(); location.reload();
 ═══════════════════════════════════════════════════════════════════════
