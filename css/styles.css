@@ -142,6 +142,13 @@
                 overflow-y: auto;
                 height: 100vh;
             }
+            /* Cuando hay un visor PDF/Tracking activo, el wrapper debe ocupar exactamente
+               la altura disponible (debajo del header fijo de 70px) y no scrollear */
+            .app-content-dueno.pdf-active .dueno-content-wrapper {
+                height: calc(100vh - 70px);
+                min-height: calc(100vh - 70px);
+                overflow: hidden;
+            }
         }
         /* Visor de PDF compacto para móviles */
         .pdf-viewer-container {

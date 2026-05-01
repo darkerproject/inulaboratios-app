@@ -1,11 +1,6 @@
 ═══════════════════════════════════════════════════════════════════════
 INULABORATORIOS - VERSIÓN DEMO (sin backend)
 ═══════════════════════════════════════════════════════════════════════
-
-USUARIOS:
-  Dueño:    darker / 123
-  Clínica:  clinica / 123
-
-Para resetear datos demo:
-  localStorage.clear(); location.reload();
+USUARIOS:  darker / 123  |  clinica / 123
+Reset: localStorage.clear(); location.reload();
 ═══════════════════════════════════════════════════════════════════════
