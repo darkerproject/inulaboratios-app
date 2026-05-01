@@ -149,6 +149,12 @@
                 min-height: calc(100vh - 70px);
                 overflow: hidden;
             }
+            /* Forzar lg:hidden sobre el `style` inline (que tiene mayor prioridad sin !important).
+               Necesario porque algunos visores móviles tienen `display: flex` inline que
+               sobrescribe la clase lg:hidden de Tailwind. */
+            .lg\:hidden {
+                display: none !important;
+            }
         }
         /* Visor de PDF compacto para móviles */
         .pdf-viewer-container {
