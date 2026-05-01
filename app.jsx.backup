@@ -5734,6 +5734,37 @@ const PdfViewer = ({ url, style, className }) => {
                         {viewingInvoice && !selectedExam && !viewingOrderTracking && (() => {
                             const docType = viewingInvoice.documentType === 'boleta' ? 'Boleta' : 'Factura';
                             return (
+                                <div>
+                                {/* Mobile invoice viewer - fixed in content area */}
+                                <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, bottom:'calc(60px + env(safe-area-inset-bottom, 0px))', zIndex:99, background:'#f3f4f6', display:'flex', flexDirection:'column', padding:'12px 16px 16px'}}>
+                                    <div className="flex items-center gap-3 mb-3 flex-shrink-0">
+                                        <button onClick={() => setViewingInvoice(null)} className="dueno-circle-btn flex items-center justify-center bg-white text-gray-500 shadow-sm flex-shrink-0">
+                                            <i className="fas fa-arrow-left text-xs"></i>
+                                        </button>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-bold text-gray-800 text-sm truncate">{docType}</p>
+                                            <p className="text-gray-500 text-xs">{new Date(viewingInvoice.completedAt || viewingInvoice.date).toLocaleDateString('es-PE',{day:'numeric',month:'long',year:'numeric'})}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{flex:'1 1 0', minHeight:0, marginBottom:'12px'}}>
+                                        {viewingInvoice.invoicePdf ? (
+                                            <PdfViewer url={viewingInvoice.invoicePdf} className="w-full h-full" title="PDF" style={{border:'none'}} />
+                                        ) : (
+                                            <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                                                <i className={`fas ${viewingInvoice.documentType === 'boleta' ? 'fa-receipt' : 'fa-file-invoice'} text-4xl mb-2`}></i>
+                                                <p className="text-sm">{docType} no disponible</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {viewingInvoice.invoicePdf && (
+                                        <div className="flex justify-center flex-shrink-0">
+                                            <button onClick={() => { const a=document.createElement('a'); a.href=viewingInvoice.invoicePdf; a.download=`${docType}_${viewingInvoice.id}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); }} className={`flex items-center gap-2 px-5 py-2.5 ${viewingInvoice.documentType === 'boleta' ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-amber-500 to-orange-600'} text-white rounded-xl font-semibold text-sm shadow-lg`}>
+                                                <i className="fas fa-download"></i> Descargar PDF
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Desktop invoice viewer */}
                                 <div className="hidden lg:flex flex-col" style={{height:'calc(100vh - 70px)'}}>
                                     <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 py-3 px-4">
                                         <div className="flex items-center gap-3">
@@ -5768,6 +5799,7 @@ const PdfViewer = ({ url, style, className }) => {
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 </div>
                             );
                         })()}
