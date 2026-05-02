@@ -6221,8 +6221,8 @@ const PdfViewer = ({ url, style, className }) => {
                         <div>
                         {/* Desktop: Sticky search header for Pedidos (PATRON-BUSQUEDA-DESKTOP) */}
                         {activeTab === 'pedidos' && (
-                            <div className="hidden lg:block sticky top-0 z-30 bg-gray-100 shadow-md border-b border-gray-300 -mx-6 -mt-5 px-6 py-4 mb-5">
-                                <div className="max-w-4xl mx-auto flex items-center gap-3">
+                            <div className="hidden lg:block sticky top-0 z-30 bg-gray-100 shadow-md border-b border-gray-300 px-6 py-4 mb-5">
+                                <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-2 px-2">
                                         <i className="fas fa-clipboard-list text-cyan-500 text-lg"></i>
                                         <span className="text-cyan-600 font-semibold">Pedidos</span>
@@ -6505,14 +6505,14 @@ const PdfViewer = ({ url, style, className }) => {
                         </div>)}
                         {/* Desktop: Sticky search header for Resultados (PATRON-BUSQUEDA-FILTROS-DESKTOP) */}
                         {activeTab === 'resultados' && !selectedPet && !selectedExam && !viewingInvoice && !viewingOrderTracking && (
-                            <div className="hidden lg:block sticky top-0 z-30 bg-gray-100 shadow-md border-b border-gray-300 -mx-6 -mt-5 px-6 py-4 mb-5">
-                                <div className="max-w-4xl mx-auto flex items-center gap-3 flex-wrap">
+                            <div className="hidden lg:block sticky top-0 z-30 bg-gray-100 shadow-md border-b border-gray-300 px-6 py-4 mb-5">
+                                <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-2 px-2">
                                         <i className="fas fa-file-medical text-purple-500 text-lg"></i>
                                         <span className="text-purple-600 font-semibold">Resultados</span>
                                         <span className="bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full">{petsOrPatients.reduce((sum, p) => sum + (p.exams?.length || 0), 0)}</span>
                                     </div>
-                                    <div className="relative flex-1 min-w-[200px]">
+                                    <div className="relative flex-1">
                                         <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                                         <input type="text" value={resSearchTerm} onChange={(e) => setResSearchTerm(e.target.value)}
                                             placeholder="Buscar mascota o examen..."
@@ -6855,14 +6855,14 @@ const PdfViewer = ({ url, style, className }) => {
                             });
                             return (<div>
                             {/* Desktop: Sticky search header for Facturación (PATRON-BUSQUEDA-FILTROS-DESKTOP) */}
-                            <div className="hidden lg:block sticky top-0 z-30 bg-gray-100 shadow-md border-b border-gray-300 -mx-6 -mt-5 px-6 py-4 mb-5">
-                                <div className="max-w-4xl mx-auto flex items-center gap-3 flex-wrap">
+                            <div className="hidden lg:block sticky top-0 z-30 bg-gray-100 shadow-md border-b border-gray-300 px-6 py-4 mb-5">
+                                <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-2 px-2">
                                         <i className="fas fa-file-invoice-dollar text-amber-500 text-lg"></i>
                                         <span className="text-amber-600 font-semibold">Facturación</span>
                                         <span className="bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full">{userInvoices.length}</span>
                                     </div>
-                                    <div className="relative flex-1 min-w-[200px]">
+                                    <div className="relative flex-1">
                                         <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                                         <input type="text" value={facDuenoSearchTerm} onChange={(e) => setFacDuenoSearchTerm(e.target.value)}
                                             placeholder="Buscar boleta o factura..."
