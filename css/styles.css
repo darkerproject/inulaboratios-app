@@ -149,6 +149,15 @@
                 min-height: calc(100vh - 70px);
                 overflow: hidden;
             }
+            /* Padre del bloque Pedidos PC dueño - replica el padre de clínica:
+               ml-56 flex-1 p-6 bg-gray-100 h-[calc(100vh-64px)] overflow-hidden
+               (en dueño el header es de 70px, no 64px) */
+            .dueno-pedidos-pc-padre {
+                padding: 1.5rem;
+                background: #f3f4f6;
+                height: calc(100vh - 70px);
+                overflow: hidden;
+            }
             /* Forzar lg:hidden sobre el `style` inline (que tiene mayor prioridad sin !important).
                Necesario porque algunos visores móviles tienen `display: flex` inline que
                sobrescribe la clase lg:hidden de Tailwind. */
