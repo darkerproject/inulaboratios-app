@@ -6240,10 +6240,10 @@ const PdfViewer = ({ url, style, className }) => {
                         )}
                         {/* === Pedidos PC dueño - Caja interior con estructura clínica === */}
                         {activeTab === 'pedidos' && (
-                            <div className="hidden lg:block" style={{position:'fixed', top:'70px', left:'14rem', right:0, bottom:0, padding:'1.5rem', overflow:'hidden', zIndex:10}}>
-                                <div className="flex flex-col h-full -mx-6 -mt-6">
+                            <div className="hidden lg:block" style={{position:'fixed', top:'70px', left:'14rem', right:0, bottom:0, overflow:'hidden', zIndex:10}}>
+                                <div className="flex flex-col h-full">
                                     {/* Sección 1: Header fijo */}
-                                    <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 py-3 px-4">
+                                    <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                         <div className="flex items-center gap-3">
                                             {/* Título */}
                                             <div className="flex items-center gap-2 px-2">
