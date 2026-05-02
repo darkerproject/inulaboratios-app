@@ -149,6 +149,19 @@
                 min-height: calc(100vh - 70px);
                 overflow: hidden;
             }
+            /* Cuando se está en Pedidos PC, el Content Area no debe scrollear globalmente
+               porque la caja interior (position:fixed) maneja su propio scroll.
+               Esto evita que el contenido pase detrás del header de búsqueda al hacer scroll. */
+            .app-content-dueno.pedidos-pc-active {
+                overflow: hidden !important;
+                height: 100vh;
+                padding-bottom: 0 !important;
+            }
+            .app-content-dueno.pedidos-pc-active .dueno-content-wrapper {
+                height: calc(100vh - 70px);
+                min-height: calc(100vh - 70px);
+                overflow: hidden;
+            }
             /* Forzar lg:hidden sobre el `style` inline (que tiene mayor prioridad sin !important).
                Necesario porque algunos visores móviles tienen `display: flex` inline que
                sobrescribe la clase lg:hidden de Tailwind. */

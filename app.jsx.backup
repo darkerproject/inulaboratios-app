@@ -5652,7 +5652,7 @@ const PdfViewer = ({ url, style, className }) => {
                             </div>
                         </div>
                     ) : (
-                    <div className={`app-content-dueno lg:ml-56 ${(selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'pdf-active' : ''}`} style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'hidden' : 'auto'}}>
+                    <div className={`app-content-dueno lg:ml-56 ${(selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'pdf-active' : ''} ${activeTab === 'pedidos' ? 'pedidos-pc-active' : ''}`} style={{overflowY: (selectedExam || viewingInvoice || facturacionInvoice || viewingOrderTracking) ? 'hidden' : 'auto'}}>
                         <div className="dueno-content-wrapper">
                         
                         {/* === Vista PDF Resultado (inline desktop) === */}
@@ -6240,7 +6240,7 @@ const PdfViewer = ({ url, style, className }) => {
                         )}
                         {/* === Pedidos PC dueño - Caja interior con estructura clínica === */}
                         {activeTab === 'pedidos' && (
-                            <div className="hidden lg:block" style={{position:'absolute', top:'70px', left:'14rem', right:0, bottom:0, padding:'1.5rem', overflow:'hidden'}}>
+                            <div className="hidden lg:block" style={{position:'fixed', top:'70px', left:'14rem', right:0, bottom:0, padding:'1.5rem', overflow:'hidden', zIndex:10}}>
                                 <div className="flex flex-col h-full -mx-6 -mt-6">
                                     {/* Sección 1: Header fijo */}
                                     <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
