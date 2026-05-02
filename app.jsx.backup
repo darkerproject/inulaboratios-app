@@ -4320,7 +4320,7 @@ const PdfViewer = ({ url, style, className }) => {
                                         const trackingCurrentIndex = trackingStatusOrder.indexOf(trackingOrder.status === 'pending' ? 'confirmed' : trackingOrder.status);
                                         
                                         return (
-                                            <div className="flex flex-col h-full -mx-6 -mt-6">
+                                            <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                                 <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                     <div className="flex items-center gap-3">
                                                         <button onClick={() => setViewingOrderTracking(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
@@ -4415,7 +4415,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Vista PDF de Resultado - Desktop */}
                                     {selectedExam && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                 <div className="flex items-center gap-3">
                                                     <button onClick={() => setSelectedExam(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
@@ -4473,7 +4473,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Vista Comprobante - Desktop */}
                                     {!selectedExam && viewingInvoice && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                 <div className="flex items-center gap-3">
                                                     <button onClick={() => setViewingInvoice(null)} className="w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-600 shadow-sm">
@@ -4535,7 +4535,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Checkout - Selección de Mascota y Dirección - Desktop */}
                                     {!selectedExam && !viewingInvoice && currentExamForPet && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             {/* Barra superior - ancho completo */}
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                 <div className="flex items-center gap-3">
@@ -4888,7 +4888,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Inicio Desktop - Resumen */}
                                     {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'inicio' && showAllPending && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             <div className="flex-shrink-0 bg-white shadow-md border-b border-gray-200 p-4">
                                                 <div className="flex items-center gap-3">
                                                     <button onClick={() => setShowAllPending(false)} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
@@ -5018,7 +5018,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Pedidos Desktop - Contenido completo */}
                                     {!showOrderSummary && !selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'pedidos' && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             {/* Sección 1: Header fijo */}
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                 <div className="flex items-center gap-3">
@@ -5141,7 +5141,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Pacientes Desktop */}
                                     {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'mascotas' && !selectedMascota && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             {/* Sección 1: Header fijo */}
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                 <div className="flex items-center gap-3">
@@ -5192,7 +5192,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Detalle Paciente Desktop */}
                                     {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'mascotas' && selectedMascota && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             {/* Sección 1: Header fijo con info de mascota */}
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300">
                                                 {/* Fila 1: Info de la mascota */}
@@ -5302,7 +5302,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Resultados Desktop */}
                                     {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'resultados' && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             {/* Sección 1: Header fijo */}
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                 <div className="flex items-center gap-3">
@@ -5418,7 +5418,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Facturación Desktop */}
                                     {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'facturacion' && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col h-full -mx-6 -mt-6 -mb-6">
                                             {/* Sección 1: Header fijo */}
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                 <div className="flex items-center gap-3">
@@ -6243,7 +6243,7 @@ const PdfViewer = ({ url, style, className }) => {
                             <div className="hidden lg:block" style={{position:'fixed', top:'70px', left:'14rem', right:0, bottom:0, overflow:'hidden', zIndex:10}}>
                                 <div className="flex flex-col h-full">
                                     {/* Sección 1: Header fijo */}
-                                    <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
+                                    <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 py-3 px-4">
                                         <div className="flex items-center gap-3">
                                             {/* Título */}
                                             <div className="flex items-center gap-2 px-2">
