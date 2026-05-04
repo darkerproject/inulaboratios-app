@@ -199,6 +199,16 @@
                 min-height: 0;
                 margin: -1.5rem;
             }
+            /* Caja interior única para Pacientes PC clínica (lista y detalle) - misma fórmula que Pedidos clínica */
+            .medico-pacientes-pc-padre {
+                background: #f3f4f6;
+                height: calc(100vh - 64px);
+                max-height: calc(100vh - 64px);
+                width: calc(100% + 3rem);
+                overflow: hidden;
+                min-height: 0;
+                margin: -1.5rem;
+            }
             /* Forzar lg:hidden sobre el `style` inline (que tiene mayor prioridad sin !important).
                Necesario porque algunos visores móviles tienen `display: flex` inline que
                sobrescribe la clase lg:hidden de Tailwind. */

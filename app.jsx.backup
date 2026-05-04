@@ -5146,7 +5146,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Pacientes Desktop */}
                                     {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'mascotas' && !selectedMascota && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col medico-pacientes-pc-padre">
                                             {/* Sección 1: Header fijo */}
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
                                                 <div className="flex items-center gap-3">
@@ -5197,7 +5197,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     
                                     {/* Detalle Paciente Desktop */}
                                     {!selectedExam && !viewingInvoice && !currentExamForPet && !viewingOrderTracking && medicoView === 'mascotas' && selectedMascota && (
-                                        <div className="flex flex-col h-full -mx-6 -mt-6">
+                                        <div className="flex flex-col medico-pacientes-pc-padre">
                                             {/* Sección 1: Header fijo con info de mascota */}
                                             <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300">
                                                 {/* Fila 1: Info de la mascota */}
