@@ -157,11 +157,14 @@
                - Ocupa toda la altura del wrapper (calc(100vh - 70px))
                - Sin padding (header y contenido tienen su propio padding)
                - flex-col activado vía className "flex flex-col" en JSX
-               - El header es flex-shrink-0 (no se encoge), el contenido es flex-1 (toma el resto y scrollea) */
+               - El header es flex-shrink-0 (no se encoge), el contenido es flex-1 (toma el resto y scrollea)
+               - overflow:hidden + min-height:0 es crucial para que el scroll del hijo flex-1 funcione */
             .dueno-pedidos-pc-padre {
                 background: #f3f4f6;
                 height: 100%;
                 width: 100%;
+                overflow: hidden;
+                min-height: 0;
             }
             /* Forzar lg:hidden sobre el `style` inline (que tiene mayor prioridad sin !important).
                Necesario porque algunos visores móviles tienen `display: flex` inline que
