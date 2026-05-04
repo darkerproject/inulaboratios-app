@@ -157,7 +157,7 @@
                ml-56 flex-1 p-6 bg-gray-100 h-[calc(100vh-64px)] overflow-hidden
                (en dueño el header es de 70px, no 64px) */
             .dueno-pedidos-pc-padre {
-                padding: 1.5rem;
+                padding: 1.5rem 1.5rem 0 1.5rem;
                 background: #f3f4f6;
                 height: calc(100vh - 70px);
                 overflow: hidden;
