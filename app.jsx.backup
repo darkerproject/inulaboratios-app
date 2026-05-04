@@ -6417,7 +6417,7 @@ const PdfViewer = ({ url, style, className }) => {
                                                                 </div>
                                                                 {paquete.price && <span className="text-cyan-600 font-bold text-lg flex-shrink-0">S/ {paquete.price}</span>}
                                                                 {(isInCart || isPending) && (
-                                                                    <div className={`w-7 h-7 ${isInCart ? 'bg-emerald-500' : 'bg-amber-400'} rounded-full flex items-center justify-center flex-shrink-0 absolute top-3 right-3`}>
+                                                                    <div className={`w-7 h-7 ${isInCart ? 'bg-emerald-500' : 'bg-amber-400'} rounded-full flex items-center justify-center flex-shrink-0 absolute bottom-3 right-3`}>
                                                                         <i className={`fas ${isInCart ? 'fa-check' : 'fa-clock'} text-white text-xs`}></i>
                                                                     </div>
                                                                 )}
