@@ -6417,68 +6417,85 @@ const PdfViewer = ({ url, style, className }) => {
                                                     );
                                                 })}
                                             </div>
-                                            {perfilesDuenos && perfilesDuenos.length > 0 && (
-                                                <div className="mb-6">
-                                                    <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                                        <i className="fas fa-vials text-blue-500"></i> Perfiles
-                                                    </h3>
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                        {perfilesDuenos.map(exam => {
-                                                            const isInCart = cart.find(c => c.exam.id === exam.id);
-                                                            const isPending = pendingExams.find(e => e.id === exam.id);
-                                                            return (
-                                                                <div key={exam.id} onClick={() => handleExamClick(exam)} 
-                                                                    className={`bg-white rounded-2xl p-3 cursor-pointer hover:shadow-lg transition-all shadow border-2 ${isInCart ? 'border-emerald-500 bg-emerald-50' : isPending ? 'border-amber-400 bg-amber-50' : 'border-transparent hover:border-cyan-300'} flex items-center gap-3`}>
-                                                                    <div className={`w-10 h-10 ${exam.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                                                                        <i className={`fas ${exam.icon} ${exam.color} text-base`}></i>
-                                                                    </div>
-                                                                    <div className="flex-1 min-w-0">
-                                                                        <p className="text-gray-800 font-medium text-sm leading-tight">{exam.name}</p>
-                                                                        {exam.subtitle && <p className="text-gray-400 text-xs">{exam.subtitle}{exam.turnaround ? ` · ${exam.turnaround}` : ""}</p>}
-                                                                    </div>
-                                                                    {exam.price && <span className="text-cyan-600 font-bold text-sm flex-shrink-0">S/ {exam.price}</span>}
-                                                                    {(isInCart || isPending) && (
-                                                                        <div className={`w-6 h-6 ${isInCart ? 'bg-emerald-500' : 'bg-amber-400'} rounded-full flex items-center justify-center flex-shrink-0`}>
-                                                                            <i className={`fas ${isInCart ? 'fa-check' : 'fa-clock'} text-white text-xs`}></i>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            );
-                                                        })}
+                                            {/* Exámenes específicos - collapsible (mismo que mobile) */}
+                                            <div className="mt-6">
+                                                <button onClick={() => setShowTechnicalExams(!showTechnicalExams)} className="w-full flex items-center justify-between py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-2xl transition-colors">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-9 h-9 bg-gray-200 rounded-xl flex items-center justify-center"><i className="fas fa-flask-vial text-gray-600"></i></div>
+                                                        <div className="text-left">
+                                                            <p className="font-bold text-gray-700 text-sm">Exámenes Específicos</p>
+                                                            <p className="text-xs text-gray-400">Perfiles y exámenes individuales detallados</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                            {categoriasDuenos.map(cat => (
-                                                <div key={cat.nombre} className="mb-6">
-                                                    <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                                        <i className={`fas ${cat.icon} ${cat.color}`}></i> {cat.nombre}
-                                                    </h3>
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                        {cat.examenes.map(exam => {
-                                                            const isInCart = cart.find(c => c.exam.id === exam.id);
-                                                            const isPending = pendingExams.find(e => e.id === exam.id);
-                                                            return (
-                                                                <div key={exam.id} onClick={() => handleExamClick(exam)} 
-                                                                    className={`bg-white rounded-2xl p-3 cursor-pointer hover:shadow-lg transition-all shadow border-2 ${isInCart ? 'border-emerald-500 bg-emerald-50' : isPending ? 'border-amber-400 bg-amber-50' : 'border-transparent hover:border-cyan-300'} flex items-center gap-3`}>
-                                                                    <div className={`w-10 h-10 ${exam.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                                                                        <i className={`fas ${exam.icon} ${exam.color} text-base`}></i>
-                                                                    </div>
-                                                                    <div className="flex-1 min-w-0">
-                                                                        <p className="text-gray-800 font-medium text-sm leading-tight">{exam.name}</p>
-                                                                        {exam.subtitle && <p className="text-gray-400 text-xs">{exam.subtitle}{exam.turnaround ? ` · ${exam.turnaround}` : ""}</p>}
-                                                                    </div>
-                                                                    {exam.price && <span className="text-cyan-600 font-bold text-sm flex-shrink-0">S/ {exam.price}</span>}
-                                                                    {(isInCart || isPending) && (
-                                                                        <div className={`w-6 h-6 ${isInCart ? 'bg-emerald-500' : 'bg-amber-400'} rounded-full flex items-center justify-center flex-shrink-0`}>
-                                                                            <i className={`fas ${isInCart ? 'fa-check' : 'fa-clock'} text-white text-xs`}></i>
-                                                                        </div>
-                                                                    )}
+                                                    <i className={`fas fa-chevron-${showTechnicalExams ? 'up' : 'down'} text-gray-400 transition-transform`}></i>
+                                                </button>
+                                                {showTechnicalExams && (
+                                                    <div className="mt-4 space-y-6">
+                                                        {perfilesDuenos && perfilesDuenos.length > 0 && (
+                                                            <div>
+                                                                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                                                    <i className="fas fa-vials text-blue-500"></i> Perfiles
+                                                                </h3>
+                                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                                    {perfilesDuenos.map(exam => {
+                                                                        const isInCart = cart.find(c => c.exam.id === exam.id);
+                                                                        const isPending = pendingExams.find(e => e.id === exam.id);
+                                                                        return (
+                                                                            <div key={exam.id} onClick={() => handleExamClick(exam)} 
+                                                                                className={`bg-white rounded-2xl p-3 cursor-pointer hover:shadow-lg transition-all shadow border-2 ${isInCart ? 'border-emerald-500 bg-emerald-50' : isPending ? 'border-amber-400 bg-amber-50' : 'border-transparent hover:border-cyan-300'} flex items-center gap-3`}>
+                                                                                <div className={`w-11 h-11 ${exam.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                                                                    <i className={`fas ${exam.icon} ${exam.color} text-lg`}></i>
+                                                                                </div>
+                                                                                <div className="flex-1 min-w-0">
+                                                                                    <p className="text-gray-800 font-semibold text-sm leading-tight">{exam.name}</p>
+                                                                                    <p className="text-gray-500 text-xs truncate">{exam.subtitle}</p>
+                                                                                </div>
+                                                                                {exam.price && <span className="text-cyan-600 font-bold text-sm flex-shrink-0">S/ {exam.price}</span>}
+                                                                                {(isInCart || isPending) && (
+                                                                                    <div className={`w-6 h-6 ${isInCart ? 'bg-emerald-500' : 'bg-amber-400'} rounded-full flex items-center justify-center flex-shrink-0`}>
+                                                                                        <i className={`fas ${isInCart ? 'fa-check' : 'fa-clock'} text-white text-xs`}></i>
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                        );
+                                                                    })}
                                                                 </div>
-                                                            );
-                                                        })}
+                                                            </div>
+                                                        )}
+                                                        {categoriasDuenos.map(cat => (
+                                                            <div key={cat.nombre}>
+                                                                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                                                    <i className={`fas ${cat.icon} ${cat.color}`}></i> {cat.nombre}
+                                                                </h3>
+                                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                                    {cat.examenes.map(exam => {
+                                                                        const isInCart = cart.find(c => c.exam.id === exam.id);
+                                                                        const isPending = pendingExams.find(e => e.id === exam.id);
+                                                                        return (
+                                                                            <div key={exam.id} onClick={() => handleExamClick(exam)} 
+                                                                                className={`bg-white rounded-2xl p-3 cursor-pointer hover:shadow-lg transition-all shadow border-2 ${isInCart ? 'border-emerald-500 bg-emerald-50' : isPending ? 'border-amber-400 bg-amber-50' : 'border-transparent hover:border-cyan-300'} flex items-center gap-3`}>
+                                                                                <div className={`w-10 h-10 ${exam.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                                                                    <i className={`fas ${exam.icon} ${exam.color} text-base`}></i>
+                                                                                </div>
+                                                                                <div className="flex-1 min-w-0">
+                                                                                    <p className="text-gray-800 font-medium text-sm leading-tight">{exam.name}</p>
+                                                                                    {exam.subtitle && <p className="text-gray-400 text-xs">{exam.subtitle}{exam.turnaround ? ` · ${exam.turnaround}` : ""}</p>}
+                                                                                </div>
+                                                                                {exam.price && <span className="text-cyan-600 font-bold text-sm flex-shrink-0">S/ {exam.price}</span>}
+                                                                                {(isInCart || isPending) && (
+                                                                                    <div className={`w-6 h-6 ${isInCart ? 'bg-emerald-500' : 'bg-amber-400'} rounded-full flex items-center justify-center flex-shrink-0`}>
+                                                                                        <i className={`fas ${isInCart ? 'fa-check' : 'fa-clock'} text-white text-xs`}></i>
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
-                                                </div>
-                                            ))}
+                                                )}
+                                            </div>
                                         </>
                                     )}
                                 </div>
