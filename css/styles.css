@@ -146,6 +146,7 @@
                la altura disponible (debajo del header fijo de 70px) y no scrollear */
             .app-content-dueno.pdf-active {
                 padding-bottom: 0 !important;
+                overflow: hidden !important;
             }
             .app-content-dueno.pdf-active .dueno-content-wrapper {
                 height: calc(100vh - 70px);
