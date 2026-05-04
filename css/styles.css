@@ -187,6 +187,18 @@
                 overflow: hidden;
                 min-height: 0;
             }
+            /* Caja interior única para Pedidos PC clínica - misma fórmula que dueño.
+               Diferencias: clínica usa header de 64px (no 70px) y necesita margin negativo
+               para neutralizar el padding p-6 del padre (.ml-56 flex-1 p-6). */
+            .medico-pedidos-pc-padre {
+                background: #f3f4f6;
+                height: calc(100vh - 64px);
+                max-height: calc(100vh - 64px);
+                width: calc(100% + 3rem);
+                overflow: hidden;
+                min-height: 0;
+                margin: -1.5rem;
+            }
             /* Forzar lg:hidden sobre el `style` inline (que tiene mayor prioridad sin !important).
                Necesario porque algunos visores móviles tienen `display: flex` inline que
                sobrescribe la clase lg:hidden de Tailwind. */
