@@ -147,6 +147,7 @@
             .app-content-dueno.pdf-active {
                 padding-bottom: 0 !important;
                 overflow: hidden !important;
+                overflow-y: hidden !important;
             }
             .app-content-dueno.pdf-active .dueno-content-wrapper {
                 height: calc(100vh - 70px);
