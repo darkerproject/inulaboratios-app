@@ -144,10 +144,14 @@
             }
             /* Cuando hay un visor PDF/Tracking activo, el wrapper debe ocupar exactamente
                la altura disponible (debajo del header fijo de 70px) y no scrollear */
+            .app-content-dueno.pdf-active {
+                padding-bottom: 0 !important;
+            }
             .app-content-dueno.pdf-active .dueno-content-wrapper {
                 height: calc(100vh - 70px);
                 min-height: calc(100vh - 70px);
                 overflow: hidden;
+                padding-bottom: 0 !important;
             }
             /* Padre del bloque Pedidos PC dueño - replica el padre de clínica:
                ml-56 flex-1 p-6 bg-gray-100 h-[calc(100vh-64px)] overflow-hidden
