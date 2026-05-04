@@ -6631,6 +6631,116 @@ const PdfViewer = ({ url, style, className }) => {
                                 </div>
                             </div>
                         )}
+                        {/* === Facturación PC dueño - Una sola caja interior con header fijo + contenido scrolleable === */}
+                        {activeTab === 'facturacion' && !facturacionInvoice && (() => {
+                            const userInvoices = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoicePdf);
+                            const filteredInvoices = userInvoices.filter(inv => {
+                                if (facDuenoSearchTerm.trim()) {
+                                    const s = facDuenoSearchTerm.toLowerCase();
+                                    const type = inv.documentType === 'boleta' ? 'boleta' : 'factura';
+                                    const petNames = (inv.items || []).map(it => it.pet?.name || '').join(' ').toLowerCase();
+                                    if (!type.includes(s) && !petNames.includes(s)) return false;
+                                }
+                                if (facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) {
+                                    const d = new Date(inv.createdAt || inv.date);
+                                    if (facDuenoFilterDay && String(d.getDate()).padStart(2,'0') !== facDuenoFilterDay) return false;
+                                    if (facDuenoFilterMonth && String(d.getMonth()+1).padStart(2,'0') !== facDuenoFilterMonth) return false;
+                                    if (facDuenoFilterYear && String(d.getFullYear()) !== facDuenoFilterYear) return false;
+                                }
+                                return true;
+                            });
+                            return (
+                                <div className="hidden lg:flex flex-col dueno-facturacion-pc-padre">
+                                    {/* Header fijo arriba */}
+                                    <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-2 px-2">
+                                                <i className="fas fa-file-invoice-dollar text-amber-500 text-lg"></i>
+                                                <span className="text-amber-600 font-semibold">Facturación</span>
+                                                <span className="bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full">{userInvoices.length}</span>
+                                            </div>
+                                            <div className="relative flex-1">
+                                                <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                                <input type="text" value={facDuenoSearchTerm} onChange={(e) => setFacDuenoSearchTerm(e.target.value)} 
+                                                    placeholder="Buscar boleta o factura..." 
+                                                    className="w-full h-10 pl-11 pr-10 rounded-full border border-gray-300 focus:border-amber-500 focus:outline-none bg-white text-sm" />
+                                                {facDuenoSearchTerm && <button onClick={() => setFacDuenoSearchTerm('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times"></i></button>}
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs text-gray-500">Filtrar por:</span>
+                                                <div className="relative">
+                                                    <select value={facDuenoFilterDay} onChange={(e) => setFacDuenoFilterDay(e.target.value)} 
+                                                        className="h-10 w-24 pl-4 pr-8 rounded-full bg-white border border-gray-300 text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
+                                                        <option value="">Día</option>
+                                                        {[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}
+                                                    </select>
+                                                    <i className="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                                </div>
+                                                <div className="relative">
+                                                    <select value={facDuenoFilterMonth} onChange={(e) => setFacDuenoFilterMonth(e.target.value)} 
+                                                        className="h-10 w-28 pl-4 pr-8 rounded-full bg-white border border-gray-300 text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
+                                                        <option value="">Mes</option>
+                                                        {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}
+                                                    </select>
+                                                    <i className="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                                </div>
+                                                <div className="relative">
+                                                    <select value={facDuenoFilterYear} onChange={(e) => setFacDuenoFilterYear(e.target.value)} 
+                                                        className="h-10 w-28 pl-4 pr-8 rounded-full bg-white border border-gray-300 text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
+                                                        <option value="">Año</option>
+                                                        {['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}
+                                                    </select>
+                                                    <i className="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                                </div>
+                                                {(facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) && (
+                                                    <button onClick={() => { setFacDuenoFilterDay(''); setFacDuenoFilterMonth(''); setFacDuenoFilterYear(''); }} 
+                                                        className="h-10 px-3 rounded-full bg-red-100 text-red-600 text-xs hover:bg-red-200">
+                                                        <i className="fas fa-times mr-1"></i>Limpiar
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Contenido scrolleable abajo */}
+                                    <div className="flex-1 overflow-y-auto p-6">
+                                        {userInvoices.length === 0 ? (
+                                            <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
+                                                <i className="fas fa-file-invoice text-5xl text-gray-300 mb-4 block"></i>
+                                                <p className="text-gray-500 font-medium">No tienes comprobantes aún</p>
+                                                <p className="text-gray-400 text-sm mt-1">Tus boletas y facturas aparecerán aquí</p>
+                                            </div>
+                                        ) : filteredInvoices.length === 0 ? (
+                                            <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
+                                                <i className="fas fa-search text-5xl text-gray-300 mb-4 block"></i>
+                                                <p className="text-gray-500 font-medium">No se encontraron comprobantes</p>
+                                                <p className="text-gray-400 text-sm mt-1">Intenta ajustar la búsqueda o los filtros</p>
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                                {filteredInvoices.map(inv => (
+                                                    <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
+                                                                <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-xl`}></i>
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
+                                                                <div className="text-sm text-gray-500">{inv.items?.map((it, idx) => <div key={idx}>{it.pet?.name} - {it.exam?.name}</div>)}</div>
+                                                                <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt || inv.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
+                                                            </div>
+                                                            <div className="flex items-center pr-1">
+                                                                <i className="fas fa-chevron-right text-gray-400"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })()}
                         <div className="dueno-normal-content">
                         {activeTab === 'pedidos' && (<div className="lg:hidden pb-20" style={{position:'relative', minHeight: pedidosSearchOpen ? '60vh' : 'auto'}}>
                             <div className="lg:hidden" style={{height: pedidosSearchOpen ? '100px' : '56px', transition:'height 0.2s ease-out'}}></div>
@@ -7041,116 +7151,6 @@ const PdfViewer = ({ url, style, className }) => {
 
                         </div>
 
-                        {/* === Facturación PC dueño - Una sola caja interior con header fijo + contenido scrolleable === */}
-                        {activeTab === 'facturacion' && !facturacionInvoice && (() => {
-                            const userInvoices = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoicePdf);
-                            const filteredInvoices = userInvoices.filter(inv => {
-                                if (facDuenoSearchTerm.trim()) {
-                                    const s = facDuenoSearchTerm.toLowerCase();
-                                    const type = inv.documentType === 'boleta' ? 'boleta' : 'factura';
-                                    const petNames = (inv.items || []).map(it => it.pet?.name || '').join(' ').toLowerCase();
-                                    if (!type.includes(s) && !petNames.includes(s)) return false;
-                                }
-                                if (facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) {
-                                    const d = new Date(inv.createdAt || inv.date);
-                                    if (facDuenoFilterDay && String(d.getDate()).padStart(2,'0') !== facDuenoFilterDay) return false;
-                                    if (facDuenoFilterMonth && String(d.getMonth()+1).padStart(2,'0') !== facDuenoFilterMonth) return false;
-                                    if (facDuenoFilterYear && String(d.getFullYear()) !== facDuenoFilterYear) return false;
-                                }
-                                return true;
-                            });
-                            return (
-                                <div className="hidden lg:flex flex-col dueno-facturacion-pc-padre">
-                                    {/* Header fijo arriba */}
-                                    <div className="flex-shrink-0 bg-gray-100 shadow-md border-b border-gray-300 p-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex items-center gap-2 px-2">
-                                                <i className="fas fa-file-invoice-dollar text-amber-500 text-lg"></i>
-                                                <span className="text-amber-600 font-semibold">Facturación</span>
-                                                <span className="bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full">{userInvoices.length}</span>
-                                            </div>
-                                            <div className="relative flex-1">
-                                                <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                                <input type="text" value={facDuenoSearchTerm} onChange={(e) => setFacDuenoSearchTerm(e.target.value)} 
-                                                    placeholder="Buscar boleta o factura..." 
-                                                    className="w-full h-10 pl-11 pr-10 rounded-full border border-gray-300 focus:border-amber-500 focus:outline-none bg-white text-sm" />
-                                                {facDuenoSearchTerm && <button onClick={() => setFacDuenoSearchTerm('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><i className="fas fa-times"></i></button>}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-xs text-gray-500">Filtrar por:</span>
-                                                <div className="relative">
-                                                    <select value={facDuenoFilterDay} onChange={(e) => setFacDuenoFilterDay(e.target.value)} 
-                                                        className="h-10 w-24 pl-4 pr-8 rounded-full bg-white border border-gray-300 text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
-                                                        <option value="">Día</option>
-                                                        {[...Array(31)].map((_, i) => <option key={i+1} value={String(i+1).padStart(2,'0')}>{i+1}</option>)}
-                                                    </select>
-                                                    <i className="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                                                </div>
-                                                <div className="relative">
-                                                    <select value={facDuenoFilterMonth} onChange={(e) => setFacDuenoFilterMonth(e.target.value)} 
-                                                        className="h-10 w-28 pl-4 pr-8 rounded-full bg-white border border-gray-300 text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
-                                                        <option value="">Mes</option>
-                                                        {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map((m, i) => <option key={i} value={String(i+1).padStart(2,'0')}>{m}</option>)}
-                                                    </select>
-                                                    <i className="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                                                </div>
-                                                <div className="relative">
-                                                    <select value={facDuenoFilterYear} onChange={(e) => setFacDuenoFilterYear(e.target.value)} 
-                                                        className="h-10 w-28 pl-4 pr-8 rounded-full bg-white border border-gray-300 text-sm focus:border-amber-500 appearance-none cursor-pointer focus:outline-none">
-                                                        <option value="">Año</option>
-                                                        {['2026','2025','2024','2023'].map(y => <option key={y} value={y}>{y}</option>)}
-                                                    </select>
-                                                    <i className="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                                                </div>
-                                                {(facDuenoFilterDay || facDuenoFilterMonth || facDuenoFilterYear) && (
-                                                    <button onClick={() => { setFacDuenoFilterDay(''); setFacDuenoFilterMonth(''); setFacDuenoFilterYear(''); }} 
-                                                        className="h-10 px-3 rounded-full bg-red-100 text-red-600 text-xs hover:bg-red-200">
-                                                        <i className="fas fa-times mr-1"></i>Limpiar
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Contenido scrolleable abajo */}
-                                    <div className="flex-1 overflow-y-auto p-6">
-                                        {userInvoices.length === 0 ? (
-                                            <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
-                                                <i className="fas fa-file-invoice text-5xl text-gray-300 mb-4 block"></i>
-                                                <p className="text-gray-500 font-medium">No tienes comprobantes aún</p>
-                                                <p className="text-gray-400 text-sm mt-1">Tus boletas y facturas aparecerán aquí</p>
-                                            </div>
-                                        ) : filteredInvoices.length === 0 ? (
-                                            <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
-                                                <i className="fas fa-search text-5xl text-gray-300 mb-4 block"></i>
-                                                <p className="text-gray-500 font-medium">No se encontraron comprobantes</p>
-                                                <p className="text-gray-400 text-sm mt-1">Intenta ajustar la búsqueda o los filtros</p>
-                                            </div>
-                                        ) : (
-                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                                {filteredInvoices.map(inv => (
-                                                    <div key={inv.id} onClick={() => setFacturacionInvoice(inv)} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md cursor-pointer transition-all border border-transparent hover:border-amber-200">
-                                                        <div className="flex items-center gap-4">
-                                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${inv.documentType === 'boleta' ? 'bg-cyan-100' : 'bg-amber-100'}`}>
-                                                                <i className={`fas ${inv.documentType === 'boleta' ? 'fa-receipt text-cyan-600' : 'fa-file-invoice-dollar text-amber-600'} text-xl`}></i>
-                                                            </div>
-                                                            <div className="flex-1 min-w-0">
-                                                                <p className="font-semibold text-gray-800">{inv.documentType === 'boleta' ? 'Boleta' : 'Factura'}</p>
-                                                                <div className="text-sm text-gray-500">{inv.items?.map((it, idx) => <div key={idx}>{it.pet?.name} - {it.exam?.name}</div>)}</div>
-                                                                <p className="text-xs text-gray-400 mt-1">{new Date(inv.createdAt || inv.date).toLocaleDateString('es-PE', {day:'numeric', month:'long', year:'numeric'})}</p>
-                                                            </div>
-                                                            <div className="flex items-center pr-1">
-                                                                <i className="fas fa-chevron-right text-gray-400"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })()}
                         {activeTab === 'facturacion' && !facturacionInvoice && (() => {
                             const userInvoices = (database.orders || []).filter(o => o.userId === freshUser.id && o.invoicePdf);
                             const filteredInvoices = userInvoices.filter(inv => {
