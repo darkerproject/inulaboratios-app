@@ -6263,7 +6263,7 @@ const PdfViewer = ({ url, style, className }) => {
                                     </div>
                                     
                                     {/* Sección 2: Contenido scrolleable */}
-                                    <div className="flex-1 overflow-y-auto p-6">
+                                    <div className="flex-1 overflow-y-auto pt-6 px-6 pb-0">
                                         {pedidosSearchTerm.trim() ? (() => {
                                             const s = pedidosSearchTerm.toLowerCase();
                                             const synonyms = [s];
