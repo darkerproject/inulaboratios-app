@@ -178,6 +178,15 @@
                 overflow: hidden;
                 min-height: 0;
             }
+            /* Caja interior única para Facturación PC dueño - misma fórmula que Pedidos */
+            .dueno-facturacion-pc-padre {
+                background: #f3f4f6;
+                height: calc(100vh - 70px);
+                max-height: calc(100vh - 70px);
+                width: 100%;
+                overflow: hidden;
+                min-height: 0;
+            }
             /* Forzar lg:hidden sobre el `style` inline (que tiene mayor prioridad sin !important).
                Necesario porque algunos visores móviles tienen `display: flex` inline que
                sobrescribe la clase lg:hidden de Tailwind. */
