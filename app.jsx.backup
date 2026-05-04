@@ -2243,6 +2243,10 @@ const PdfViewer = ({ url, style, className }) => {
                         </div>
                         <div className="flex items-center gap-3">
                             <div className="text-right"><p className="text-sm font-semibold text-gray-800">{freshUser.name}</p><p className="text-xs text-gray-500">Cliente</p></div>
+                            <button onClick={() => { if (showOrderSummary) { setShowOrderSummary(false); setShowTermsModal(false); } else if (cart.length > 0) { setShowOrderSummary(true); } }} className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${cart.length > 0 ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' : 'bg-gray-100 text-gray-300 cursor-default'}`}>
+                                <i className="fas fa-shopping-cart"></i>
+                                {cart.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">{cart.length}</span>}
+                            </button>
                             <button onClick={() => { resetDuenoState(); setDuenoView('config'); }} className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center text-gray-600 transition-colors"><i className="fas fa-bars"></i></button>
                         </div>
                     </div>
