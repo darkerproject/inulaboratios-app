@@ -4262,17 +4262,21 @@ const PdfViewer = ({ url, style, className }) => {
                             <div className="bg-white border-b border-gray-200 px-6 py-3 fixed top-0 left-0 right-0 z-50">
                                 <div className="flex items-center justify-between">
                                     {/* Logo a la izquierda */}
-                                    <div className="flex items-center gap-2 cursor-pointer ml-[-10px]" onClick={() => { setMedicoView('inicio'); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setPendingExams([]); setCart([]); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setMedicoFacInvoice(null); }}>
+                                    <div className="flex items-center gap-2 cursor-pointer ml-[-10px]" onClick={() => { setMedicoView('inicio'); setSelectedMascota(null); setSelectedExam(null); setViewingInvoice(null); setCurrentExamForPet(null); setShowNewPetForm(false); setShowAddressSelection(false); setShowNewAddressForm(false); setSelectedPetForOrder(null); setShowEditProfile(false); setViewingOrderTracking(null); setMedicoFacInvoice(null); }}>
                                         <img src="logo_inulaboratorios.jpg" alt="Logo" className="h-8" onError={(e) => { e.target.style.display = 'none'; }} />
                                         <span className="text-base font-light text-gray-700 tracking-wide">INULABORATORIOS</span>
                                     </div>
                                     
                                     {/* Usuario y config a la derecha */}
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-3">
                                         <div className="text-right">
                                             <p className="text-sm font-semibold text-gray-800">{freshUser.name}</p>
                                             <p className="text-xs text-gray-500">Clínica</p>
                                         </div>
+                                        <button onClick={() => { if (showOrderSummary) { setShowOrderSummary(false); setShowTermsModal(false); } else if (cart.length > 0) { setShowOrderSummary(true); } }} className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${cart.length > 0 ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' : 'bg-gray-100 text-gray-300 cursor-default'}`}>
+                                            <i className="fas fa-shopping-cart"></i>
+                                            {cart.length > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">{cart.length}</span>}
+                                        </button>
                                         <button 
                                             onClick={() => { setViewingOrderTracking(null); setMedicoView('configuracion'); }}
                                             className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center text-gray-600 transition-colors"
@@ -5197,19 +5201,6 @@ const PdfViewer = ({ url, style, className }) => {
                                                 )}
                                             </div>
                                             
-                                            {/* Carrito flotante desktop */}
-                                            {cart.length > 0 && (
-                                                <div className="fixed bottom-6 right-6 bg-slate-800 text-white pl-4 pr-3 py-3 rounded-2xl shadow-2xl z-50">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-9 h-9 bg-emerald-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">{cart.length}</div>
-                                                        <div className="min-w-0">
-                                                            <p className="font-medium text-sm">Pedido listo</p>
-                                                            <p className="text-xs text-gray-400 truncate max-w-[150px]">{cart.map(c => getPetFullName(c.pet)).join(', ')}</p>
-                                                        </div>
-                                                        <button onClick={() => setShowOrderSummary(true)} className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2.5 rounded-xl font-semibold text-sm whitespace-nowrap flex-shrink-0 ml-2">Solicitar</button>
-                                                    </div>
-                                                </div>
-                                            )}
                                         </div>
                                     )}
                                     
@@ -6994,7 +6985,6 @@ const PdfViewer = ({ url, style, className }) => {
                                 )}
                             </div>
                             
-                            {cart.length > 0 && <div className="hidden lg:block fixed bottom-5 right-4 bg-slate-800 text-white pl-4 pr-3 py-3 rounded-2xl shadow-2xl"><div className="flex items-center gap-4"><div className="w-9 h-9 bg-emerald-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">{cart.length}</div><div className="min-w-0"><p className="font-medium text-sm">Pedido listo</p><p className="text-xs text-gray-400 truncate max-w-[100px]">{cart.map(c => getPetFullName(c.pet)).join(', ')}</p></div><button onClick={() => setShowOrderSummary(true)} className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2.5 rounded-xl font-semibold text-sm whitespace-nowrap flex-shrink-0 ml-2">Solicitar</button></div></div>}
                         </div>)}
                         {activeTab === 'resultados' && (
                             <div className="lg:hidden" style={{position:'fixed', top:'calc(56px + env(safe-area-inset-top, 0px))', left:0, right:0, zIndex:500, background:'#ffffff', boxShadow:'0 4px 14px -2px rgba(0,0,0,0.1)'}}>
