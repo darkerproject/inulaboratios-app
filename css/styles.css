@@ -142,7 +142,7 @@
                 overflow-y: auto;
                 height: 100vh;
             }
-            /* Cuando hay un visor PDF/Tracking activo, el wrapper debe ocupar exactamente
+            /* Cuando hay un visor PDF/Tracking activo (o Pedidos), el wrapper debe ocupar exactamente
                la altura disponible (debajo del header fijo de 70px) y no scrollear */
             .app-content-dueno.pdf-active {
                 padding-bottom: 0 !important;
@@ -153,14 +153,15 @@
                 overflow: hidden;
                 padding-bottom: 0 !important;
             }
-            /* Padre del bloque Pedidos PC dueño - replica el padre de clínica:
-               ml-56 flex-1 p-6 bg-gray-100 h-[calc(100vh-64px)] overflow-hidden
-               (en dueño el header es de 70px, no 64px) */
+            /* Caja interior única para Pedidos PC dueño:
+               - Ocupa toda la altura del wrapper (calc(100vh - 70px))
+               - Sin padding (header y contenido tienen su propio padding)
+               - flex-col activado vía className "flex flex-col" en JSX
+               - El header es flex-shrink-0 (no se encoge), el contenido es flex-1 (toma el resto y scrollea) */
             .dueno-pedidos-pc-padre {
-                padding: 1.5rem 1.5rem 0 1.5rem;
                 background: #f3f4f6;
-                height: calc(100vh - 70px);
-                overflow: hidden;
+                height: 100%;
+                width: 100%;
             }
             /* Forzar lg:hidden sobre el `style` inline (que tiene mayor prioridad sin !important).
                Necesario porque algunos visores móviles tienen `display: flex` inline que
