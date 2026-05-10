@@ -1261,26 +1261,7 @@ const PdfViewer = ({ url, style, className }) => {
             
             useEffect(() => {
                 if (!isAuthenticated) return;
-                const interval = setInterval(async () => {
-                    try {
-                        const ordersResponse = await api.getOrders();
-                        const statusMap = { 0: 'pending', 1: 'assigned', 2: 'moto_en_camino', 3: 'moto_arrived', 4: 'pickup_in_progress', 5: 'sample_received', 6: 'arrived_at_lab', 7: 'processing', 8: 'results_uploaded', 9: 'completed' };
-                        const orders = (ordersResponse || []).map(o => ({
-                            id: o.id, userId: o.userId, userName: o.userName || '', comment: o.comment || '',
-                            createdAt: o.createdAt, completedAt: o.completedAt, documentType: o.documentType || 'boleta',
-                            invoicePdf: o.invoicePdfUrl ? `https://inulab-backend-production.up.railway.app${o.invoicePdfUrl}` : null,
-                            invoicePdfUrl: o.invoicePdfUrl || null, invoiceStatus: o.invoicePdfUrl ? 'uploaded' : 'pending',
-                            status: statusMap[Number(o.status)] || 'pending', addressId: o.addressId,
-                            items: (o.items || []).map(item => {
-                                const rawPdf = item.pdfUrl || o.resultPdfUrl || null;
-                                const orderResultPdf = rawPdf ? (rawPdf.startsWith('http') ? rawPdf : `https://inulab-backend-production.up.railway.app${rawPdf}`) : null;
-                                return { examName: String(item.examName || ''), exam: { name: String(item.examName || ''), icon: 'fa-vial', color: 'text-cyan-600', bg: 'bg-cyan-100' }, pet: { name: String(item.petName || ''), photo: item.petPhoto || '🐾' }, address: { address: String(item.addressStreet || ''), district: String(item.addressDistrict || '') }, pdfData: orderResultPdf };
-                            })
-                        }));
-                        setDatabase(e => ({ ...e, orders: orders }));
-                    } catch (e) { console.error('Polling error:', e); }
-                }, 15000);
-                return () => clearInterval(interval);
+                // DEMO MODE - no polling
             }, [isAuthenticated]);
             
             // Estados para trackear nuevos pendientes de mostrar
@@ -1337,135 +1318,63 @@ const PdfViewer = ({ url, style, className }) => {
 
             const loadAddresses = async () => {
                 try {
-                    const res = await fetch(`${API_BASE}/Addresses`, { headers: api._headers() });
-                    const data = await res.json();
-                    setDatabase(prev => ({ ...prev, addresses: data }));
-                } catch (error) { console.error("Error cargando direcciones", error); }
+                    const stored = localStorage.getItem('inulab_demo_db');
+                    if (stored) {
+                        const db = JSON.parse(stored);
+                        setDatabase(prev => ({ ...prev, addresses: db.addresses || [] }));
+                    }
+                } catch (e) {}
             };
 
             async function cargarFacturas() {
-                const token = localStorage.getItem("inulab_token");
-                const res = await fetch(`${API_BASE}/Facturas`, { headers: { "Authorization": `Bearer ${token}` } });
-                const data = await res.json();
-                setFacturas(data);
+                // DEMO MODE - no-op
+                setFacturas([]);
             }
 
             const loadDatabase = async (silent = false) => {
-
-                console.log("INICIANDO LOAD DATABASE");
                 if (!silent) setLoading(true);
-
                 try {
-                    console.log("cargando pets...");
-                    const petsResponse = await api.getPets();
-                    console.log("RAW pets:", petsResponse);
-                    const pets = (petsResponse?.pets || petsResponse || []).map(p => ({
-                        id: p.id,
-                        name: String(p.name || p.Name || ''),
-                        species: String(p.species || p.animalType || ''),
-                        breed: String(p.breed || ''),
-                        age: p.age,
-                        ageValue: p.age,
-                        ageUnit: 'años',
-                        sex: String(p.sex || p.gender || p.sexo || p.genero || ''),
-                        photo: p.species === 'perro' ? '🐶' :
-                            p.species === 'gato' ? '🐱' :
-                                p.species === 'ave' ? '🦜' :
-                                    p.species === 'conejo' ? '🐰' : '🐾',
-                        owner: String(p.ownerName || p.owner || ''),
-                        exams: (p.exams || []).map(e => ({
-                            id: e.id,
-                            type: e.type || e.examName || 'Examen',
-                            date: e.date,
-                            seen: true,
-                            pdfData: e.pdfUrl ? (e.pdfUrl.startsWith('http') ? e.pdfUrl : 'https://inulab-backend-production.up.railway.app' + e.pdfUrl) : null
-                        }))
-                    }));
-                    console.log("pets OK", pets);
-
-                    console.log("cargando orders...");
-                    const ordersResponse = await api.getOrders();
-                    console.log('ordersResponse directo:', ordersResponse);
-                    const statusMap = { 0: 'pending', 1: 'assigned', 2: 'moto_en_camino', 3: 'moto_arrived', 4: 'pickup_in_progress', 5: 'sample_received', 6: 'arrived_at_lab', 7: 'processing', 8: 'results_uploaded', 9: 'completed' };
-                    const orders = (ordersResponse || []).map(o => ({
-                        id: o.id,
-                        userId: o.userId,
-                        userName: o.userName || '',
-                        comment: o.comment || '',
-                        createdAt: o.createdAt,
-                        completedAt: o.completedAt,
-                        documentType: o.documentType || 'boleta',
-                        invoicePdf: o.invoicePdfUrl ? `https://inulab-backend-production.up.railway.app${o.invoicePdfUrl}` : null,
-                        invoicePdfUrl: o.invoicePdfUrl || null,
-                        invoiceStatus: o.invoicePdfUrl ? 'uploaded' : 'pending',
-                        status: statusMap[Number(o.status)] || 'pending',
-                        addressId: o.addressId,
-                        resultPdfUrl: o.resultPdfUrl || null,
-                        items: (o.items || []).map(item => {
-                            const rawPdf = item.pdfUrl || o.resultPdfUrl || null;
-                            const orderResultPdf = rawPdf
-                                ? (rawPdf.startsWith('http') ? rawPdf : `https://inulab-backend-production.up.railway.app${rawPdf}`)
-                                : null;
-                            return {
-                                examName: String(item.examName || ''),
-                                exam: { name: String(item.examName || ''), icon: 'fa-vial', color: 'text-cyan-600', bg: 'bg-cyan-100' },
-                                pet: { name: String(item.petName || ''), photo: item.petPhoto || '🐾' },
-                                address: {
-                                    address: String(item.addressStreet || ''),
-                                    district: String(item.addressDistrict || '')
-                                },
-                                pdfData: orderResultPdf
-                            };
-                        })
-                    }));
-                    console.log("orders OK", orders);
-
-                    const addressesResponse = await api.getAddresses();
-                    console.log("RAW addresses:", addressesResponse);
-                    const addresses = Array.isArray(addressesResponse)
-                        ? addressesResponse
-                        : addressesResponse?.$values ||
-                        addressesResponse?.addresses ||
-                        addressesResponse?.data ||
-                        [];
-                    
-                    // Enriquecer exams con pdfData de orders
-                    pets.forEach(pet => {
-                        pet.exams = pet.exams.map(exam => {
-                            const matchingOrder = orders.find(o =>
-                                (o.status === 'completed' || Number(o.status) === 9) &&
-                                (o.items || []).some(i =>
-                                    String(i.examName).toLowerCase() === String(exam.type || exam).toLowerCase()
-                                )
-                            );
-                            const rawUrl = matchingOrder?.resultPdfUrl || null;
-                            const pdfUrl = rawUrl
-                                ? (rawUrl.startsWith('http') ? rawUrl : `https://inulab-backend-production.up.railway.app${rawUrl}`)
-                                : null;
-                            return { ...exam, pdfData: pdfUrl };
-                        });
-                    });
-                                        
+                    const stored = localStorage.getItem('inulab_demo_db');
+                    let db;
+                    if (stored) {
+                        db = JSON.parse(stored);
+                    } else {
+                        // Datos semilla demo
+                        db = {
+                            pets: [
+                                { id: 'p1', name: 'Max', species: 'perro', breed: 'Labrador', age: 3, sex: 'macho', photo: '🐶', owner: 'darker', exams: [{ id: 'e1', type: 'Hemograma Completo', date: '2024-01-15', seen: false, pdfData: null }] },
+                                { id: 'p2', name: 'Luna', species: 'gato', breed: 'Persa', age: 2, sex: 'hembra', photo: '🐱', owner: 'darker', exams: [] }
+                            ],
+                            orders: [
+                                { id: 'o1', userId: 'u-darker', status: 'completed', createdAt: '2024-01-15T10:00:00Z', completedAt: '2024-01-16T10:00:00Z', documentType: 'boleta', invoicePdf: null, invoiceStatus: 'pending', items: [{ examName: 'Hemograma Completo', exam: { name: 'Hemograma Completo', icon: 'fa-vial', color: 'text-cyan-600', bg: 'bg-cyan-100' }, pet: { name: 'Max', photo: '🐶' }, address: { address: 'Av. Javier Prado 123', district: 'San Isidro' }, pdfData: null }] },
+                                { id: 'o2', userId: 'u-darker', status: 'processing', createdAt: '2024-01-20T10:00:00Z', completedAt: null, documentType: 'boleta', invoicePdf: null, invoiceStatus: 'pending', items: [{ examName: 'Perfil Básico', exam: { name: 'Perfil Básico', icon: 'fa-vials', color: 'text-blue-600', bg: 'bg-blue-100' }, pet: { name: 'Luna', photo: '🐱' }, address: { address: 'Av. Javier Prado 123', district: 'San Isidro' }, pdfData: null }] }
+                            ],
+                            addresses: [
+                                { id: 'a1', name: 'Casa', address: 'Av. Javier Prado 123', district: 'San Isidro', reference: 'Frente al parque' }
+                            ],
+                            results: [], users: [], invoices: [], exams: [],
+                            nightMode: false
+                        };
+                        localStorage.setItem('inulab_demo_db', JSON.stringify(db));
+                    }
                     setDatabase({
-                        pets: pets || [],
-                        orders: orders || [],
-                        addresses: addresses || [],
-                        results: [],
-                        users: [],
-                        invoices: [],
-                        exams: []
+                        pets: db.pets || [],
+                        orders: db.orders || [],
+                        addresses: db.addresses || [],
+                        results: db.results || [],
+                        users: db.users || [],
+                        invoices: db.invoices || [],
+                        exams: db.exams || []
                     });
-
                 } catch (err) {
-                    console.error("ERROR API:", err);
-                    setDatabase({ pets: [], orders: [], addresses: [] });
+                    console.error('DEMO loadDatabase error:', err);
+                    setDatabase({ pets: [], orders: [], addresses: [], results: [], users: [], invoices: [], exams: [] });
                 } finally {
-                    console.log("FIN LOAD DATABASE");
                     if (!silent) setLoading(false);
                 }
             };
 
-            const handleLogin = async (e) => {
+                        const handleLogin = async (e) => {
                 e.preventDefault();
                 setError('');
                 const DEMO_USERS = {
